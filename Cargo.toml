@@ -1,0 +1,12 @@
+[package]
+name = "imgdd"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.21", features = ["derive", "cargo"] }
+anyhow = "1.0.93"
+env_logger = "0.11.5"
+log = "0.4.22"
+image = "0.25.5"
+ndarray = "0.16.1"

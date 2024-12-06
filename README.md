@@ -6,8 +6,6 @@
 
 - **Perceptual Hashing**: Uses the `dhash` algorithm to generate hashes based on image content.
 - **Customizable Hamming Distance**: Configure the sensitivity of duplicate detection with a distance threshold.
-- **Verbose Logging**: Gain insight into the deduplication process with configurable verbosity levels.
-- **Cross-Platform**: Built with Rust, works seamlessly on Linux, macOS, and Windows.
 
 ## Usage
 

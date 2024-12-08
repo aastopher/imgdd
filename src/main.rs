@@ -1,14 +1,3 @@
-// use imgdd::logger;
-
-// use clap::{arg, command, ArgAction, value_parser, ValueHint};
-// use log::{info, debug, error};
-// use anyhow::Result;
-// use std::collections::{HashMap, HashSet};
-// use std::path::PathBuf;
-// use std::fs;
-// use imgdd::utils::validate_path;
-// use imgdd::image_hash::ImageHash;
-
 use imgdd::logger;
 use imgdd::utils;
 use imgdd::image_hash;

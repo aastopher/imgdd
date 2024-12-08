@@ -4,9 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-clap = { version = "4.5.21", features = ["derive", "cargo"] }
-anyhow = "1.0.93"
+clap = { version = "4.5.23", features = ["derive", "cargo"] }
+anyhow = "1.0.94"
 env_logger = "0.11.5"
 log = "0.4.22"
 image = "0.25.5"
 ndarray = "0.16.1"
+
+[dev-dependencies]
+criterion = "0.5.1"
+
+[[bench]]
+name = "img_hash_bench"
+path = "benches/img_hash_bench.rs"
+harness = false

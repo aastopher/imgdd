@@ -26,8 +26,6 @@ jobs:
       run: cargo test --verbose
       env:
         CARGO_INCREMENTAL: '0'
-        RUSTFLAGS: '-Zinstrument-coverage'
-        LLVM_PROFILE_FILE: 'coverage-%p-%m.profraw'
     - name: rust-grcov
       uses: actions-rs/grcov@v0.1
     - name: Codecov

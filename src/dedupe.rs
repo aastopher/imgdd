@@ -1,5 +1,5 @@
 use crate::image_hash::ImageHash;
-use rayon::prelude::*; 
+use rayon::prelude::*;
 use walkdir::WalkDir;
 use anyhow::Result;
 use std::path::PathBuf;
@@ -14,7 +14,7 @@ pub fn collect_hashes(path: &PathBuf) -> Result<Vec<(u64, PathBuf)>> {
         .collect();
 
     let mut hashes_with_paths: Vec<(u64, PathBuf)> = files
-        .par_iter() 
+        .par_iter()
         .filter_map(|file_path| {
             match image::open(file_path) {
                 Ok(image) => match ImageHash::dhash(&image) {
@@ -38,8 +38,7 @@ pub fn collect_hashes(path: &PathBuf) -> Result<Vec<(u64, PathBuf)>> {
     Ok(hashes_with_paths)
 }
 
-
-/// Identify duplicates by comparing sorted hashes.
+/// Identify exact duplicates by comparing sorted hashes.
 pub fn find_duplicates(hashes_with_paths: &[(u64, PathBuf)]) -> Vec<(PathBuf, PathBuf)> {
     let mut duplicates = Vec::new();
 
@@ -54,3 +53,23 @@ pub fn find_duplicates(hashes_with_paths: &[(u64, PathBuf)]) -> Vec<(PathBuf, Pa
     duplicates
 }
 
+/// Identify duplicates within a Hamming distance threshold.
+pub fn find_duplicates_with_threshold(
+    hashes_with_paths: &[(u64, PathBuf)],
+    threshold: u32,
+) -> Vec<(PathBuf, PathBuf)> {
+    let mut duplicates = Vec::new();
+
+    for (i, (hash1, path1)) in hashes_with_paths.iter().enumerate() {
+        for (hash2, path2) in hashes_with_paths.iter().skip(i + 1) {
+            let hamming_distance = ImageHash { hash: *hash1 }
+                .hamming_distance(&ImageHash { hash: *hash2 });
+
+            if hamming_distance <= threshold as usize {
+                duplicates.push((path1.clone(), path2.clone()));
+            }
+        }
+    }
+
+    duplicates
+}

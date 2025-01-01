@@ -1,12 +1,13 @@
-use imgdd::dedupe::{collect_hashes, find_duplicates};
+use imgdd::dedupe::{collect_hashes, find_duplicates, find_duplicates_with_threshold};
 use imgdd::logger;
 use clap::{arg, command, ArgAction, value_parser, ValueHint};
-use log::{info, debug};
+use log::{info, debug, LevelFilter};
 use anyhow::Result;
 use std::path::PathBuf;
 use imgdd::utils::validate_path;
 
 fn main() -> Result<()> {
+    // Initialize the logger with the default level
     logger::init();
 
     let matches = command!()
@@ -23,17 +24,24 @@ fn main() -> Result<()> {
         )
         .arg(
             arg!(
+                -t --threshold <THRESHOLD> "Set the Hamming distance threshold for duplicate detection."
+            )
+            .value_parser(value_parser!(u32))
+            .required(false),
+        )
+        .arg(
+            arg!(
                 -v --verbose ... "Enable verbose output for debugging. Use -vv for maximum verbosity."
             )
             .action(ArgAction::Count),
         )
         .get_matches();
 
-    // Set verbosity level
+    // Set verbosity level based on the number of -v flags
     match matches.get_count("verbose") {
-        0 => info!("Running in normal mode."),
-        1 => debug!("Running in verbose mode."),
-        _ => debug!("Running in maximum verbosity mode."),
+        0 => log::set_max_level(LevelFilter::Info),  // Default level
+        1 => log::set_max_level(LevelFilter::Debug), // One -v flag
+        _ => log::set_max_level(LevelFilter::Trace), // Two or more -v flags
     }
 
     // Validate and resolve the root path
@@ -47,22 +55,28 @@ fn main() -> Result<()> {
     // Collect hashes recursively
     let hashes_with_paths = collect_hashes(&path)?;
 
-    // Print hashes and associated paths
-    println!("Hashes and Paths (sorted):");
+    // Log hashes and associated paths
+    debug!("Hashes and Paths (sorted):");
     for (hash, path) in &hashes_with_paths {
-        println!("Hash: {:032b}, Path: {}", hash, path.display());
+        debug!("Hash: {:032b}, Path: {}", hash, path.display());
     }
 
-    // Identify duplicates
-    let duplicates = find_duplicates(&hashes_with_paths);
-
-    // Print duplicates
-    if duplicates.is_empty() {
-        println!("No duplicates found.");
+    // Determine and process duplicates based on the threshold
+    let duplicates = if let Some(threshold) = matches.get_one::<u32>("threshold").cloned() {
+        info!("Using Hamming distance threshold: {}", threshold);
+        find_duplicates_with_threshold(&hashes_with_paths, threshold)
     } else {
-        println!("Duplicates found:");
+        info!("Performing exact duplicate detection.");
+        find_duplicates(&hashes_with_paths)
+    };
+
+    // Log duplicates
+    if duplicates.is_empty() {
+        info!("No duplicates found.");
+    } else {
+        info!("Duplicates found:");
         for (dup1, dup2) in duplicates {
-            println!("Duplicate: {} <-> {}", dup1.display(), dup2.display());
+            info!("Duplicate: {} <-> {}", dup1.display(), dup2.display());
         }
     }
 

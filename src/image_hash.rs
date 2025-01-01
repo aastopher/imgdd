@@ -3,7 +3,7 @@ use image::DynamicImage;
 
 #[derive(Eq, PartialEq, Hash, Clone)]
 pub struct ImageHash {
-    hash: u64,
+    pub hash: u64,
 }
 
 impl ImageHash {

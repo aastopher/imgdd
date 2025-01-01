@@ -20,11 +20,6 @@ walkdir = "2.3"
 criterion = "0.5.1"
 
 [[bench]]
-name = "img_hash_bench"
-path = "benches/img_hash_bench.rs"
-harness = false
-
-[[bench]]
 name = "dedupe_bench"
 path = "benches/dedupe_bench.rs"
 harness = false

@@ -1,4 +1,8 @@
+[![codecov](https://codecov.io/gh/aastopher/imgdd/graph/badge.svg?token=XZ1O2X04SO)](https://codecov.io/gh/aastopher/imgdd)
+
 # imgdd: Image Directory Deduplication
+
+----
 
 `imgdd` is a Rust-based command-line interface (CLI) tool for efficiently detecting and removing visually similar or duplicate images in a directory. Using perceptual hashing and Hamming distance, `imgdd` compares image similarity based on visual content rather than file size or metadata.
 

@@ -15,39 +15,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the code
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    # Set up Rust toolchain
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
+    - uses: actions/checkout@v3
+    - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
         override: true
-
-    # Build the project
     - name: Build
       run: cargo build --verbose
-
-    # Run tests with profiling
-    - name: Run Tests with Profiling
+    - name: Run tests
       run: cargo test --verbose
       env:
         CARGO_INCREMENTAL: '0'
-        RUSTFLAGS: '-Zinstrument-coverage'
-        LLVM_PROFILE_FILE: 'coverage-%p-%m.profraw'
-
-    # Generate coverage report using grcov
-    - name: Generate Coverage Report
+        RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+    - name: rust-grcov
       uses: actions-rs/grcov@v0.1
-
-
-    # Upload coverage to Codecov
-    - name: Upload Coverage to Codecov
+    - name: Codecov
       uses: codecov/codecov-action@v5
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
-        files: ./lcov.info
-        flags: unittests
+        verbose: true
         fail_ci_if_error: true
-        token: ${{ secrets.CODECOV_TOKEN }}

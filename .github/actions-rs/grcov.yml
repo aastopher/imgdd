@@ -1,7 +1,0 @@
-binary-path: ./target/debug/
-source-dir: .
-output-type: lcov
-output-path: ./lcov.info
-ignore: |
-  */.cargo/registry/*
-  */tests/*

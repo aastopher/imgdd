@@ -1,102 +1,56 @@
 use crate::image_hash::ImageHash;
-use dashmap::DashMap;
-use log::{debug, error, info};
-use rayon::prelude::*;
-use std::collections::HashSet;
-use std::fs;
-use std::path::PathBuf;
+use rayon::prelude::*; 
+use walkdir::WalkDir;
 use anyhow::Result;
+use std::path::PathBuf;
 
-// Use a lazy_static DashMap for caching distances
-lazy_static::lazy_static! {
-    static ref DISTANCE_CACHE: DashMap<(u64, u64), usize> = DashMap::new();
-}
-
-pub struct DedupeResult {
-    pub unique_files: DashMap<ImageHash, PathBuf>,
-    pub duplicates: HashSet<PathBuf>,
-}
-
-/// Calculate and cache Hamming distances
-fn compute_distance(hash1: &ImageHash, hash2: &ImageHash) -> usize {
-    let key = if hash1.get_hash() < hash2.get_hash() {
-        (hash1.get_hash(), hash2.get_hash())
-    } else {
-        (hash2.get_hash(), hash1.get_hash())
-    };
-
-    // Use DashMap to check and store cached distances
-    if let Some(distance) = DISTANCE_CACHE.get(&key) {
-        return *distance;
-    }
-
-    let distance = hash1.hamming_distance(hash2);
-    DISTANCE_CACHE.insert(key, distance);
-    distance
-}
-
-/// Collect duplicates.
-///
-/// # Arguments
-/// - `path`: The path to the directory containing images.
-/// - `hamming_threshold`: The Hamming distance threshold for near-duplicates.
-///
-/// # Returns
-/// A `DedupeResult` containing unique files and duplicates.
-pub fn collect_duplicates(path: &PathBuf, hamming_threshold: usize) -> Result<DedupeResult> {
-    let files: Vec<PathBuf> = fs::read_dir(path)?
-        .filter_map(|entry| entry.ok().map(|e| e.path()))
-        .filter(|path| path.is_file())
+/// Collect hashes for all image files recursively in a directory and sort them.
+pub fn collect_hashes(path: &PathBuf) -> Result<Vec<(u64, PathBuf)>> {
+    let files: Vec<PathBuf> = WalkDir::new(path)
+        .into_iter()
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.file_type().is_file())
+        .map(|entry| entry.path().to_path_buf())
         .collect();
 
-    let hashes: DashMap<ImageHash, PathBuf> = DashMap::new();
-    let duplicates = DashMap::new();
-
-    // Use Rayon to parallelize hashing
-    files.par_iter().for_each(|file_path| {
-        match image::open(file_path) {
-            Ok(image) => match ImageHash::dhash(&image, 8) {
-                Ok(hash) => {
-                    let mut is_duplicate = false;
-
-                    // Check for duplicates in existing hashes
-                    hashes.iter().for_each(|existing| {
-                        if compute_distance(&hash, existing.key()) <= hamming_threshold {
-                            debug!(
-                                "Near-duplicate found: {} is close to {}",
-                                file_path.display(),
-                                existing.value().display()
-                            );
-                            duplicates.insert(file_path.clone(), true);
-                            is_duplicate = true;
-                        }
-                    });
-
-                    // If no duplicates, add to unique hashes
-                    if !is_duplicate {
-                        hashes.insert(hash, file_path.clone());
+    let mut hashes_with_paths: Vec<(u64, PathBuf)> = files
+        .par_iter() 
+        .filter_map(|file_path| {
+            match image::open(file_path) {
+                Ok(image) => match ImageHash::dhash(&image) {
+                    Ok(hash) => Some((hash.get_hash(), file_path.clone())),
+                    Err(e) => {
+                        eprintln!("Failed to compute hash for {}: {}", file_path.display(), e);
+                        None
                     }
+                },
+                Err(e) => {
+                    eprintln!("Failed to open image {}: {}", file_path.display(), e);
+                    None
                 }
-                Err(e) => error!("Failed to compute hash for {}: {}", file_path.display(), e),
-            },
-            Err(e) => error!("Failed to open image {}: {}", file_path.display(), e),
-        }
-    });
+            }
+        })
+        .collect();
 
-    Ok(DedupeResult {
-        unique_files: hashes,
-        duplicates: duplicates.into_iter().map(|(k, _)| k).collect(),
-    })
+    // Sort the hashes by their hash value
+    hashes_with_paths.sort_by_key(|(hash, _)| *hash);
+
+    Ok(hashes_with_paths)
 }
 
-/// Remove duplicate files.
-pub fn remove_duplicates(duplicates: &HashSet<PathBuf>) -> Result<()> {
-    duplicates.par_iter().for_each(|duplicate| {
-        if let Err(e) = fs::remove_file(duplicate) {
-            error!("Failed to remove file {}: {}", duplicate.display(), e);
-        } else {
-            info!("Removed duplicate file: {}", duplicate.display());
+
+/// Identify duplicates by comparing sorted hashes.
+pub fn find_duplicates(hashes_with_paths: &[(u64, PathBuf)]) -> Vec<(PathBuf, PathBuf)> {
+    let mut duplicates = Vec::new();
+
+    for window in hashes_with_paths.windows(2) {
+        if let [(hash1, path1), (hash2, path2)] = window {
+            if hash1 == hash2 {
+                duplicates.push((path1.clone(), path2.clone()));
+            }
         }
-    });
-    Ok(())
+    }
+
+    duplicates
 }
+

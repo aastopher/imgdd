@@ -1,5 +1,5 @@
 use anyhow::Result;
-use image::{DynamicImage};
+use image::DynamicImage;
 
 #[derive(Eq, PartialEq, Hash, Clone)]
 pub struct ImageHash {
@@ -7,13 +7,14 @@ pub struct ImageHash {
 }
 
 impl ImageHash {
-    pub fn dhash(image: &DynamicImage, hash_size: u32) -> Result<Self> {
+    pub fn dhash(image: &DynamicImage) -> Result<Self> {
+        let hash_size = 8u32;
         let grayscale = image.to_luma8();
         let resized = image::imageops::resize(
             &grayscale,
             hash_size + 1,
             hash_size,
-            image::imageops::FilterType::Nearest,
+            image::imageops::FilterType::Triangle,
         );
 
         let mut hash = 0u64;

@@ -14,7 +14,8 @@ impl ImageHash {
             &grayscale,
             hash_size + 1,
             hash_size,
-            image::imageops::FilterType::Triangle,
+            // image::imageops::FilterType::Triangle,
+            image::imageops::FilterType::Nearest,
         );
 
         let mut hash = 0u64;

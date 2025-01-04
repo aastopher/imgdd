@@ -1,0 +1,19 @@
+[build-system]
+requires = ["maturin>=1,<2"]
+build-backend = "maturin"
+
+[project]
+name = "imgdd"
+version = "0.1.0"
+description = "Rust-powered image deduplication with Python bindings"
+requires-python = ">=3.9"
+
+[project.urls]
+homepage = "https://github.com/aastopher/imgdd"
+documentation = "https://github.com/aastopher/imgdd"
+source = "https://github.com/aastopher/imgdd"
+issues = "https://github.com/aastopher/imgdd/issues"
+
+[tool.maturin]
+bindings = "pyo3"
+module-name = "imgdd_rust"

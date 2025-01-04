@@ -6,6 +6,7 @@ use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
+use walkdir::WalkDir;
 
 pub fn collect_dupes(
     path: &PathBuf,
@@ -13,11 +14,12 @@ pub fn collect_dupes(
     algo: &str,
     remove: bool,
 ) -> Result<HashMap<u64, Vec<PathBuf>>> {
-    // Collect and normalize images
-    let files: Vec<PathBuf> = fs::read_dir(path)?
+    // Collect image files recursively
+    let files: Vec<PathBuf> = WalkDir::new(path)
+        .into_iter()
         .filter_map(|entry| entry.ok())
-        .map(|entry| entry.path())
-        .filter(|p| p.is_file())
+        .filter(|entry| entry.file_type().is_file())
+        .map(|entry| entry.path().to_path_buf())
         .collect();
 
     let mut hashes_with_paths: Vec<(u64, PathBuf)> = files

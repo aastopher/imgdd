@@ -16,4 +16,4 @@ issues = "https://github.com/aastopher/imgdd/issues"
 
 [tool.maturin]
 bindings = "pyo3"
-module-name = "imgdd_rust"
+module-name = "imgdd"

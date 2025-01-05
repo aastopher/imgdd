@@ -11,7 +11,7 @@ use std::path::PathBuf;
 
 
 #[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
-fn process_images(
+fn proc(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
@@ -51,7 +51,7 @@ fn process_images(
 }
 
 #[pymodule]
-fn imgdd_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(process_images, m)?)
+fn imgdd(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(proc, m)?)
 }
 

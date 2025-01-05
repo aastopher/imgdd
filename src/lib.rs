@@ -8,6 +8,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use image::imageops::FilterType;
 use std::path::PathBuf;
+use crate::dedupe::{collect_hashes, find_duplicates};
 
 
 #[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
@@ -37,8 +38,12 @@ fn proc(
         panic!("Unsupported hashing algorithm: {}", algo);
     }
 
-    let duplicates = dedupe::collect_dupes(&validated_path, filter_type, &algo, remove).map_err(|e| {
-        pyo3::exceptions::PyRuntimeError::new_err(format!("Processing error: {}", e))
+    let hashes_with_paths = collect_hashes(&validated_path, filter_type, &algo).map_err(|e| {
+        pyo3::exceptions::PyRuntimeError::new_err(format!("Error collecting hashes: {}", e))
+    })?;
+
+    let duplicates = find_duplicates(&hashes_with_paths, remove).map_err(|e| {
+        pyo3::exceptions::PyRuntimeError::new_err(format!("Error finding duplicates: {}", e))
     })?;
 
     Python::with_gil(|py| {
@@ -50,8 +55,8 @@ fn proc(
     })
 }
 
+
 #[pymodule]
 fn imgdd(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proc, m)?)
 }
-

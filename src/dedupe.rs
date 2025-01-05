@@ -3,18 +3,17 @@ use crate::normalize;
 use anyhow::Result;
 use image::imageops::FilterType;
 use rayon::prelude::*;
+use walkdir::WalkDir;
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use walkdir::WalkDir;
 
-pub fn collect_dupes(
+/// Collect hashes for all image files recursively in a directory and sort them.
+pub fn collect_hashes(
     path: &PathBuf,
     filter: FilterType,
     algo: &str,
-    remove: bool,
-) -> Result<HashMap<u64, Vec<PathBuf>>> {
-    // Collect image files recursively
+) -> Result<Vec<(u64, PathBuf)>> {
     let files: Vec<PathBuf> = WalkDir::new(path)
         .into_iter()
         .filter_map(|entry| entry.ok())
@@ -34,18 +33,37 @@ pub fn collect_dupes(
                     };
                     Some((hash.get_hash(), file_path.clone()))
                 }
-                Err(_) => None,
+                Err(e) => {
+                    eprintln!("Failed to open image {}: {}", file_path.display(), e);
+                    None
+                }
             }
         })
         .collect();
 
-    // Sort by hash for grouping duplicates
+    // Sort the hashes by their hash value
     hashes_with_paths.sort_by_key(|(hash, _)| *hash);
 
-    // Group duplicates by hash
+    Ok(hashes_with_paths)
+}
+
+/// Identify exact duplicates by comparing sorted hashes.
+pub fn find_duplicates(
+    hashes_with_paths: &[(u64, PathBuf)],
+    remove: bool,
+) -> Result<HashMap<String, Vec<PathBuf>>> {
     let mut duplicates = HashMap::new();
-    for (hash, path) in hashes_with_paths {
-        duplicates.entry(hash).or_insert_with(Vec::new).push(path);
+
+    for window in hashes_with_paths.windows(2) {
+        if let [(hash1, path1), (hash2, path2)] = window {
+            if hash1 == hash2 {
+                let hash_binary = format!("{:b}", hash1);
+                duplicates
+                    .entry(hash_binary)
+                    .or_insert_with(Vec::new)
+                    .extend(vec![path1.clone(), path2.clone()]);
+            }
+        }
     }
 
     // If `remove` is true, delete duplicate files

@@ -1,19 +1,21 @@
 use crate::hashing::ImageHash;
 use crate::normalize;
-use anyhow::Result;
 use image::imageops::FilterType;
+use image::{DynamicImage, ImageReader};
 use rayon::prelude::*;
 use walkdir::WalkDir;
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
+use anyhow::{anyhow, Result};
+use pyo3::PyErr;
 
 /// Collect hashes for all image files recursively in a directory and sort them.
 pub fn collect_hashes(
     path: &PathBuf,
     filter: FilterType,
     algo: &str,
-) -> Result<Vec<(u64, PathBuf)>> {
+) -> Result<Vec<(u64, PathBuf)>, PyErr> {
     let files: Vec<PathBuf> = WalkDir::new(path)
         .into_iter()
         .filter_map(|entry| entry.ok())
@@ -24,7 +26,7 @@ pub fn collect_hashes(
     let mut hashes_with_paths: Vec<(u64, PathBuf)> = files
         .par_iter()
         .filter_map(|file_path| {
-            match image::open(file_path) {
+            match open_image(file_path) {
                 Ok(image) => {
                     let normalized = normalize::proc(&image, filter).ok()?;
                     let hash = match algo {
@@ -47,11 +49,20 @@ pub fn collect_hashes(
     Ok(hashes_with_paths)
 }
 
+/// Open an image file using `ImageReader` to support multiple formats.
+fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
+    ImageReader::open(file_path)
+        .map_err(|e| anyhow!("Error opening image {}: {}", file_path.display(), e))?
+        .decode()
+        .map_err(|e| anyhow!("Error decoding image {}: {}", file_path.display(), e))
+}
+
+
 /// Identify exact duplicates by comparing sorted hashes.
 pub fn find_duplicates(
     hashes_with_paths: &[(u64, PathBuf)],
     remove: bool,
-) -> Result<HashMap<String, Vec<PathBuf>>> {
+) -> Result<HashMap<String, Vec<PathBuf>>, PyErr> {
     let mut duplicates = HashMap::new();
 
     for window in hashes_with_paths.windows(2) {

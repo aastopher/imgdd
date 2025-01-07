@@ -19,32 +19,32 @@ fn proc(
     remove: bool,
 ) -> PyResult<Py<PyDict>> {
     // Validate the provided path
-    let validated_path = validate_path(Some(path)).map_err(|e| {
-        pyo3::exceptions::PyValueError::new_err(format!("Validation error: {}", e))
-    })?;
+    let validated_path = validate_path(Some(path))?;
 
-    // Use default if none provided; panic if invalid
-    let filter_type = match filter.unwrap_or("nearest").to_lowercase().as_str() {
-        "nearest" => FilterType::Nearest,
-        "triangle" => FilterType::Triangle,
-        "catmullrom" => FilterType::CatmullRom,
-        "gaussian" => FilterType::Gaussian,
-        "lanczos3" => FilterType::Lanczos3,
+    // Validate filter type; if none use "nearest"
+    let filter_type = match filter.unwrap_or("nearest") {
+        ref f if f.eq_ignore_ascii_case("nearest") => FilterType::Nearest,
+        ref f if f.eq_ignore_ascii_case("triangle") => FilterType::Triangle,
+        ref f if f.eq_ignore_ascii_case("catmullrom") => FilterType::CatmullRom,
+        ref f if f.eq_ignore_ascii_case("gaussian") => FilterType::Gaussian,
+        ref f if f.eq_ignore_ascii_case("lanczos3") => FilterType::Lanczos3,
         other => panic!("Unsupported filter type: {}", other),
     };
+    
+    // Validate algorithm; if none use "dhash"
+    let algo = match algo.unwrap_or("dhash") {
+        input if input.eq_ignore_ascii_case("dhash") => "dhash",
+        input if input.eq_ignore_ascii_case("ahash") => "ahash",
+        input if input.eq_ignore_ascii_case("bhash") => "bhash",
+        input if input.eq_ignore_ascii_case("mhash") => "mhash",
+        input if input.eq_ignore_ascii_case("phash") => "phash",
+        input if input.eq_ignore_ascii_case("whash") => "whash",
+        other => panic!("Unsupported algorithm: {}", other),
+    };
 
-    let algo = algo.unwrap_or("dhash").to_lowercase();
-    if algo != "dhash" {
-        panic!("Unsupported hashing algorithm: {}", algo);
-    }
-
-    let hashes_with_paths = collect_hashes(&validated_path, filter_type, &algo).map_err(|e| {
-        pyo3::exceptions::PyRuntimeError::new_err(format!("Error collecting hashes: {}", e))
-    })?;
-
-    let duplicates = find_duplicates(&hashes_with_paths, remove).map_err(|e| {
-        pyo3::exceptions::PyRuntimeError::new_err(format!("Error finding duplicates: {}", e))
-    })?;
+    // Collect hashes and find duplicates
+    let hashes_with_paths = collect_hashes(&validated_path, filter_type, &algo)?;
+    let duplicates = find_duplicates(&hashes_with_paths, remove)?;
 
     Python::with_gil(|py| {
         let result = PyDict::new(py);

@@ -1,7 +1,7 @@
-mod hashing;
-mod normalize;
-mod dedupe;
-mod validate;
+pub mod hashing;
+pub mod normalize;
+pub mod dedupe;
+pub mod validate;
 
 use validate::validate_path;
 use pyo3::prelude::*;

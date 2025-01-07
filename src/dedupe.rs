@@ -50,7 +50,7 @@ pub fn collect_hashes(
 }
 
 /// Open an image file using `ImageReader` to support multiple formats.
-fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
+pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
     ImageReader::open(file_path)
         .map_err(|e| anyhow!("Error opening image {}: {}", file_path.display(), e))?
         .decode()

@@ -16,10 +16,11 @@ rayon = "1.10.0"
 walkdir = "2.3"
 anyhow = "1.0.95"
 log = "0.4.22"
+criterion = "0.5.1"
 
 [lib]
 name = "imgdd"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [[bench]]
 name = "dedupe_bench"

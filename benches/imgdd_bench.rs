@@ -6,6 +6,10 @@ use imgdd::hashing::ImageHash;
 use imgdd::normalize::proc as normalize;
 use std::path::PathBuf;
 
+fn reduce_samples() -> Criterion {
+    Criterion::default().sample_size(60)
+}
+
 /// Benchmark for opening an image file
 fn open_image_bench(c: &mut Criterion) {
     let path = PathBuf::from("./imgs/test/apple_pie/21063.jpg");
@@ -81,10 +85,16 @@ fn benchmark_normalize(c: &mut Criterion) {
 //     });
 // }
 
+criterion_group! {
+    name = reduced_benches;
+    config = reduce_samples();
+    targets = open_image_bench
+}
+
 criterion_group!(
-    benchmarks,
-    open_image_bench,
+    other_benches,
     benchmark_dhash,
     benchmark_normalize
 );
-criterion_main!(benchmarks);
+
+criterion_main!(reduced_benches, other_benches);

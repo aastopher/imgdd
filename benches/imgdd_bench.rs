@@ -1,18 +1,14 @@
 use criterion::{criterion_group, criterion_main, Criterion, black_box};
 extern crate imgdd;
 
-use imgdd::dedupe::{collect_hashes, open_image, find_duplicates};
+use imgdd::dedupe::{open_image, collect_hashes, sort_hashes, find_duplicates};
 use imgdd::hashing::ImageHash;
 use imgdd::normalize::proc as normalize;
 use std::path::PathBuf;
 
-fn reduce_samples() -> Criterion {
-    Criterion::default().sample_size(60)
-}
-
 /// Benchmark for opening an image file
 fn open_image_bench(c: &mut Criterion) {
-    let path = PathBuf::from("./imgs/test/apple_pie/21063.jpg");
+    let path = PathBuf::from("./imgs/test/single/file000898199107.jpg");
 
     c.bench_function("open_image", |b| {
         b.iter(|| {
@@ -21,13 +17,26 @@ fn open_image_bench(c: &mut Criterion) {
     });
 }
 
+/// Benchmark for `normalize`
+fn benchmark_normalize(c: &mut Criterion) {
+    let img_path = PathBuf::from("./imgs/test/single/file000898199107.jpg");
+    let image = open_image(&img_path).expect("Failed to open image");
+
+    c.bench_function("normalize", |b| {
+        b.iter(|| {
+            normalize(black_box(&image), black_box(image::imageops::FilterType::Triangle))
+                .expect("Failed to normalize image");
+        });
+    });
+}
+
 /// Benchmark for `dhash`
 fn benchmark_dhash(c: &mut Criterion) {
-    let img_path = PathBuf::from("./imgs/test/apple_pie/21063.jpg");
+    let img_path = PathBuf::from("./imgs/test/single/file000898199107.jpg");
 
     // Unwrap the image and normalize it outside the benchmark iteration
     let image = open_image(&img_path).expect("Failed to open image");
-    let normalized_image = normalize(&image, image::imageops::FilterType::Nearest)
+    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle)
         .expect("Failed to normalize image");
 
     c.bench_function("dhash", |b| {
@@ -38,63 +47,75 @@ fn benchmark_dhash(c: &mut Criterion) {
     });
 }
 
-/// Benchmark for `normalize`
-fn benchmark_normalize(c: &mut Criterion) {
-    let img_path = PathBuf::from("./imgs/test/apple_pie/21063.jpg");
-    let image = open_image(&img_path).expect("Failed to open image");
+/// Benchmark for `collect_hashes`
+fn benchmark_collect_hashes(c: &mut Criterion) {
+    let dir_path = PathBuf::from("./imgs/test/single");
 
-    c.bench_function("normalize", |b| {
+    c.bench_function("collect_hashes", |b| {
         b.iter(|| {
-            normalize(black_box(&image), black_box(image::imageops::FilterType::Nearest))
-                .expect("Failed to normalize image");
+            let _ = collect_hashes(
+                black_box(&dir_path),
+                black_box(image::imageops::FilterType::Triangle),
+                black_box("dhash"),
+            )
+            .expect("Failed to collect hashes");
         });
     });
 }
 
-// /// Benchmark for `collect_hashes`
-// fn benchmark_collect_hashes(c: &mut Criterion) {
-//     let dir_path = PathBuf::from("./imgs/test");
+/// Benchmark for `sort_hashes`
+fn benchmark_sort_hashes(c: &mut Criterion) {
+    let dir_path = PathBuf::from("./imgs/test");
+    let mut hash_paths = collect_hashes(
+        &dir_path,
+        image::imageops::FilterType::Triangle,
+        "dhash",
+    )
+    .expect("Failed to collect hashes");
 
-//     c.bench_function("collect_hashes", |b| {
-//         b.iter(|| {
-//             let _ = collect_hashes(
-//                 black_box(&dir_path),
-//                 black_box(image::imageops::FilterType::Nearest),
-//                 black_box("dhash"),
-//             )
-//             .expect("Failed to collect hashes");
-//         });
-//     });
-// }
+    c.bench_function("sort_hashes", |b| {
+        b.iter(|| {
+            sort_hashes(black_box(&mut hash_paths));
+        });
+    });
+}
 
-// /// Benchmark for `find_duplicates`
-// fn benchmark_find_duplicates(c: &mut Criterion) {
-//     let dir_path = PathBuf::from("./imgs/test");
-//     let hashes_with_paths = collect_hashes(
-//         &dir_path,
-//         image::imageops::FilterType::Nearest,
-//         "dhash",
-//     )
-//     .expect("Failed to collect hashes");
+/// Benchmark for `find_duplicates`
+fn benchmark_find_duplicates(c: &mut Criterion) {
+    let dir_path = PathBuf::from("./imgs/test");
+    let mut hash_paths = collect_hashes(
+        &dir_path,
+        image::imageops::FilterType::Triangle,
+        "dhash",
+    )
+    .expect("Failed to collect hashes");
+    // let mut sorted_hashes = hash_paths.clone();
+    sort_hashes(&mut hash_paths);
 
-//     c.bench_function("find_duplicates", |b| {
-//         b.iter(|| {
-//             let _ = find_duplicates(black_box(&hashes_with_paths), false)
-//                 .expect("Failed to find duplicates");
-//         });
-//     });
-// }
+    c.bench_function("find_duplicates", |b| {
+        b.iter(|| {
+            let _ = find_duplicates(black_box(&hash_paths), false)
+                .expect("Failed to find duplicates");
+        });
+    });
+}
 
 criterion_group! {
-    name = reduced_benches;
-    config = reduce_samples();
-    targets = open_image_bench
+    name = group1;
+    config = Criterion::default().sample_size(60);
+    targets = open_image_bench, benchmark_normalize
+}
+
+criterion_group! {
+    name = group2;
+    config = Criterion::default().sample_size(40);
+    targets = benchmark_collect_hashes, benchmark_sort_hashes
 }
 
 criterion_group!(
-    other_benches,
+    group3,
     benchmark_dhash,
-    benchmark_normalize
+    benchmark_find_duplicates
 );
 
-criterion_main!(reduced_benches, other_benches);
+criterion_main!(group1, group2, group3);

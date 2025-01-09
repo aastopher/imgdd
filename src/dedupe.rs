@@ -23,7 +23,7 @@ pub fn collect_hashes(
         .map(|entry| entry.path().to_path_buf())
         .collect();
 
-    let mut hashes_with_paths: Vec<(u64, PathBuf)> = files
+    let hash_paths: Vec<(u64, PathBuf)> = files
         .par_iter()
         .filter_map(|file_path| {
             match open_image(file_path) {
@@ -43,10 +43,15 @@ pub fn collect_hashes(
         })
         .collect();
 
-    // Sort the hashes by their hash value
-    hashes_with_paths.sort_by_key(|(hash, _)| *hash);
+    // // Sort the hashes by their hash value
+    // hash_paths.sort_by_key(|(hash, _)| *hash);
 
-    Ok(hashes_with_paths)
+    Ok(hash_paths)
+}
+
+/// Sort hashes by their hash value
+pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
+    hash_paths.sort_by_key(|(hash, _)| *hash);
 }
 
 /// Open an image file using `ImageReader` to support multiple formats.
@@ -60,12 +65,12 @@ pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
 
 /// Identify exact duplicates by comparing sorted hashes.
 pub fn find_duplicates(
-    hashes_with_paths: &[(u64, PathBuf)],
+    hash_paths: &[(u64, PathBuf)],
     remove: bool,
 ) -> Result<HashMap<String, Vec<PathBuf>>, PyErr> {
     let mut duplicates = HashMap::new();
 
-    for window in hashes_with_paths.windows(2) {
+    for window in hash_paths.windows(2) {
         if let [(hash1, path1), (hash2, path2)] = window {
             if hash1 == hash2 {
                 let hash_binary = format!("{:b}", hash1);

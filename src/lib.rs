@@ -8,7 +8,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use image::imageops::FilterType;
 use std::path::PathBuf;
-use crate::dedupe::{collect_hashes, find_duplicates};
+use crate::dedupe::{collect_hashes, sort_hashes, find_duplicates};
 
 
 #[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
@@ -43,8 +43,9 @@ fn proc(
     };
 
     // Collect hashes and find duplicates
-    let hashes_with_paths = collect_hashes(&validated_path, filter_type, &algo)?;
-    let duplicates = find_duplicates(&hashes_with_paths, remove)?;
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
+    sort_hashes(&mut hash_paths);
+    let duplicates = find_duplicates(&hash_paths, remove)?;
 
     Python::with_gil(|py| {
         let result = PyDict::new(py);

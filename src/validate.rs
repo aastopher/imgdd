@@ -3,6 +3,7 @@ use pyo3::prelude::*;
 use log::{debug, error};
 use std::path::PathBuf;
 
+#[inline]
 pub fn validate_path(path: Option<PathBuf>) -> PyResult<PathBuf> {
     let path = path.unwrap_or_else(|| {
         std::env::current_dir().expect("Failed to get current directory")

@@ -42,9 +42,11 @@ fn proc(
         other => panic!("Unsupported algorithm: {}", other),
     };
 
-    // Collect hashes and find duplicates
+    // Collect and sort hashes
     let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
     sort_hashes(&mut hash_paths);
+
+    // Collect duplicates
     let duplicates = find_duplicates(&hash_paths, remove)?;
 
     Python::with_gil(|py| {

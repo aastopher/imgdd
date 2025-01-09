@@ -43,18 +43,18 @@ pub fn collect_hashes(
         })
         .collect();
 
-    // // Sort the hashes by their hash value
-    // hash_paths.sort_by_key(|(hash, _)| *hash);
-
     Ok(hash_paths)
 }
 
 /// Sort hashes by their hash value
+#[inline]
 pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
     hash_paths.sort_by_key(|(hash, _)| *hash);
 }
 
+
 /// Open an image file using `ImageReader` to support multiple formats.
+#[inline]
 pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
     ImageReader::open(file_path)
         .map_err(|e| anyhow!("Error opening image {}: {}", file_path.display(), e))?

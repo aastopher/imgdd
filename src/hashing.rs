@@ -7,6 +7,7 @@ pub struct ImageHash {
 }
 
 impl ImageHash {
+    #[inline]
     pub fn dhash(image: &DynamicImage) -> Result<Self> {
         let mut hash = 0u64;
         for y in 0..8 {
@@ -19,6 +20,7 @@ impl ImageHash {
         Ok(Self { hash })
     }
 
+    #[inline]
     pub fn get_hash(&self) -> u64 {
         self.hash
     }

@@ -10,7 +10,7 @@ use std::path::PathBuf;
 use anyhow::{anyhow, Result};
 use pyo3::PyErr;
 
-/// Collect hashes for all image files recursively in a directory and sort them.
+/// Collect hashes for all image files recursively in a directory
 pub fn collect_hashes(
     path: &PathBuf,
     filter: FilterType,
@@ -53,7 +53,7 @@ pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
 }
 
 
-/// Open an image file using `ImageReader` to support multiple formats.
+/// Open an image file using `ImageReader`.
 #[inline]
 pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
     ImageReader::open(file_path)
@@ -62,11 +62,11 @@ pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
         .map_err(|e| anyhow!("Error decoding image {}: {}", file_path.display(), e))
 }
 
-/// Identify exact duplicates by comparing sorted hashes.
+/// Identify exact duplicates, comparing sorted hashes.
 pub fn find_duplicates(
     hash_paths: &[(u64, PathBuf)],
     remove: bool,
-) -> Result<HashMap<String, Vec<&PathBuf>>, PyErr> {
+) -> Result<HashMap<String, Vec<PathBuf>>, PyErr> {
     let mut duplicates = HashMap::new();
 
     for window in hash_paths.windows(2) {
@@ -75,11 +75,12 @@ pub fn find_duplicates(
                 duplicates
                     .entry(format!("{:b}", hash1))
                     .or_insert_with(Vec::new)
-                    .extend(vec![path1, path2]);
+                    .extend(vec![path1.clone(), path2.clone()]);
             }
         }
     }
 
+    // Remove files if arg set
     if remove {
         for paths in duplicates.values() {
             for path in paths.iter().skip(1) {

@@ -4,10 +4,7 @@ use log::{debug, error};
 use std::path::PathBuf;
 
 #[inline]
-pub fn validate_path(path: Option<PathBuf>) -> PyResult<PathBuf> {
-    let path = path.unwrap_or_else(|| {
-        std::env::current_dir().expect("Failed to get current directory")
-    });
+pub fn validate_path(path: &PathBuf) -> PyResult<&PathBuf> {
 
     if !path.exists() {
         error!("Path does not exist: {}", path.display());
@@ -29,5 +26,6 @@ pub fn validate_path(path: Option<PathBuf>) -> PyResult<PathBuf> {
         debug!("Path is a directory: {}", path.display());
     }
 
-    Ok(path)
+    debug!("Path is a directory: {}", path.display());
+    Ok(&path)
 }

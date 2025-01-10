@@ -19,7 +19,7 @@ fn proc(
     remove: bool,
 ) -> PyResult<Py<PyDict>> {
     // Validate the provided path
-    let validated_path = validate_path(Some(path))?;
+    let validated_path = validate_path(&path)?;
 
     // Validate filter type; if none use "nearest"
     let filter_type = match filter.unwrap_or("nearest") {

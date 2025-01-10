@@ -12,7 +12,11 @@ rayon = "1.10.0"
 walkdir = "2.3"
 anyhow = "1.0.95"
 log = "0.4.22"
-criterion = "0.5.1"
+criterion = { version = "0.5.1", optional = true }
+
+[features]
+default = []
+benchmark = ["criterion"]
 
 [lib]
 name = "imgdd"
@@ -22,3 +26,4 @@ crate-type = ["cdylib", "rlib"]
 name = "imgdd_bench"
 path = "benches/imgdd_bench.rs"
 harness = false
+required-features = ["benchmark"]

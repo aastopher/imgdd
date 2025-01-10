@@ -62,27 +62,24 @@ pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
         .map_err(|e| anyhow!("Error decoding image {}: {}", file_path.display(), e))
 }
 
-
 /// Identify exact duplicates by comparing sorted hashes.
 pub fn find_duplicates(
     hash_paths: &[(u64, PathBuf)],
     remove: bool,
-) -> Result<HashMap<String, Vec<PathBuf>>, PyErr> {
+) -> Result<HashMap<String, Vec<&PathBuf>>, PyErr> {
     let mut duplicates = HashMap::new();
 
     for window in hash_paths.windows(2) {
         if let [(hash1, path1), (hash2, path2)] = window {
             if hash1 == hash2 {
-                let hash_binary = format!("{:b}", hash1);
                 duplicates
-                    .entry(hash_binary)
+                    .entry(format!("{:b}", hash1))
                     .or_insert_with(Vec::new)
-                    .extend(vec![path1.clone(), path2.clone()]);
+                    .extend(vec![path1, path2]);
             }
         }
     }
 
-    // If `remove` is true, delete duplicate files
     if remove {
         for paths in duplicates.values() {
             for path in paths.iter().skip(1) {

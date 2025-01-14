@@ -11,7 +11,6 @@
 - **Simplicity**: Simple API with robust performance.
 
 ## Installation
-Install via pip (ensure Rust and Python development tools are set up):
 ```bash
 pip install imgdd
 ```

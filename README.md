@@ -53,8 +53,3 @@ print(duplicates)
 
 ## Why imgdd?
 `imgdd` combine the performance of Rust with the accessability of Python to handle image deduplication efficiently, making it ideal for large datasets.
-
-## License
-Licensed under the GNU GPLv3. 
-
-For more details, see the [LICENSE](./LICENSE).

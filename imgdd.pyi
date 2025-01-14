@@ -1,4 +1,4 @@
-from typing import Literal, Union, Dict
+from typing import Literal, Dict
 
 def hash(
     path: str,

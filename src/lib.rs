@@ -35,34 +35,26 @@ fn select_algo(algo: Option<&str>) -> &'static str {
     }
 }
 
-/// Returns a list of hash paths for the provided directory.
+/// Returns a dictionary of image paths to their hex-formatted hashes.
 #[pyfunction(signature = (path, filter = None, algo = None))]
 fn hash(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
-) -> PyResult<Vec<(String, String)>> {
-    // Validate the provided path
+) -> PyResult<HashMap<PathBuf, String>> {
     let validated_path = validate_path(&path)?;
-
-    // collect filter type and algorithm selection
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    // Collect and sort hashes
-    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
-    sort_hashes(&mut hash_paths);
+    let hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
 
-    // Map hashes and paths into a Vec of (String, String)
-    let result: Vec<(String, String)> = hash_paths
+    Ok(hash_paths
         .into_iter()
-        .map(|(hash, path)| (format!("{:b}", hash), path.display().to_string()))
-        .collect();
-
-    Ok(result)
+        .map(|(hash, path)| (path, format!("{:x}", hash)))
+        .collect())
 }
 
-/// Returns duplicates and optionally removes them.
+/// Returns a dictionary of hex-formatted hashes to their duplicate paths.
 #[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
 fn dupes(
     path: PathBuf,
@@ -70,18 +62,19 @@ fn dupes(
     algo: Option<&str>,
     remove: bool,
 ) -> PyResult<HashMap<String, Vec<PathBuf>>> {
-    // Validate the provided path
     let validated_path = validate_path(&path)?;
-
-    // collect filter type and algorithm selection
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    // Collect and sort hashes
     let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
     sort_hashes(&mut hash_paths);
 
-    Ok(find_duplicates(&hash_paths, remove)?)
+    let duplicates = find_duplicates(&hash_paths, remove)?;
+
+    Ok(duplicates
+        .into_iter()
+        .map(|(hash, paths)| (format!("{:x}", hash), paths))
+        .collect())
 }
 
 

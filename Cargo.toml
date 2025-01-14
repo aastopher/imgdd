@@ -23,7 +23,7 @@ name = "imgdd"
 crate-type = ["cdylib", "rlib"]
 
 [[bench]]
-name = "imgdd_bench"
-path = "benches/imgdd_bench.rs"
+name = "rust_bench"
+path = "benches/rust_bench.rs"
 harness = false
 required-features = ["benchmark"]

@@ -30,10 +30,10 @@ pub fn collect_hashes(
                 Ok(image) => {
                     let normalized = normalize::proc(&image, filter).ok()?;
                     let hash = match algo {
-                        "dhash" => ImageHash::dhash(&normalized).ok()?,
+                        "dhash" => ImageHash::dhash(&normalized).ok()?.get_hash(),
                         _ => panic!("Unsupported hashing algorithm: {}", algo),
                     };
-                    Some((hash.get_hash(), file_path.clone()))
+                    Some((hash, file_path.clone()))
                 }
                 Err(e) => {
                     eprintln!("Failed to open image {}: {}", file_path.display(), e);
@@ -46,12 +46,11 @@ pub fn collect_hashes(
     Ok(hash_paths)
 }
 
-/// Sort hashes by their hash value
+/// Sort vector by hash value
 #[inline]
 pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
     hash_paths.sort_by_key(|(hash, _)| *hash);
 }
-
 
 /// Open an image file using `ImageReader`.
 #[inline]
@@ -66,23 +65,22 @@ pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
 pub fn find_duplicates(
     hash_paths: &[(u64, PathBuf)],
     remove: bool,
-) -> Result<HashMap<String, Vec<PathBuf>>, PyErr> {
-    let mut duplicates = HashMap::new();
+) -> Result<HashMap<u64, Vec<PathBuf>>, PyErr> {
+    let mut duplicates_map: HashMap<u64, Vec<PathBuf>> = HashMap::new();
 
     for window in hash_paths.windows(2) {
         if let [(hash1, path1), (hash2, path2)] = window {
             if hash1 == hash2 {
-                duplicates
-                    .entry(format!("{:b}", hash1))
+                duplicates_map
+                    .entry(*hash1)
                     .or_insert_with(Vec::new)
                     .extend(vec![path1.clone(), path2.clone()]);
             }
         }
     }
 
-    // Remove files if arg set
     if remove {
-        for paths in duplicates.values() {
+        for paths in duplicates_map.values() {
             for path in paths.iter().skip(1) {
                 if let Err(e) = fs::remove_file(path) {
                     eprintln!("Failed to remove file {}: {}", path.display(), e);
@@ -91,5 +89,6 @@ pub fn find_duplicates(
         }
     }
 
-    Ok(duplicates)
+    Ok(duplicates_map)
 }
+

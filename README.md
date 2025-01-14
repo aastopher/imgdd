@@ -6,7 +6,7 @@
 
 ## Features
 - **Multiple Hashing Algorithms**: Supports `aHash`, `bHash`, `dHash`, `mHash`, `pHash`, and `wHash`.
-- **Filter Types**: Select filter type `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, and `Lanczos3`.
+- **Filter Types**: Supports `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, and `Lanczos3`.
 - **Collect Duplicates**: Harness rusts performance to have imgdd quickly collect duplicate hash pairs and optionally remove the files.
 - **Simplicity**: Simple API with robust performance.
 

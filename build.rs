@@ -44,4 +44,5 @@ fn main() {
 
     // Ensure `pyo3` build script is invoked
     println!("cargo:rerun-if-env-changed=PYTHON_SYS_EXECUTABLE");
+    println!("cargo:rerun-if-changed=imgdd/imgdd.pyi");
 }

@@ -8,8 +8,8 @@
 ## Features
 - **Multiple Hashing Algorithms**: Supports `aHash`, `bHash`, `dHash`, `mHash`, `pHash`, and `wHash`.
 - **Multiple Filter Types**: Supports `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, and `Lanczos3`.
-- **Collect Duplicates**: Harness rusts performance to have imgdd quickly collect duplicate hash pairs and optionally remove the files.
-- **Simplicity**: Simple API with robust performance.
+- **Identify Duplicates**: Harness Rust's performance to quickly identify duplicate hash pairs and optionally remove the files.
+- **Simplicity**: Simple interface with robust performance.
 
 ## Installation
 ```bash
@@ -52,5 +52,36 @@ print(duplicates)
 ## Supported Filters
 - `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`
 
+## Benchmarks
+
+### Rust Benchmarks
+To run the Rust benchmarks, from project root:
+```bash
+cargo bench --features benchmarks
+```
+
+### Python Benchmarks
+For Python (integration) benchmarks:
+1. Navigate to `benches` directory:
+   ```bash
+   cd benches
+   ```
+2. Install any dependencies from the `requirements.txt` file:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run benchmark script:
+   ```bash
+   python py_bench.py
+   ```
+
+## Running Tests
+
+### Local Tests
+To run local tests, from project root:
+```bash
+cargo test --features testing
+```
+
 ## Why imgdd?
-`imgdd` combine the performance of Rust with the accessability of Python to handle image deduplication efficiently, making it ideal for large datasets.
+`imgdd` combines the performance of Rust with the accessibility of Python to handle image deduplication efficiently, making it ideal for large datasets.

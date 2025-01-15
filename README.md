@@ -62,7 +62,7 @@ cargo bench --features benchmarks
 
 ### Python Benchmarks
 For Python (integration) benchmarks:
-1. Navigate to the `benches` directory:
+1. Navigate to `benches` directory:
    ```bash
    cd benches
    ```
@@ -70,7 +70,7 @@ For Python (integration) benchmarks:
    ```bash
    pip install -r requirements.txt
    ```
-3. Run the Python benchmark script:
+3. Run benchmark script:
    ```bash
    python py_bench.py
    ```
@@ -78,7 +78,7 @@ For Python (integration) benchmarks:
 ## Running Tests
 
 ### Local Tests
-To run the local tests, use the following command from the project root:
+To run local tests, from project root:
 ```bash
 cargo test --features testing
 ```

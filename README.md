@@ -11,6 +11,13 @@
 - **Identify Duplicates**: Harness Rust's performance to quickly identify duplicate hash pairs and optionally remove the files.
 - **Simplicity**: Simple interface with robust performance.
 
+## Why imgdd?
+`imgdd` combines the performance of Rust with the accessibility of Python to handle image deduplication efficiently, making it ideal for large datasets.
+
+---
+
+# Quick Start
+
 ## Installation
 ```bash
 pip install imgdd
@@ -52,7 +59,11 @@ print(duplicates)
 ## Supported Filters
 - `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`
 
-## Benchmarks
+---
+
+# Development
+
+## Running Benchmarks
 
 ### Rust Benchmarks
 To run the Rust benchmarks, from project root:
@@ -82,6 +93,3 @@ To run local tests, from project root:
 ```bash
 cargo test --features testing
 ```
-
-## Why imgdd?
-`imgdd` combines the performance of Rust with the accessibility of Python to handle image deduplication efficiently, making it ideal for large datasets.

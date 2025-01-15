@@ -5,14 +5,49 @@ build-backend = "maturin"
 [project]
 name = "imgdd"
 version = "0.1.0"
-description = "Rust-powered image deduplication with Python bindings"
+description = "Rust-based Python library for fast and efficient image deduplication, leveraging perceptual hashing"
 requires-python = ">=3.9"
+license = {file = "LICENSE"}
+keywords = [
+    "rust", 
+    "imagehash", 
+    "hash", 
+    "perceptual hash", 
+    "difference hash", 
+    "deduplication",
+    "image deduplication", 
+    ]
+authors = [
+    {name = "Aaron Stopher"}
+]
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
+]
 
 [project.urls]
 homepage = "https://github.com/aastopher/imgdd"
 documentation = "https://github.com/aastopher/imgdd"
 source = "https://github.com/aastopher/imgdd"
 issues = "https://github.com/aastopher/imgdd/issues"
+
+
+[project.optional-dependencies]
+dev = [
+    "virtualenv==20.26.3",
+    "mkdocs==1.6.0",
+    "mkdocstrings==0.27.0",
+    "mike==2.1.3",
+]
+test = [
+    "tox==4.16.0",
+    "pytest==8.3.2",
+]
 
 [tool.maturin]
 bindings = "pyo3"

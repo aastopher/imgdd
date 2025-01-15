@@ -1,11 +1,21 @@
-use crate::image_hash::ImageHash;
+use crate::hashing::ImageHash;
+use crate::normalize;
+use image::imageops::FilterType;
+use image::{DynamicImage, ImageReader};
 use rayon::prelude::*;
 use walkdir::WalkDir;
-use anyhow::Result;
+use std::collections::HashMap;
+use std::fs;
 use std::path::PathBuf;
+use anyhow::{anyhow, Result};
+use pyo3::PyErr;
 
-/// Collect hashes for all image files recursively in a directory and sort them.
-pub fn collect_hashes(path: &PathBuf) -> Result<Vec<(u64, PathBuf)>> {
+/// Collect hashes for all image files recursively in a directory
+pub fn collect_hashes(
+    path: &PathBuf,
+    filter: FilterType,
+    algo: &str,
+) -> Result<Vec<(u64, PathBuf)>, PyErr> {
     let files: Vec<PathBuf> = WalkDir::new(path)
         .into_iter()
         .filter_map(|entry| entry.ok())
@@ -13,17 +23,18 @@ pub fn collect_hashes(path: &PathBuf) -> Result<Vec<(u64, PathBuf)>> {
         .map(|entry| entry.path().to_path_buf())
         .collect();
 
-    let mut hashes_with_paths: Vec<(u64, PathBuf)> = files
+    let hash_paths: Vec<(u64, PathBuf)> = files
         .par_iter()
         .filter_map(|file_path| {
-            match image::open(file_path) {
-                Ok(image) => match ImageHash::dhash(&image) {
-                    Ok(hash) => Some((hash.get_hash(), file_path.clone())),
-                    Err(e) => {
-                        eprintln!("Failed to compute hash for {}: {}", file_path.display(), e);
-                        None
-                    }
-                },
+            match open_image(file_path) {
+                Ok(image) => {
+                    let normalized = normalize::proc(&image, filter).ok()?;
+                    let hash = match algo {
+                        "dhash" => ImageHash::dhash(&normalized).ok()?.get_hash(),
+                        _ => panic!("Unsupported hashing algorithm: {}", algo),
+                    };
+                    Some((hash, file_path.clone()))
+                }
                 Err(e) => {
                     eprintln!("Failed to open image {}: {}", file_path.display(), e);
                     None
@@ -32,44 +43,52 @@ pub fn collect_hashes(path: &PathBuf) -> Result<Vec<(u64, PathBuf)>> {
         })
         .collect();
 
-    // Sort the hashes by their hash value
-    hashes_with_paths.sort_by_key(|(hash, _)| *hash);
-
-    Ok(hashes_with_paths)
+    Ok(hash_paths)
 }
 
-/// Identify exact duplicates by comparing sorted hashes.
-pub fn find_duplicates(hashes_with_paths: &[(u64, PathBuf)]) -> Vec<(PathBuf, PathBuf)> {
-    let mut duplicates = Vec::new();
+/// Sort vector by hash value
+#[inline]
+pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
+    hash_paths.sort_by_key(|(hash, _)| *hash);
+}
 
-    for window in hashes_with_paths.windows(2) {
+/// Open an image file using `ImageReader`.
+#[inline]
+pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
+    ImageReader::open(file_path)
+        .map_err(|e| anyhow!("Error opening image {}: {}", file_path.display(), e))?
+        .decode()
+        .map_err(|e| anyhow!("Error decoding image {}: {}", file_path.display(), e))
+}
+
+/// Identify exact duplicates, comparing sorted hashes.
+pub fn find_duplicates(
+    hash_paths: &[(u64, PathBuf)],
+    remove: bool,
+) -> Result<HashMap<u64, Vec<PathBuf>>, PyErr> {
+    let mut duplicates_map: HashMap<u64, Vec<PathBuf>> = HashMap::new();
+
+    for window in hash_paths.windows(2) {
         if let [(hash1, path1), (hash2, path2)] = window {
             if hash1 == hash2 {
-                duplicates.push((path1.clone(), path2.clone()));
+                duplicates_map
+                    .entry(*hash1)
+                    .or_insert_with(Vec::new)
+                    .extend(vec![path1.clone(), path2.clone()]);
             }
         }
     }
 
-    duplicates
-}
-
-/// Identify duplicates within a Hamming distance threshold.
-pub fn find_duplicates_with_threshold(
-    hashes_with_paths: &[(u64, PathBuf)],
-    threshold: u32,
-) -> Vec<(PathBuf, PathBuf)> {
-    let mut duplicates = Vec::new();
-
-    for (i, (hash1, path1)) in hashes_with_paths.iter().enumerate() {
-        for (hash2, path2) in hashes_with_paths.iter().skip(i + 1) {
-            let hamming_distance = ImageHash { hash: *hash1 }
-                .hamming_distance(&ImageHash { hash: *hash2 });
-
-            if hamming_distance <= threshold as usize {
-                duplicates.push((path1.clone(), path2.clone()));
+    if remove {
+        for paths in duplicates_map.values() {
+            for path in paths.iter().skip(1) {
+                if let Err(e) = fs::remove_file(path) {
+                    eprintln!("Failed to remove file {}: {}", path.display(), e);
+                }
             }
         }
     }
 
-    duplicates
+    Ok(duplicates_map)
 }
+

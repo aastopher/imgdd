@@ -1,0 +1,6 @@
+ignore:
+  - "__init__.py"
+  - "imgdd.pyi"
+  - src/lib.rs
+  - "benches"
+  - "tests"

@@ -1,4 +1,4 @@
-name: Rust CI with Coverage
+name: Code Coverage
 
 on:
   push:

@@ -11,12 +11,16 @@ image = "0.25.5"
 rayon = "1.10.0"
 walkdir = "2.3"
 anyhow = "1.0.95"
-log = "0.4.22"
+log = "0.4.25"
 criterion = { version = "0.5.1", optional = true }
+
+[dev-dependencies]
+tempfile = "3.5"
 
 [features]
 default = []
 benchmark = ["criterion"]
+testing = []
 
 [lib]
 name = "imgdd"

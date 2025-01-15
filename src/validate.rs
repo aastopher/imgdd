@@ -1,5 +1,5 @@
 use pyo3::exceptions::PyValueError;
-use pyo3::prelude::*;
+use pyo3::PyResult;
 use log::{debug, error};
 use std::path::PathBuf;
 

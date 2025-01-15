@@ -2,9 +2,9 @@ name: Code Coverage
 
 on:
   push:
-    branches: [ "main", "stage" ]
+    branches: [ "stage" ]
   pull_request:
-    branches: [ "main", "stage" ]
+    branches: [ "main" ]
 
 jobs:
   build:

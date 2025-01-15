@@ -32,13 +32,9 @@ jobs:
     - name: Install Tarpaulin
       run: cargo install cargo-tarpaulin
 
-    # Build the project with the "testing" feature
-    - name: Build Project
-      run: cargo build --verbose --features testing
-
     # Run tests with tarpaulin
     - name: Run Tests and Generate Coverage Report
-      run: cargo tarpaulin --out Lcov
+      run: cargo tarpaulin --out Lcov --features testing
       env:
         CARGO_INCREMENTAL: '0'
 

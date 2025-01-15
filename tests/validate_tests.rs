@@ -1,8 +1,6 @@
 #[cfg(test)]
 mod tests {
     use imgdd::validate::*;
-    use env_logger;
-    use log::LevelFilter;
     use pyo3::prepare_freethreaded_python;
     use std::path::PathBuf;
     use tempfile::{tempdir, NamedTempFile};
@@ -13,10 +11,6 @@ mod tests {
     fn init_test_config() {
         INIT.call_once(|| {
             prepare_freethreaded_python(); // Init python interpreter
-            env_logger::builder()
-                .is_test(true) // Ensure logs are captured in test output
-                .filter_level(LevelFilter::Error)
-                .init();
         });
     }
 

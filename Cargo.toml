@@ -2,28 +2,32 @@
 name = "imgdd"
 version = "0.1.0"
 edition = "2021"
+description = "Rust backend for imgdd"
+license = "GNU GPLv3"
 
 [dependencies]
-clap = { version = "4.5.23", features = ["derive", "cargo"] }
-anyhow = "1.0.94"
-env_logger = "0.11.5"
-log = "0.4.22"
+pyo3 = { version = "0.23", features = ["extension-module", "abi3-py37"] }
 image = "0.25.5"
-ndarray = "0.16.1"
 rayon = "1.10.0"
-dashmap = "6.1.0"
-crossbeam = "0.8.4"
-lazy_static = "1.5.0"
+walkdir = "2.3"
+anyhow = "1.0.95"
+log = "0.4.25"
+criterion = { version = "0.5.1", optional = true }
 
 [dev-dependencies]
-criterion = "0.5.1"
+tempfile = "3.5"
+
+[features]
+default = []
+benchmark = ["criterion"]
+testing = []
+
+[lib]
+name = "imgdd"
+crate-type = ["cdylib", "rlib"]
 
 [[bench]]
-name = "img_hash_bench"
-path = "benches/img_hash_bench.rs"
+name = "rust_bench"
+path = "benches/rust_bench.rs"
 harness = false
-
-[[bench]]
-name = "dedupe_bench"
-path = "benches/dedupe_bench.rs"
-harness = false
+required-features = ["benchmark"]

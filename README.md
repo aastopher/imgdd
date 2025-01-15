@@ -1,9 +1,9 @@
 [![codecov](https://codecov.io/gh/aastopher/imgdd/graph/badge.svg?token=XZ1O2X04SO)](https://codecov.io/gh/aastopher/imgdd)
 [![DeepSource](https://app.deepsource.com/gh/aastopher/imgdd.svg/?label=active+issues&show_trend=true&token=IiuhCO6n1pK-GAJ800k6Z_9t)](https://app.deepsource.com/gh/aastopher/imgdd/)
 
-# imgdd: Image De-Duplication
+# imgdd: Image DeDuplication
 
-`imgdd` is a Rust-based Python library for fast and efficient image de-duplication, leveraging perceptual hashing algorithms to identify duplicate or visually similar images in a directory.
+`imgdd` is a Rust-based Python library for fast and efficient image deduplication, leveraging perceptual hashing algorithms to identify duplicate or visually similar images in a directory.
 
 ## Features
 - **Multiple Hashing Algorithms**: Supports `aHash`, `bHash`, `dHash`, `mHash`, `pHash`, and `wHash`.

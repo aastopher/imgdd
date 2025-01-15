@@ -12,6 +12,7 @@ mod tests {
         DynamicImage::ImageRgba8(image::ImageBuffer::from_pixel(9, 8, Rgba([255, 0, 0, 255])))
     }
 
+
     #[test]
     fn test_collect_hashes() {
         let temp_dir = tempfile::tempdir().unwrap();
@@ -66,6 +67,24 @@ mod tests {
 
         let result = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, "dhash");
         assert!(result.is_ok()); // Valid path, but decode errors should be logged
+    }
+
+    #[test]
+    fn test_open_image_error_handling() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let invalid_image_path = temp_dir.path().join("nonexistent_image.jpg");
+
+        // Ensure the file does not exist
+        assert!(!invalid_image_path.exists());
+
+        // Attempt to open a non-existent image to trigger the error
+        let result = open_image(&invalid_image_path);
+        assert!(result.is_err());
+
+        if let Err(err) = result {
+            let error_message = format!("Error opening image {}", invalid_image_path.display());
+            assert!(err.to_string().contains(&error_message));
+        }
     }
 
     #[test]

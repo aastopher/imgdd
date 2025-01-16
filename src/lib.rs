@@ -35,7 +35,15 @@ fn select_algo(algo: Option<&str>) -> &'static str {
     }
 }
 
-/// Returns a dictionary of image paths to their hex-formatted hashes.
+/// Calculate the hash of images in a directory.
+///
+/// # Arguments
+/// - `path (str)`: Path to the directory containing images.
+/// - `filter (str)`: Resize filter to use. **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+/// - `algo (str)`: Hashing algorithm. **Options:** [`aHash`, `bHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+///
+/// # Returns
+/// `Dict[str, str]`: A dictionary mapping file paths to their hashes.
 #[pyfunction(signature = (path, filter = None, algo = None))]
 fn hash(
     path: PathBuf,
@@ -54,7 +62,16 @@ fn hash(
         .collect())
 }
 
-/// Returns a dictionary of hex-formatted hashes to their duplicate paths.
+/// Find duplicate images in a directory.
+///
+/// # Arguments
+/// - `path (str)`: Path to the directory containing images.
+/// - `filter (str)`: Resize filter to use. **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+/// - `algo (str)`: Hashing algorithm. **Options:** [`aHash`, `bHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+/// - `remove (bool)`: Whether to remove duplicate files. Defaults to `false`.
+///
+/// # Returns
+/// `Dict[str, list[str]]`: A dictionary mapping hashes to lists of file paths.
 #[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
 fn dupes(
     path: PathBuf,

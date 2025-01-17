@@ -36,7 +36,7 @@ jobs:
         PYTHON_LIB_PATH=$(python3-config --prefix)/lib
         echo "[build]" >> .cargo/config.toml
         echo "rustflags = [\"-L$PYTHON_LIB_PATH\", \"-lpython${PYTHON_VERSION}\"]" >> .cargo/config.toml
-      shell: /usr/bin/bash --noprofile --norc
+      shell: bash
 
 
     # Install cargo-tarpaulin

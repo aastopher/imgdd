@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use imgdd::dedupe::*;
+    use corelib::dedupe::*;
     use image::imageops::FilterType;
     use image::{DynamicImage, Rgba};
     use std::path::PathBuf;

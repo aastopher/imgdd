@@ -1,33 +1,19 @@
-[package]
-name = "imgdd"
+[workspace]
+resolver = "2"
+members = [
+  "crates/*",
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
-description = "Rust backend for imgdd"
 license = "GNU GPLv3"
+authors = ["Aaron Stopher <aaron.stopher@gmail.com>"]
 
-[dependencies]
-pyo3 = { version = "0.23", features = ["extension-module", "abi3-py37"] }
+[workspace.dependencies]
 image = "0.25.5"
 rayon = "1.10.0"
 walkdir = "2.3"
 anyhow = "1.0.95"
 log = "0.4.25"
-criterion = { version = "0.5.1", optional = true }
-
-[dev-dependencies]
 tempfile = "3.5"
-
-[features]
-default = []
-benchmark = ["criterion"]
-testing = []
-
-[lib]
-name = "imgdd"
-crate-type = ["cdylib", "rlib"]
-
-[[bench]]
-name = "rust_bench"
-path = "benches/rust_bench.rs"
-harness = false
-required-features = ["benchmark"]

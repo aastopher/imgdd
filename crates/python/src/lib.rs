@@ -1,10 +1,5 @@
-pub mod hashing;
-pub mod normalize;
-pub mod dedupe;
-pub mod validate;
-
-use validate::validate_path;
-use dedupe::{collect_hashes, sort_hashes, find_duplicates};
+use corelib::dedupe::*;
+use corelib::validate::*;
 use pyo3::prelude::*;
 use image::imageops::FilterType;
 use std::collections::HashMap;
@@ -45,22 +40,25 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 /// # Returns
 /// `Dict[str, str]`: A dictionary mapping file paths to their hashes.
 #[pyfunction(signature = (path, filter = None, algo = None))]
-fn hash(
+pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
 ) -> PyResult<HashMap<PathBuf, String>> {
-    let validated_path = validate_path(&path)?;
+    let validated_path = validate_path(&path)
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("{}", e)))?;
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    let hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
+    let hash_paths = collect_hashes(&validated_path, filter_type, &algo)
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))?;
 
     Ok(hash_paths
         .into_iter()
         .map(|(hash, path)| (path, format!("{:x}", hash)))
         .collect())
 }
+
 
 /// Find duplicate images in a directory.
 ///
@@ -73,20 +71,23 @@ fn hash(
 /// # Returns
 /// `Dict[str, list[str]]`: A dictionary mapping hashes to lists of file paths.
 #[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
-fn dupes(
+pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
     remove: bool,
 ) -> PyResult<HashMap<String, Vec<PathBuf>>> {
-    let validated_path = validate_path(&path)?;
+    let validated_path = validate_path(&path)
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("{}", e)))?;
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))?;
     sort_hashes(&mut hash_paths);
 
-    let duplicates = find_duplicates(&hash_paths, remove)?;
+    let duplicates = find_duplicates(&hash_paths, remove)
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))?;
 
     Ok(duplicates
         .into_iter()

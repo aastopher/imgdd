@@ -239,6 +239,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d7b894f5411737b7867f4827955924d7c254fc9f4d91a6aad6b097804b1018b"
 
 [[package]]
+name = "corelib"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "criterion",
+ "image",
+ "log",
+ "rayon",
+ "tempfile",
+ "walkdir",
+]
+
+[[package]]
 name = "crc32fast"
 version = "1.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -463,13 +476,20 @@ name = "imgdd"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "corelib",
  "criterion",
  "image",
- "log",
- "pyo3",
- "rayon",
  "tempfile",
- "walkdir",
+]
+
+[[package]]
+name = "imgddpy"
+version = "0.1.0"
+dependencies = [
+ "corelib",
+ "image",
+ "pyo3",
+ "tempfile",
 ]
 
 [[package]]

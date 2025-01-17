@@ -1,0 +1,37 @@
+[package]
+name = "corelib"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+
+[dependencies]
+image.workspace = true
+rayon.workspace = true
+walkdir.workspace = true
+anyhow.workspace = true
+log.workspace = true
+criterion = { version = "0.5.1", optional = true }
+
+
+[dev-dependencies]
+tempfile.workspace = true
+
+
+[features]
+default = []
+benchmark = ["criterion"]
+testing = []
+
+
+[lib]
+name = "corelib"
+crate-type = ["cdylib", "rlib"]
+
+
+[[bench]]
+name = "corelib benchmarks"
+path = "benches/corelib_benches.rs"
+harness = false
+required-features = ["benchmark"]

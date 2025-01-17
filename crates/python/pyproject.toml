@@ -7,7 +7,7 @@ name = "imgdd"
 version = "0.1.0"
 description = "Rust-based Python library for fast and efficient image deduplication, leveraging perceptual hashing"
 requires-python = ">=3.9"
-license = {file = "LICENSE"}
+license = {file = "../../LICENSE"}
 keywords = [
     "rust", 
     "imagehash", 

@@ -8,14 +8,14 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use anyhow::{anyhow, Result};
-use pyo3::PyErr;
+use anyhow::Error;
 
 /// Collect hashes for all image files recursively in a directory
 pub fn collect_hashes(
     path: &PathBuf,
     filter: FilterType,
     algo: &str,
-) -> Result<Vec<(u64, PathBuf)>, PyErr> {
+) -> Result<Vec<(u64, PathBuf)>, Error> {
     let files: Vec<PathBuf> = WalkDir::new(path)
         .into_iter()
         .filter_map(|entry| entry.ok())
@@ -65,7 +65,7 @@ pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
 pub fn find_duplicates(
     hash_paths: &[(u64, PathBuf)],
     remove: bool,
-) -> Result<HashMap<u64, Vec<PathBuf>>, PyErr> {
+) -> Result<HashMap<u64, Vec<PathBuf>>, Error> {
     let mut duplicates_map: HashMap<u64, Vec<PathBuf>> = HashMap::new();
 
     for window in hash_paths.windows(2) {

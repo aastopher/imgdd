@@ -1,6 +1,6 @@
 ignore:
-  - "crates/python/**"
-  - "crates/corelib/benches/**"
-  - "crates/corelib/tests/**"
-  - "crates/rust/benches/**"
-  - "crates/rust/tests/**"
+  - "crates/python/**/*"
+  - "crates/corelib/benches/**/*"
+  - "crates/corelib/tests/**/*"
+  - "crates/rust/benches/**/*"
+  - "crates/rust/tests/**/*"

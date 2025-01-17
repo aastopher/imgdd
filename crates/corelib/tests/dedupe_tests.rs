@@ -143,6 +143,4 @@ mod tests {
         assert!(!file_path_2.exists(), "File {} should not exist.", file_path_2.display());
     }
     
-
-    
 }

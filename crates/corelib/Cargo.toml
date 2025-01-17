@@ -31,7 +31,7 @@ crate-type = ["cdylib", "rlib"]
 
 
 [[bench]]
-name = "corelib benchmarks"
+name = "corelib_benches"
 path = "benches/corelib_benches.rs"
 harness = false
 required-features = ["benchmark"]

@@ -11,8 +11,6 @@ corelib = { path = "../corelib" }
 pyo3 = { version = "0.23", features = ["extension-module"] }
 image.workspace = true
 
-[dev-dependencies]
-tempfile.workspace = true
 
 [lib]
 name = "imgddpy"

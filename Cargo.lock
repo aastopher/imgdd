@@ -489,7 +489,6 @@ dependencies = [
  "corelib",
  "image",
  "pyo3",
- "tempfile",
 ]
 
 [[package]]

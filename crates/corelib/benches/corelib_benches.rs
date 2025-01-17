@@ -1,5 +1,4 @@
 use criterion::{criterion_group, criterion_main, Criterion, black_box};
-extern crate corelib;
 
 use corelib::dedupe::{open_image, collect_hashes, sort_hashes, find_duplicates};
 use corelib::hashing::ImageHash;

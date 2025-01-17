@@ -28,7 +28,7 @@ crate-type = ["rlib"]
 
 
 # [[bench]]
-# name = "rust benchmarks"
-# path = "benches/rust.rs"
+# name = "rust_benches"
+# path = "benches/rust_benches.rs"
 # harness = false
 # required-features = ["benchmark"]

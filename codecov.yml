@@ -1,5 +1,5 @@
 ignore:
-  - crates/python/*
+  - "crates/python/*"
   - "crates/corelib/benches"
   - "crates/corelib/tests"
   - "crates/rust/benches"

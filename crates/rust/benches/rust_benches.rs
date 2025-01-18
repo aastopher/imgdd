@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion, black_box};
-use imgddrs::*;
+use imgdd::*;
 use std::path::PathBuf;
 
 fn benchmark_select_filter_type(c: &mut Criterion) {

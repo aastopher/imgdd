@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use imgddrs::*;
+    use imgdd::*;
     use tempfile::tempdir;
     use std::fs::File;
     use std::io::Write;

@@ -36,22 +36,29 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 /// - `path (str)`: Path to the directory containing images.
 /// - `filter (str)`: Resize filter to use. **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 /// - `algo (str)`: Hashing algorithm. **Options:** [`aHash`, `bHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+/// - `sort (bool)`: Whether to sort the results by hash values. `default=false`.
 ///
 /// # Returns
 /// `Dict[str, str]`: A dictionary mapping file paths to their hashes.
-#[pyfunction(signature = (path, filter = None, algo = None))]
+#[pyfunction(signature = (path, filter = None, algo = None, sort = false))]
 pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
+    sort: Option<bool>,
 ) -> PyResult<HashMap<PathBuf, String>> {
     let validated_path = validate_path(&path)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("{}", e)))?;
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    let hash_paths = collect_hashes(&validated_path, filter_type, &algo)
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))?;
+
+    // Optionally sort hashes
+    if sort.unwrap_or(false) {
+        sort_hashes(&mut hash_paths);
+    }
 
     Ok(hash_paths
         .into_iter()

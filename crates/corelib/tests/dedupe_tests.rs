@@ -74,10 +74,10 @@ mod tests {
         let temp_dir = tempfile::tempdir().unwrap();
         let invalid_image_path = temp_dir.path().join("nonexistent_image.jpg");
 
-        // Ensure the file does not exist
+        // Assert file does not exist
         assert!(!invalid_image_path.exists());
 
-        // Attempt to open a non-existent image to trigger the error
+        // Attempt to open non-existent image to trigger error
         let result = open_image(&invalid_image_path);
         assert!(result.is_err());
 

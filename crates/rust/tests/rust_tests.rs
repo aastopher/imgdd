@@ -40,18 +40,41 @@ mod tests {
 
         // Create a mock image
         let mut file = File::create(&image_path).unwrap();
-        file.write_all(b"not a valid image").unwrap(); // Invalid data for testing
+        file.write_all(b"not a valid image").unwrap();
 
-        let result = hash(temp_dir.path().to_path_buf(), Some("nearest"), Some("dhash"));
+        let result = hash(temp_dir.path().to_path_buf(), Some("nearest"), Some("dhash"), Some(false));
         assert!(result.is_ok(), "Hash function failed: {:?}", result.err());
     }
 
     #[test]
     fn test_hash_with_invalid_path() {
         let invalid_path = PathBuf::from("/non/existent/path");
-        let result = hash(invalid_path.clone(), Some("nearest"), Some("dhash"));
+        let result = hash(invalid_path.clone(), Some("nearest"), Some("dhash"), Some(false));
         assert!(result.is_err(), "Expected error for invalid path: {:?}", invalid_path);
     }
+
+    #[test]
+    fn test_hash_with_sorting() {
+        let img_dir = PathBuf::from("../../imgs/test/apple_pie");
+        let result = hash(img_dir, Some("nearest"), Some("dhash"), Some(true));
+
+        // Assert result is OK
+        assert!(result.is_ok(), "Hash function failed: {:?}", result.err());
+
+        // Unwrap result and assert expected number of hashes
+        let hash_paths = result.unwrap();
+        assert_eq!(
+            hash_paths.len(),
+            10,
+            "Expected 10 hashes, got {}",
+            hash_paths.len()
+        );
+
+        // Assert hashes are sorted
+        let sorted = hash_paths.windows(2).all(|w| w[0].0 <= w[1].0);
+        assert!(sorted, "Hashes are not sorted: {:?}", hash_paths);
+    }
+
 
     #[test]
     fn test_dupes_with_valid_inputs() {
@@ -79,4 +102,5 @@ mod tests {
         let result = dupes(invalid_path.clone(), Some("nearest"), Some("dhash"), false);
         assert!(result.is_err(), "Expected error for invalid path: {:?}", invalid_path);
     }
+
 }

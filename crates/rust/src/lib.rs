@@ -35,12 +35,18 @@ pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
+    sort: Option<bool>,
 ) -> Result<Vec<(u64, PathBuf)>, Error> {
     let validated_path = validate_path(&path)?;
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    let hash_paths = collect_hashes(&validated_path, filter_type, algo)?;
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, algo)?;
+
+    // Optionally sort hashes
+    if sort.unwrap_or(false) {
+        sort_hashes(&mut hash_paths);
+    }
 
     Ok(hash_paths)
 }

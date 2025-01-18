@@ -5,7 +5,6 @@ use corelib::hashing::ImageHash;
 use corelib::normalize::proc as normalize;
 use std::path::PathBuf;
 
-/// Benchmark for opening an image file
 fn open_image_bench(c: &mut Criterion) {
     let path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
 
@@ -16,7 +15,6 @@ fn open_image_bench(c: &mut Criterion) {
     });
 }
 
-/// Benchmark for `normalize`
 fn benchmark_normalize(c: &mut Criterion) {
     let img_path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
     let image = open_image(&img_path).expect("Failed to open image");
@@ -29,7 +27,7 @@ fn benchmark_normalize(c: &mut Criterion) {
     });
 }
 
-/// Benchmark for `dhash`
+
 fn benchmark_dhash(c: &mut Criterion) {
     let img_path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
 
@@ -46,7 +44,6 @@ fn benchmark_dhash(c: &mut Criterion) {
     });
 }
 
-/// Benchmark for `collect_hashes`
 fn benchmark_collect_hashes(c: &mut Criterion) {
     let dir_path = PathBuf::from("../../imgs/test/single");
 
@@ -62,7 +59,6 @@ fn benchmark_collect_hashes(c: &mut Criterion) {
     });
 }
 
-/// Benchmark for `sort_hashes`
 fn benchmark_sort_hashes(c: &mut Criterion) {
     let dir_path = PathBuf::from("../../imgs/test");
     let mut hash_paths = collect_hashes(
@@ -79,7 +75,6 @@ fn benchmark_sort_hashes(c: &mut Criterion) {
     });
 }
 
-/// Benchmark for `find_duplicates`
 fn benchmark_find_duplicates(c: &mut Criterion) {
     let dir_path = PathBuf::from("../../imgs/test");
     let mut hash_paths = collect_hashes(
@@ -88,7 +83,6 @@ fn benchmark_find_duplicates(c: &mut Criterion) {
         "dhash",
     )
     .expect("Failed to collect hashes");
-    // let mut sorted_hashes = hash_paths.clone();
     sort_hashes(&mut hash_paths);
 
     c.bench_function("find_duplicates", |b| {

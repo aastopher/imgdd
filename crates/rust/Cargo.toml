@@ -27,8 +27,8 @@ name = "imgddrs"
 crate-type = ["rlib"]
 
 
-# [[bench]]
-# name = "rust_benches"
-# path = "benches/rust_benches.rs"
-# harness = false
-# required-features = ["benchmark"]
+[[bench]]
+name = "rust_benches"
+path = "benches/rust_benches.rs"
+harness = false
+required-features = ["benchmark"]

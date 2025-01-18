@@ -1,3 +1,6 @@
+//! Rust interface for fast and efficient image deduplication.
+//! Leverages perceptual hashing algorithms to identify duplicate or visually similar images in a directory.
+
 use corelib::dedupe::*;
 use corelib::validate::*;
 use image::imageops::FilterType;
@@ -5,6 +8,20 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use anyhow::Error;
 
+/// Converts a string to a `FilterType`.
+///
+/// # Arguments
+///
+/// * `filter` - String specifying the filter type.
+///              **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+///
+/// # Returns
+///
+/// * A `FilterType` enum corresponding to the input string.
+///
+/// # Panics
+///
+/// This function will panic if the provided filter is not supported.
 #[inline]
 pub fn select_filter_type(filter: Option<&str>) -> FilterType {
     match filter.unwrap_or("nearest") {
@@ -17,6 +34,20 @@ pub fn select_filter_type(filter: Option<&str>) -> FilterType {
     }
 }
 
+/// Selects a hashing algorithm.
+///
+/// # Arguments
+///
+/// * `algo` - String specifying the hashing algorithm.
+///            **Options:** [`aHash`, `bHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+///
+/// # Returns
+///
+/// * A standardized `&'static str` representing the selected algorithm.
+///
+/// # Panics
+///
+/// This function will panic if the provided algorithm is not supported.
 #[inline]
 pub fn select_algo(algo: Option<&str>) -> &'static str {
     match algo.unwrap_or("dhash") {
@@ -30,7 +61,18 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
     }
 }
 
-
+/// Calculates hashes for all images in a directory recursively.
+///
+/// # Arguments
+///
+/// * `path` - String representing the directory containing images.
+/// * `filter` - String specifying the resize filter to use.
+/// * `algo` - String specifying the hashing algorithm to use.
+/// * `sort` - Boolean to determine if the hashes should be sorted.
+///
+/// # Returns
+///
+/// * `Result<Vec<(u64, PathBuf)>, Error>` - A vector of tuples where each tuple contains a hash value and the corresponding file path.
 pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
@@ -51,7 +93,18 @@ pub fn hash(
     Ok(hash_paths)
 }
 
-
+/// Finds duplicate images in a directory.
+///
+/// # Arguments
+///
+/// * `path` - String representing the directory containing images.
+/// * `filter` - String specifying the resize filter to use.
+/// * `algo` - String specifying the hashing algorithm to use.
+/// * `remove` - Boolean indicating whether duplicate files should be removed.
+///
+/// # Returns
+///
+/// * `Result<HashMap<u64, Vec<PathBuf>>, Error>` - A hashmap of hash values to lists of file paths.
 pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,

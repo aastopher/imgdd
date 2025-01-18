@@ -10,7 +10,21 @@ use std::path::PathBuf;
 use anyhow::{anyhow, Result};
 use anyhow::Error;
 
-/// Collect hashes for all image files recursively in a directory
+/// Collects hashes for all image files in a directory recursively.
+///
+/// # Arguments
+///
+/// * `path` - The directory containing images to process.
+/// * `filter` - The resize filter to use. Options: `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
+/// * `algo` - The hashing algorithm to use. Options: `dhash`, `ahash`, `bhash`, `mhash`, `phash`, `whash`.
+///
+/// # Returns
+///
+/// * A vector of tuples containing the hash value and the corresponding file path.
+///
+/// # Errors
+///
+/// Returns an error if any image fails to open or process.
 pub fn collect_hashes(
     path: &PathBuf,
     filter: FilterType,
@@ -46,13 +60,29 @@ pub fn collect_hashes(
     Ok(hash_paths)
 }
 
-/// Sort vector by hash value
+/// Sorts a vector of hashes by hash value.
+///
+/// # Arguments
+///
+/// * `hash_paths` - A mutable reference to a vector of hash-path tuples.
 #[inline]
 pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
     hash_paths.sort_by_key(|(hash, _)| *hash);
 }
 
-/// Open an image file using `ImageReader`.
+/// Opens an image file and decodes it.
+///
+/// # Arguments
+///
+/// * `file_path` - The path to the image file.
+///
+/// # Returns
+///
+/// * A `DynamicImage` if the file is successfully opened and decoded.
+///
+/// # Errors
+///
+/// Returns an error if the file cannot be opened or decoded.
 #[inline]
 pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
     ImageReader::open(file_path)
@@ -61,7 +91,20 @@ pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
         .map_err(|e| anyhow!("Error decoding image {}: {}", file_path.display(), e))
 }
 
-/// Identify exact duplicates, comparing sorted hashes.
+/// Identifies duplicate images based on hash values.
+///
+/// # Arguments
+///
+/// * `hash_paths` - A slice of hash-path tuples.
+/// * `remove` - A boolean indicating whether to delete duplicate files.
+///
+/// # Returns
+///
+/// * A hashmap mapping hash values to lists of duplicate file paths.
+///
+/// # Errors
+///
+/// Returns an error if a file fails to be removed when `remove` is set to `true`.
 pub fn find_duplicates(
     hash_paths: &[(u64, PathBuf)],
     remove: bool,

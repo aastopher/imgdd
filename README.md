@@ -14,6 +14,8 @@
 ## Why imgdd?
 `imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning fast 1:1 replacement with additional features. To ensure enhanced performance `imgdd` has been benchmarked against `imagehash`.
 
+[imaghash benchmark reference](https://content-blockchain.org/research/testing-different-image-hash-functions/)
+
 ## Planned Features
 - **Expanded Algorithm Support**: Add full support for additional perceptual hashing algorithms.
 - **Distance Metrics**: Output comprehensive distance metrics to evaluate algorithm and downsampling robustness.

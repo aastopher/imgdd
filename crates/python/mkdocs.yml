@@ -34,4 +34,5 @@ nav:
   - Home: index.md
   - Usage: usage.md
   - Imgdd: imgdd.md
-  - Development: development.md
+  - Development: dev.md
+  - Benchmarks: benches.md

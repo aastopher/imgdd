@@ -63,3 +63,18 @@ print(duplicates)
 
 ## Supported Filters
 - `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`
+
+## Contributing
+Contributions are always welcome! 🚀  
+
+Found a bug or have a question? Open a GitHub issue. Pull requests for new features or fixes are encouraged!
+
+## Similar projects
+- https://github.com/JohannesBuchner/imagehash
+- https://github.com/commonsmachinery/blockhash-python
+- https://github.com/acoomans/instagram-filters
+- https://pippy360.github.io/transformationInvariantImageSearch/
+- https://www.phash.org/
+- https://pypi.org/project/dhash/
+- https://github.com/thorn-oss/perception (based on imagehash code, depends on opencv)
+- https://docs.opencv.org/3.4/d4/d93/group__img__hash.html

@@ -12,16 +12,12 @@ use anyhow::Error;
 ///
 /// # Arguments
 ///
-/// * `filter` - String specifying the filter type.
-///              **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+/// - `filter` - String specifying the filter type.
+///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 ///
 /// # Returns
 ///
-/// * A `FilterType` enum corresponding to the input string.
-///
-/// # Panics
-///
-/// This function will panic if the provided filter is not supported.
+/// - A `FilterType` enum corresponding to the input string.
 #[inline]
 pub fn select_filter_type(filter: Option<&str>) -> FilterType {
     match filter.unwrap_or("nearest") {
@@ -38,22 +34,17 @@ pub fn select_filter_type(filter: Option<&str>) -> FilterType {
 ///
 /// # Arguments
 ///
-/// * `algo` - String specifying the hashing algorithm.
-///            **Options:** [`aHash`, `bHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+/// - `algo` - String specifying the hashing algorithm.
+///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
 ///
 /// # Returns
 ///
-/// * A standardized `&'static str` representing the selected algorithm.
-///
-/// # Panics
-///
-/// This function will panic if the provided algorithm is not supported.
+/// - A standardized `&'static str` representing the selected algorithm.
 #[inline]
 pub fn select_algo(algo: Option<&str>) -> &'static str {
     match algo.unwrap_or("dhash") {
         input if input.eq_ignore_ascii_case("dhash") => "dhash",
         input if input.eq_ignore_ascii_case("ahash") => "ahash",
-        input if input.eq_ignore_ascii_case("bhash") => "bhash",
         input if input.eq_ignore_ascii_case("mhash") => "mhash",
         input if input.eq_ignore_ascii_case("phash") => "phash",
         input if input.eq_ignore_ascii_case("whash") => "whash",
@@ -65,14 +56,16 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
 ///
 /// # Arguments
 ///
-/// * `path` - String representing the directory containing images.
-/// * `filter` - String specifying the resize filter to use.
-/// * `algo` - String specifying the hashing algorithm to use.
-/// * `sort` - Boolean to determine if the hashes should be sorted.
+/// - `path` - String representing the directory containing images.
+/// - `filter` - String specifying the resize filter to use.
+///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+/// - `algo` - String specifying the hashing algorithm to use.
+///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+/// - `sort` - Boolean to determine if the hashes should be sorted.
 ///
 /// # Returns
 ///
-/// * `Result<Vec<(u64, PathBuf)>, Error>` - A vector of tuples where each tuple contains a hash value and the corresponding file path.
+/// * A vector of tuples where each tuple contains a hash value and the corresponding file path.
 pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
@@ -99,12 +92,14 @@ pub fn hash(
 ///
 /// * `path` - String representing the directory containing images.
 /// * `filter` - String specifying the resize filter to use.
+///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 /// * `algo` - String specifying the hashing algorithm to use.
+///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
 /// * `remove` - Boolean indicating whether duplicate files should be removed.
 ///
 /// # Returns
 ///
-/// * `Result<HashMap<u64, Vec<PathBuf>>, Error>` - A hashmap of hash values to lists of file paths.
+/// * A hashmap of hash values to lists of file paths.
 pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,

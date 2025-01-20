@@ -15,12 +15,6 @@ use std::path::PathBuf;
 ///
 /// * `Ok(&PathBuf)` - A reference to the validated `PathBuf` if the path exists and is a directory.
 /// * `Err(anyhow::Error)` - An error indicating why the path is invalid.
-///
-/// # Errors
-///
-/// Returns an error in the following cases:
-/// - If the path does not exist.
-/// - If the path exists but is not a directory.
 #[inline]
 pub fn validate_path(path: &PathBuf) -> Result<&PathBuf> {
     if !path.exists() {

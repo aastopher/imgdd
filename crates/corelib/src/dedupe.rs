@@ -15,16 +15,14 @@ use anyhow::Error;
 /// # Arguments
 ///
 /// * `path` - The directory containing images to process.
-/// * `filter` - The resize filter to use. Options: `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
-/// * `algo` - The hashing algorithm to use. Options: `dhash`, `ahash`, `bhash`, `mhash`, `phash`, `whash`.
+/// * `filter` - The resize filter to use. 
+///              Options: `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
+/// * `algo` - The hashing algorithm to use. 
+///              Options: `dhash`, `ahash`, `mhash`, `phash`, `whash`.
 ///
 /// # Returns
 ///
 /// * A vector of tuples containing the hash value and the corresponding file path.
-///
-/// # Errors
-///
-/// Returns an error if any image fails to open or process.
 pub fn collect_hashes(
     path: &PathBuf,
     filter: FilterType,

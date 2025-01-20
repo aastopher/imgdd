@@ -33,7 +33,5 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Usage: usage.md
-  - API Reference:
-      - Python API: api/python.md
-      - Rust API: api/rust.md
+  - Imgdd: imgdd.md
   - Development: development.md

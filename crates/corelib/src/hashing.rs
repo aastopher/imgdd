@@ -20,10 +20,6 @@ impl ImageHash {
     /// # Returns
     ///
     /// * An `ImageHash` instance containing the computed dHash value.
-    ///
-    /// # Errors
-    ///
-    /// Returns an error if the hash calculation fails for any reason.
     #[inline]
     pub fn dhash(image: &DynamicImage) -> Result<Self> {
         let mut hash = 0u64;

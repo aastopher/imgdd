@@ -24,7 +24,6 @@ mod tests {
     fn test_select_algo() {
         assert_eq!(select_algo(Some("dhash")), "dhash");
         assert_eq!(select_algo(Some("ahash")), "ahash");
-        assert_eq!(select_algo(Some("bhash")), "bhash");
         assert_eq!(select_algo(Some("mhash")), "mhash");
         assert_eq!(select_algo(Some("phash")), "phash");
         assert_eq!(select_algo(Some("whash")), "whash");

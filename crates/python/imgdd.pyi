@@ -3,7 +3,7 @@ from typing import Literal, Dict
 def hash(
     path: str,
     filter: Literal["Nearest", "Triangle", "CatmullRom", "Gaussian", "Lanczos3"] = "Nearest",
-    algo: Literal["aHash", "bHash", "dHash", "mHash", "pHash", "wHash"] = "dHash",
+    algo: Literal["aHash", "dHash", "mHash", "pHash", "wHash"] = "dHash",
 ) -> Dict[str, str]:
     """
     Calculate the hash of images in a directory.
@@ -21,7 +21,7 @@ def hash(
 def dupes(
     path: str,
     filter: Literal["Nearest", "Triangle", "CatmullRom", "Gaussian", "Lanczos3"] = "Nearest",
-    algo: Literal["aHash", "bHash", "dHash", "mHash", "pHash", "wHash"] = "dHash",
+    algo: Literal["aHash", "dHash", "mHash", "pHash", "wHash"] = "dHash",
     remove: bool = False,
 ) -> Dict[str, list[str]]:
     """

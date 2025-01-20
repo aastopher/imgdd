@@ -1,14 +1,6 @@
-# Usage
-
-## Installation
-```bash
-pip install imgdd
-```
-
-## Examples
+## Usage
 
 ### Hash Images
-
 ```python
 import imgdd as dd
 
@@ -16,12 +8,12 @@ results = dd.hash(
     path="path/to/images",
     algo="dhash",  # Optional: default = dhash
     filter="nearest"  # Optional: default = nearest
+    sort=True # Optional: default = False
 )
 print(results)
 ```
 
 ### Find Duplicates
-
 ```python
 duplicates = dd.dupes(
     path="path/to/images",
@@ -33,14 +25,11 @@ print(duplicates)
 ```
 
 ## Supported Algorithms
-
 - **aHash**: Average Hash (WIP)
-- **bHash**: Block Hash (WIP)
 - **dHash**: Difference Hash
 - **mHash**: Median Hash (WIP)
 - **pHash**: Perceptual Hash (WIP)
 - **wHash**: Wavelet Hash (WIP)
 
 ## Supported Filters
-
 - `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`

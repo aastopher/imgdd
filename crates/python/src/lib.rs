@@ -22,7 +22,6 @@ fn select_algo(algo: Option<&str>) -> &'static str {
     match algo.unwrap_or("dhash") {
         input if input.eq_ignore_ascii_case("dhash") => "dhash",
         input if input.eq_ignore_ascii_case("ahash") => "ahash",
-        input if input.eq_ignore_ascii_case("bhash") => "bhash",
         input if input.eq_ignore_ascii_case("mhash") => "mhash",
         input if input.eq_ignore_ascii_case("phash") => "phash",
         input if input.eq_ignore_ascii_case("whash") => "whash",
@@ -34,8 +33,10 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 ///
 /// # Arguments
 /// - `path (str)`: Path to the directory containing images.
-/// - `filter (str)`: Resize filter to use. **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
-/// - `algo (str)`: Hashing algorithm. **Options:** [`aHash`, `bHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+/// - `filter (str)`: Resize filter to use. 
+///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+/// - `algo (str)`: Hashing algorithm. 
+///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
 /// - `sort (bool)`: Whether to sort the results by hash values. `default=false`.
 ///
 /// # Returns
@@ -71,8 +72,10 @@ pub fn hash(
 ///
 /// # Arguments
 /// - `path (str)`: Path to the directory containing images.
-/// - `filter (str)`: Resize filter to use. **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
-/// - `algo (str)`: Hashing algorithm. **Options:** [`aHash`, `bHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+/// - `filter (str)`: Resize filter to use. 
+///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+/// - `algo (str)`: Hashing algorithm. 
+///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
 /// - `remove (bool)`: Whether to remove duplicate files. Defaults to `false`.
 ///
 /// # Returns

@@ -41,7 +41,20 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 ///
 /// # Returns
 /// `Dict[str, str]`: A dictionary mapping file paths to their hashes.
-#[pyfunction(signature = (path, filter = None, algo = None, sort = false))]
+/// # Usage
+///
+/// ```python
+/// import imgdd as dd
+///
+/// results = dd.hash(
+///     path="path/to/images",
+///     algo="dhash",  # Optional: default = dhash
+///     filter="triangle"  # Optional: default = triangle
+///     sort=True # Optional: default = False
+/// )
+/// print(results)
+/// ```
+#[pyfunction(signature = (path, filter = "triangle", algo = "dhash", sort = false))]
 pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
@@ -80,7 +93,18 @@ pub fn hash(
 ///
 /// # Returns
 /// `Dict[str, list[str]]`: A dictionary mapping hashes to lists of file paths.
-#[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
+/// # Usage
+///
+/// ```python
+/// duplicates = dd.dupes(
+///     path="path/to/images",
+///     algo="dhash", # Optional: default = dhash
+///     filter="triangle", # Optional: default = triangle
+///     remove=True # Optional: default = False
+/// )
+/// print(duplicates)
+/// ```
+#[pyfunction(signature = (path, filter = "triangle", algo = "dhash", remove = false))]
 pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,

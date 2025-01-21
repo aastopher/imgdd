@@ -1,5 +1,37 @@
 # Development
 
+## Building
+
+### Python package
+
+Build local python wheel file, from the project root:
+
+```bash
+maturin build --release --manifest-path crates/python/Cargo.toml
+```
+
+### Rust Crates
+
+Build local rust crates, from the project root:
+
+```bash
+cargo build
+```
+
+## Running Tests
+
+### Python (integration) Tests
+
+WIP
+
+### Rust Tests
+
+Run local tests, from the project root:
+
+```bash
+cargo test --features testing
+```
+
 ## Running Benchmarks
 
 ### Rust Benchmarks
@@ -13,7 +45,7 @@ cargo bench --features benchmarks
 Navigate to `benches` directory:
     
 ```bash
-cd benches
+cd crates/python/benches/
 ```
     
 Install dependencies:
@@ -29,12 +61,38 @@ python py_bench.py
 ```
     
 
-## Running Tests
+## Docs
 
-### Local Tests
+### Python Docs
 
-Run local tests, from the project root:
+Navigate to `python` directory:
+    
+```bash
+cd crates/python/
+```
+    
+Install dependencies:
+    
+```bash
+pip install .[dev]
+```
+
+Build docs
 
 ```bash
-cargo test --features testing
+mkdocs build
+```
+
+Serve docs
+
+```bash
+mkdocs serve
+```
+
+### Rust Docs
+
+Build docs
+
+```bash
+cargo doc --no-deps
 ```

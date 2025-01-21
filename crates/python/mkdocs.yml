@@ -32,7 +32,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Usage: usage.md
+  - Quickstart: quickstart.md
   - Imgdd: imgdd.md
   - Development: dev.md
   - Benchmarks: benches.md

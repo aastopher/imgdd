@@ -39,7 +39,7 @@ issues = "https://github.com/aastopher/imgdd/issues"
 
 [project.optional-dependencies]
 dev = [
-    "virtualenv==20.26.3",
+    "virtualenv==20.29.1",
     "mkdocs==1.6.0",
     "mkdocstrings==0.27.0",
     "mkdocstrings-python==1.13.0",

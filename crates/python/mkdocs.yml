@@ -6,13 +6,23 @@ repo_name: GitHub
 edit_uri: ""
 
 
-theme:
-  name: material
-  palette:
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: blue
-      accent: blue
+
+# theme:
+#   name: material
+#   palette:
+#     - media: "(prefers-color-scheme: dark)"
+#       scheme: slate
+#       primary: blue
+#       accent: blue
+#   highlight_theme: github-dark
+
+
+theme: 
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+      - python
+      - rust
 
 plugins:
   - include-markdown
@@ -20,14 +30,17 @@ plugins:
       handlers:
         python:
           options:
-            show_signature_annotations: true
-            modernize_annotations: true
+            show_signature: false
   - search
 
 markdown_extensions:
   - admonition
   - toc:
       permalink: true
+  - codehilite:
+      guess_lang: false 
+      use_pygments: true
+  - fenced_code 
 
 nav:
   - Home: index.md

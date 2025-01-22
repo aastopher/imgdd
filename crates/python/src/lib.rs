@@ -29,15 +29,22 @@ fn select_algo(algo: Option<&str>) -> &'static str {
     }
 }
 
+/// ```python
+/// hash(path, filter="triangle", algo="dhash", sort=False)
+/// ```
+/// 
 /// Calculate the hash of images in a directory.
 ///
 /// # Arguments
 /// - `path (str)`: Path to the directory containing images.
 /// - `filter (str)`: Resize filter to use. 
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+///     - **Default:** `Triangle`
 /// - `algo (str)`: Hashing algorithm. 
 ///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
-/// - `sort (bool)`: Whether to sort the results by hash values. `default=false`.
+///     - **Default:** `dHash`
+/// - `sort (bool)`: Whether to sort the results by hash values.
+///     - **Default:** `False`
 ///
 /// # Returns
 /// `Dict[str, str]`: A dictionary mapping file paths to their hashes.
@@ -80,16 +87,22 @@ pub fn hash(
         .collect())
 }
 
-
+/// ```python
+/// hash(path, filter="triangle", algo="dhash", sort=False)
+/// ```
+/// 
 /// Find duplicate images in a directory.
 ///
 /// # Arguments
 /// - `path (str)`: Path to the directory containing images.
 /// - `filter (str)`: Resize filter to use. 
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+///     - **Default:** `Triangle`
 /// - `algo (str)`: Hashing algorithm. 
 ///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
-/// - `remove (bool)`: Whether to remove duplicate files. Defaults to `false`.
+///     - **Default:** `dHash`
+/// - `remove (bool)`: Whether to remove duplicate files
+///     - **Default:** `False`
 ///
 /// # Returns
 /// `Dict[str, list[str]]`: A dictionary mapping hashes to lists of file paths.

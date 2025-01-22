@@ -17,4 +17,3 @@
 ## Planned Features
 - **Expanded Algorithm Support**: Add full support for additional perceptual hashing algorithms.
 - **Distance Metrics**: Output comprehensive distance metrics to evaluate algorithm and downsampling robustness.
-- **Flexible Hash Sizes**: Enable customizable hash sizes via configurable parameter.

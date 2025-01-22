@@ -11,8 +11,12 @@ mod tests {
     #[test]
     fn test_normalization() {
         let image = create_mock_image();
-        let normalized = proc(&image, FilterType::Nearest).unwrap();
-        assert_eq!(normalized.width(), 9);
-        assert_eq!(normalized.height(), 8);
+        let normalized89 = proc(&image, FilterType::Nearest, (9,8)).unwrap();
+        assert_eq!(normalized89.width(), 9);
+        assert_eq!(normalized89.height(), 8);
+
+        let normalized88 = proc(&image, FilterType::Nearest, (8,8)).unwrap();
+        assert_eq!(normalized88.width(), 8);
+        assert_eq!(normalized88.height(), 8);
     }
 }

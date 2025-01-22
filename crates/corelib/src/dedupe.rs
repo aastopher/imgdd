@@ -40,13 +40,25 @@ pub fn collect_hashes(
         .filter_map(|file_path| {
             match open_image(file_path) {
                 Ok(image) => {
-                    let normalized = normalize::proc(&image, filter).ok()?;
+                    let normalized = match algo {
+                        "dhash" => normalize::proc(&image, filter, (9, 8)).ok()?,
+                        "ahash" => normalize::proc(&image, filter, (8, 8)).ok()?,
+                        "mhash" => normalize::proc(&image, filter, (8, 8)).ok()?,
+                        "phash" => normalize::proc(&image, filter, (32, 32)).ok()?,
+                        "whash" => normalize::proc(&image, filter, (8, 8)).ok()?,
+                        _ => panic!("Unsupported hashing algorithm: {}", algo),
+                    };
+                
                     let hash = match algo {
                         "dhash" => ImageHash::dhash(&normalized).ok()?.get_hash(),
+                        "ahash" => ImageHash::ahash(&normalized).ok()?.get_hash(),
+                        "mhash" => ImageHash::median_hash(&normalized).ok()?.get_hash(),
+                        "phash" => ImageHash::phash(&normalized).ok()?.get_hash(),
+                        "whash" => ImageHash::wavelet_hash(&normalized).ok()?.get_hash(),
                         _ => panic!("Unsupported hashing algorithm: {}", algo),
                     };
                     Some((hash, file_path.clone()))
-                }
+                }                
                 Err(e) => {
                     eprintln!("Failed to open image {}: {}", file_path.display(), e);
                     None

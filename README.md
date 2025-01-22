@@ -19,7 +19,6 @@
 ## Planned Features
 - **Expanded Algorithm Support**: Add full support for additional perceptual hashing algorithms.
 - **Distance Metrics**: Output comprehensive distance metrics to evaluate algorithm and downsampling robustness.
-- **Flexible Hash Sizes**: Enable customizable hash sizes via configurable parameter.
 
 ---
 
@@ -57,7 +56,7 @@ print(duplicates)
 ```
 
 ## Supported Algorithms
-- **aHash**: Average Hash (WIP)
+- **aHash**: Average Hash
 - **dHash**: Difference Hash
 - **mHash**: Median Hash (WIP)
 - **pHash**: Perceptual Hash (WIP)

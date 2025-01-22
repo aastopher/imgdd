@@ -41,11 +41,11 @@ pub fn collect_hashes(
             match open_image(file_path) {
                 Ok(image) => {
                     let normalized = match algo {
-                        "dhash" => normalize::proc(&image, filter, (9, 8)).ok()?,
-                        "ahash" => normalize::proc(&image, filter, (8, 8)).ok()?,
-                        "mhash" => normalize::proc(&image, filter, (8, 8)).ok()?,
-                        "phash" => normalize::proc(&image, filter, (32, 32)).ok()?,
-                        "whash" => normalize::proc(&image, filter, (8, 8)).ok()?,
+                        "dhash" => normalize::proc(&image, filter, 9, 8).ok()?,
+                        "ahash" => normalize::proc(&image, filter, 8, 8).ok()?,
+                        "mhash" => normalize::proc(&image, filter, 8, 8).ok()?,
+                        "phash" => normalize::proc(&image, filter, 32, 32).ok()?,
+                        "whash" => normalize::proc(&image, filter, 8, 8).ok()?,
                         _ => panic!("Unsupported hashing algorithm: {}", algo),
                     };
                 

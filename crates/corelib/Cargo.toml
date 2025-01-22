@@ -25,11 +25,6 @@ benchmark = ["criterion"]
 testing = []
 
 
-[lib]
-name = "corelib"
-crate-type = ["cdylib", "rlib"]
-
-
 [[bench]]
 name = "corelib_benches"
 path = "benches/corelib_benches.rs"

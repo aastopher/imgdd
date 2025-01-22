@@ -21,7 +21,7 @@ fn benchmark_normalize(c: &mut Criterion) {
 
     c.bench_function("normalize", |b| {
         b.iter(|| {
-            normalize(black_box(&image), black_box(image::imageops::FilterType::Triangle))
+            normalize(black_box(&image), black_box(image::imageops::FilterType::Triangle), black_box(9), black_box(8))
                 .expect("Failed to normalize image");
         });
     });
@@ -82,7 +82,7 @@ fn benchmark_dhash(c: &mut Criterion) {
 
     // Unwrap the image and normalize it outside the benchmark iteration
     let image = open_image(&img_path).expect("Failed to open image");
-    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle)
+    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle, 9, 8)
         .expect("Failed to normalize image");
 
     c.bench_function("dhash", |b| {
@@ -98,7 +98,7 @@ fn benchmark_ahash(c: &mut Criterion) {
 
     // Unwrap the image and normalize it outside the benchmark iteration
     let image = open_image(&img_path).expect("Failed to open image");
-    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle)
+    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle, 8, 8)
         .expect("Failed to normalize image");
 
     c.bench_function("ahash", |b| {

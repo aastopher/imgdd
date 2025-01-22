@@ -13,9 +13,11 @@ def collect_image_count(path: str) -> int:
         if any(file.lower().endswith((".png", ".jpg", ".jpeg")) for file in files)
     )
 
-
-def benchmark_function(func, num_runs=10, **kwargs) -> dict:
+def benchmark_function(func, num_runs=50, warmup=3, **kwargs):
     """Benchmark a function and return timing metrics."""
+    for _ in range(warmup):  # Warm-up runs
+        func(**kwargs)
+    
     timings = []
     for _ in range(num_runs):
         start_time = time.perf_counter()
@@ -34,7 +36,7 @@ def benchmark_function(func, num_runs=10, **kwargs) -> dict:
 def imgdd_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dict:
     """Benchmark imgdd library."""
     def run_imgdd_hash():
-        dd.hash(path=path, algo=algo)
+        dd.hash(path=path, algo=algo, filter="Nearest", sort=False)
 
     results = benchmark_function(run_imgdd_hash, num_runs=num_runs)
     for key in results:
@@ -92,6 +94,7 @@ if __name__ == "__main__":
     IMAGE_DIR = "../../../imgs/test/"
     ALGORITHM = "dHash" 
     NUM_RUNS = 50
+    WARM_UP = 3
 
     num_images = collect_image_count(IMAGE_DIR)
     if num_images == 0:

@@ -4,6 +4,7 @@ def hash(
     path: str,
     filter: Literal["Nearest", "Triangle", "CatmullRom", "Gaussian", "Lanczos3"] = "Nearest",
     algo: Literal["aHash", "dHash", "mHash", "pHash", "wHash"] = "dHash",
+    sort: bool = False,
 ) -> Dict[str, str]:
     """
     Calculate the hash of images in a directory.

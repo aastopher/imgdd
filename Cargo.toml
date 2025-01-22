@@ -17,3 +17,6 @@ walkdir = "2.3"
 anyhow = "1.0.95"
 log = "0.4.25"
 tempfile = "3.5"
+
+[profile.release]
+opt-level = 3 

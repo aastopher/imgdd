@@ -54,7 +54,7 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 /// )
 /// print(results)
 /// ```
-#[pyfunction(signature = (path, filter = "triangle", algo = "dhash", sort = false))]
+#[pyfunction(signature = (path, filter = None, algo = None, sort = false))]
 pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
@@ -104,7 +104,7 @@ pub fn hash(
 /// )
 /// print(duplicates)
 /// ```
-#[pyfunction(signature = (path, filter = "triangle", algo = "dhash", remove = false))]
+#[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
 pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,

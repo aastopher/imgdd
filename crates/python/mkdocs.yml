@@ -20,9 +20,8 @@ plugins:
       handlers:
         python:
           options:
-            find_stubs_package: true
-          selection:
-            docstring_style: google
+            show_signature_annotations: true
+            modernize_annotations: true
   - search
 
 markdown_extensions:

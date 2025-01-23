@@ -12,6 +12,7 @@ rayon.workspace = true
 walkdir.workspace = true
 anyhow.workspace = true
 log.workspace = true
+rustdct.workspace = true
 criterion = { version = "0.5.1", optional = true }
 
 

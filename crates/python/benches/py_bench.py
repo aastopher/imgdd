@@ -51,21 +51,22 @@ def imagehash_benchmark(path: str, algo: str, num_runs: int, num_images: int) ->
             for file in files:
                 file_path = os.path.join(root, file)
                 try:
+                    algo = algo.lower()
                     image = Image.open(file_path)
-                    if algo == "aHash":
+                    if algo == "ahash":
                         imagehash.average_hash(image)
-                    elif algo == "pHash":
+                    elif algo == "phash":
                         imagehash.phash(image)
-                    elif algo == "dHash":
+                    elif algo == "dhash":
                         imagehash.dhash(image)
-                    elif algo == "wHash":
+                    elif algo == "whash":
                         imagehash.whash(image)
                     else:
                         raise ValueError(f"Unsupported algorithm: {algo}")
                 except Exception as e:
                     print(f"Error processing {file_path}: {e}")
     
-    results = benchmark_function(run_imagehash, num_runs=num_runs)
+    results = benchmark_function(run_imagehash, algo=algo, num_runs=num_runs)
     for key in results:
         results[key] /= num_images  # Convert to per-image timing
     return results
@@ -93,7 +94,7 @@ def calc_diff(imgdd_result: dict, imagehash_result: dict):
 
 if __name__ == "__main__":
     IMAGE_DIR = "../../../imgs/test/"
-    ALGORITHMS = ["dHash", "aHash"] # mhash has no equivalent in imagehash
+    ALGORITHMS = ["dHash", "aHash", "pHash"] # mHash has no equivalent in imagehash
     NUM_RUNS = 50
     WARM_UP = 3
 

@@ -16,6 +16,7 @@ rayon = "1.10.0"
 walkdir = "2.3"
 anyhow = "1.0.95"
 log = "0.4.25"
+rustdct = "0.7.1"
 tempfile = "3.5"
 
 [profile.release]

@@ -1,4 +1,5 @@
 use image::{DynamicImage, GenericImageView};
+use rustdct::DctPlanner;
 use anyhow::Result;
 
 /// A structure representing the hash of an image.
@@ -92,11 +93,79 @@ impl ImageHash {
     }
 
     /// Computes the perceptual hash (pHash) of a given image.
+    ///
+    /// pHash analyzes the frequency domain of the image using a Discrete Cosine Transform (DCT). 
+    /// It extracts low-frequency components, which are less susceptible to changes like resizing or compression, 
+    /// making it ideal for perceptual similarity comparisons.
+    ///
+    /// # Arguments:
+    /// * `image` - A reference to a `DynamicImage` for which the hash is to be calculated.
+    ///
+    /// # Returns:
+    /// * An `ImageHash` instance containing the computed pHash value.
     #[inline]
-    pub fn phash(_image: &DynamicImage) -> Result<Self> {
-        // Perceptual hash implementation here
-        Ok(Self { hash: 0 }) // Placeholder
+    pub fn phash(image: &DynamicImage) -> Result<Self> {
+        const IMG_SIZE: usize = 32;
+        const HASH_SIZE: usize = 8;
+
+        // Collect pixel values from normalized 32x32 grayscale image
+        let mut pixels: Vec<f32> = image
+            .pixels()
+            .map(|p| p.2[0] as f32)
+            .collect();
+
+        // Plan DCT once for both rows and columns
+        let mut planner = DctPlanner::new();
+        let dct = planner.plan_dct2(IMG_SIZE);
+
+        // Apply DCT row-wise in-place
+        for row in pixels.chunks_exact_mut(IMG_SIZE) {
+            dct.process_dct2(row);
+        }
+
+        // Temp buffer for column processing
+        let mut col_buffer = vec![0f32; IMG_SIZE];
+
+        // Apply DCT column-wise in-place
+        for col in 0..IMG_SIZE {
+            // Extract column into buffer
+            for row in 0..IMG_SIZE {
+                col_buffer[row] = pixels[row * IMG_SIZE + col];
+            }
+            // Perform DCT on the column
+            dct.process_dct2(&mut col_buffer);
+            // Store result back into the original pixel array
+            for row in 0..IMG_SIZE {
+                pixels[row * IMG_SIZE + col] = col_buffer[row];
+            }
+        }
+
+        // Extract top-left 8x8 DCT coefficients (low frequencies)
+        let mut dct_lowfreq = [0f32; HASH_SIZE * HASH_SIZE];
+        for y in 0..HASH_SIZE {
+            for x in 0..HASH_SIZE {
+                dct_lowfreq[y * HASH_SIZE + x] = pixels[y * IMG_SIZE + x];
+            }
+        }
+
+        // Collect median
+        let median = {
+            let mut sorted = dct_lowfreq;
+            sorted.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
+            (sorted[HASH_SIZE * HASH_SIZE / 2 - 1] + sorted[HASH_SIZE * HASH_SIZE / 2]) / 2.0
+        };
+
+        // Generate hash
+        let mut hash = 0u64;
+        for (i, &val) in dct_lowfreq.iter().enumerate() {
+            if val > median {
+                hash |= 1 << i;
+            }
+        }
+
+        Ok(Self { hash })
     }
+
 
     /// Computes the wavelet hash (wHash) of a given image.
     #[inline]

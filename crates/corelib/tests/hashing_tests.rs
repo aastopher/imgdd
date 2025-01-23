@@ -51,4 +51,16 @@ mod tests {
     }
 
 
+    /// Tests the `pHash` implementation with a known mock image.
+    #[test]
+    fn test_phash() -> Result<()> {
+        let mock_image = create_mock_image((32, 32));
+        let hash = ImageHash::phash(&mock_image)?;
+        let expected_hash = 0b0000000000000000000000000000000000000000000000000000000010101011;
+        
+        assert_eq!(hash.get_hash(), expected_hash, "pHash does not match expected value");
+
+        Ok(())
+    }
+
 }

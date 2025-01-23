@@ -16,6 +16,28 @@ mod tests {
         }))
     }
 
+    /// Tests the `aHash` implementation with a known mock image.
+    #[test]
+    fn test_ahash() -> Result<()> {
+        let mock_image = create_mock_image((8, 8));
+        let hash = ImageHash::ahash(&mock_image)?;
+        let expected_hash = 0b0101010101010101010101010101010101010101010101010101010101010101;
+        assert_eq!(hash.get_hash(), expected_hash, "aHash does not match expected value");
+
+        Ok(())
+    }
+
+    /// Tests the `mHash` implementation with a known mock image.
+    #[test]
+    fn test_mhash() -> Result<()> {
+        let mock_image = create_mock_image((8, 8));
+        let hash = ImageHash::mhash(&mock_image)?;
+        let expected_hash = 0b0101010101010101010101010101010101010101010101010101010101010101;
+        
+        assert_eq!(hash.get_hash(), expected_hash, "mHash does not match expected value");
+
+        Ok(())
+    }
 
     /// Tests the `dHash` implementation with a known mock image.
     #[test]
@@ -28,14 +50,5 @@ mod tests {
         Ok(())
     }
 
-    /// Tests the `aHash` implementation with a known mock image.
-    #[test]
-    fn test_ahash() -> Result<()> {
-        let mock_image = create_mock_image((8, 8));
-        let hash = ImageHash::ahash(&mock_image)?;
-        let expected_hash = 0b0101010101010101010101010101010101010101010101010101010101010101;
-        assert_eq!(hash.get_hash(), expected_hash, "aHash does not match expected value");
 
-        Ok(())
-    }
 }

@@ -22,13 +22,13 @@ impl ImageHash {
     /// * An `ImageHash` instance containing the computed aHash value.
     #[inline]
     pub fn ahash(image: &DynamicImage) -> Result<Self> {
-        // Collect pixel values from the normalized 8x8 image
+        // Collect pixel values from normalized 8x8 image
         let pixels: Vec<u64> = image.pixels().map(|p| p.2[0] as u64).collect();
 
-        // Calculate the average pixel value
+        // Calculate average pixel value
         let avg: u64 = pixels.iter().sum::<u64>() / pixels.len() as u64;
 
-        // Compute the hash by comparing each pixel to the average
+        // Compute hash by comparing each pixel to the average
         let mut hash = 0u64;
         for (i, &pixel) in pixels.iter().enumerate().take(64) {
             if pixel > avg {
@@ -38,6 +38,36 @@ impl ImageHash {
 
         Ok(Self { hash })
     }
+
+
+    /// Computes the median hash (mHash) of a given image.
+    ///
+    /// # Arguments
+    /// * `image` - A reference to a `DynamicImage` for which the hash is to be calculated.
+    ///
+    /// # Returns
+    /// * An `ImageHash` instance containing the computed mHash value.
+    #[inline]
+    pub fn mhash(image: &DynamicImage) -> Result<Self> {
+        // Collect pixel values from normalized 8x8 image
+        let pixels: Vec<u64> = image.pixels().map(|p| p.2[0] as u64).collect();
+        
+        // Calculate median for 64 pixels
+        let mut sorted_pixels = pixels.clone();
+        sorted_pixels.sort_unstable();
+        let median = (sorted_pixels[31] + sorted_pixels[32]) / 2;
+    
+        // Compute hash by comparing each pixel to the median
+        let mut hash = 0u64;
+        for (i, &pixel) in pixels.iter().enumerate().take(64) {
+            if pixel > median {
+                hash |= 1 << i;
+            }
+        }
+    
+        Ok(Self { hash })
+    }
+    
 
     /// Computes the difference hash (dHash) of a given image.
     ///
@@ -61,13 +91,6 @@ impl ImageHash {
         Ok(Self { hash })
     }
 
-    /// Computes the median hash (mHash) of a given image.
-    #[inline]
-    pub fn median_hash(_image: &DynamicImage) -> Result<Self> {
-        // Median hash implementation here
-        Ok(Self { hash: 0 }) // Placeholder
-    }
-
     /// Computes the perceptual hash (pHash) of a given image.
     #[inline]
     pub fn phash(_image: &DynamicImage) -> Result<Self> {
@@ -77,7 +100,7 @@ impl ImageHash {
 
     /// Computes the wavelet hash (wHash) of a given image.
     #[inline]
-    pub fn wavelet_hash(_image: &DynamicImage) -> Result<Self> {
+    pub fn whash(_image: &DynamicImage) -> Result<Self> {
         // Wavelet hash implementation here
         Ok(Self { hash: 0 }) // Placeholder
     }

@@ -6,7 +6,7 @@
 `imgdd` is a performance-first perceptual hashing library that combines Rust's speed with Python's accessibility, making it perfect for handling large datasets. Designed to quickly process nested folder structures, commonly found in image datasets.
 
 ## Features
-- **Multiple Hashing Algorithms**: Supports `aHash`, `dHash`, `mHash`, `pHash`, `wHash`.
+- **Multiple Hashing Algorithms**: Supports `aHash`, `mHash`, `dHash`, `pHash`, `wHash`.
 - **Multiple Filter Types**: Supports `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
 - **Identify Duplicates**: Harness Rust's performance to quickly identify duplicate hash pairs.
 - **Simplicity**: Simple interface with robust performance.

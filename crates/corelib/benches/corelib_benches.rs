@@ -77,22 +77,6 @@ fn benchmark_find_duplicates(c: &mut Criterion) {
 }
 
 // Hash algorithms
-fn benchmark_dhash(c: &mut Criterion) {
-    let img_path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
-
-    // Unwrap the image and normalize it outside the benchmark iteration
-    let image = open_image(&img_path).expect("Failed to open image");
-    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle, 9, 8)
-        .expect("Failed to normalize image");
-
-    c.bench_function("dhash", |b| {
-        b.iter(|| {
-            // Compute the dhash for the normalized image
-            ImageHash::dhash(black_box(&normalized_image)).expect("Failed to compute dhash");
-        });
-    });
-}
-
 fn benchmark_ahash(c: &mut Criterion) {
     let img_path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
 
@@ -105,6 +89,38 @@ fn benchmark_ahash(c: &mut Criterion) {
         b.iter(|| {
             // Compute the ahash for the normalized image
             ImageHash::ahash(black_box(&normalized_image)).expect("Failed to compute ahash");
+        });
+    });
+}
+
+fn benchmark_mhash(c: &mut Criterion) {
+    let img_path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
+
+    // Unwrap the image and normalize it outside the benchmark iteration
+    let image = open_image(&img_path).expect("Failed to open image");
+    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle, 8, 8)
+        .expect("Failed to normalize image");
+
+    c.bench_function("mhash", |b| {
+        b.iter(|| {
+            // Compute the mhash for the normalized image
+            ImageHash::mhash(black_box(&normalized_image)).expect("Failed to compute mhash");
+        });
+    });
+}
+
+fn benchmark_dhash(c: &mut Criterion) {
+    let img_path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
+
+    // Unwrap the image and normalize it outside the benchmark iteration
+    let image = open_image(&img_path).expect("Failed to open image");
+    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle, 9, 8)
+        .expect("Failed to normalize image");
+
+    c.bench_function("dhash", |b| {
+        b.iter(|| {
+            // Compute the dhash for the normalized image
+            ImageHash::dhash(black_box(&normalized_image)).expect("Failed to compute dhash");
         });
     });
 }
@@ -123,8 +139,9 @@ criterion_group! {
 
 criterion_group!(
     group3,
-    benchmark_dhash,
     benchmark_ahash,
+    benchmark_mhash,
+    benchmark_dhash,
     benchmark_find_duplicates
 );
 

@@ -52,9 +52,9 @@ pub fn collect_hashes(
                     let hash = match algo {
                         "dhash" => ImageHash::dhash(&normalized).ok()?.get_hash(),
                         "ahash" => ImageHash::ahash(&normalized).ok()?.get_hash(),
-                        "mhash" => ImageHash::median_hash(&normalized).ok()?.get_hash(),
+                        "mhash" => ImageHash::mhash(&normalized).ok()?.get_hash(),
                         "phash" => ImageHash::phash(&normalized).ok()?.get_hash(),
-                        "whash" => ImageHash::wavelet_hash(&normalized).ok()?.get_hash(),
+                        "whash" => ImageHash::whash(&normalized).ok()?.get_hash(),
                         _ => panic!("Unsupported hashing algorithm: {}", algo),
                     };
                     Some((hash, file_path.clone()))

@@ -35,7 +35,7 @@ pub fn select_filter_type(filter: Option<&str>) -> FilterType {
 /// # Arguments
 ///
 /// - `algo` - String specifying the hashing algorithm.
-///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///
 /// # Returns
 ///
@@ -60,7 +60,7 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
 /// - `filter` - String specifying the resize filter to use.
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 /// - `algo` - String specifying the hashing algorithm to use.
-///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 /// - `sort` - Boolean to determine if the hashes should be sorted.
 ///
 /// # Returns
@@ -74,9 +74,9 @@ pub fn hash(
 ) -> Result<Vec<(u64, PathBuf)>, Error> {
     let validated_path = validate_path(&path)?;
     let filter_type = select_filter_type(filter);
-    let algo = select_algo(algo);
+    let selected_algo = select_algo(algo);
 
-    let mut hash_paths = collect_hashes(&validated_path, filter_type, algo)?;
+    let mut hash_paths = collect_hashes(validated_path, filter_type, selected_algo)?;
 
     // Optionally sort hashes
     if sort.unwrap_or(false) {
@@ -94,7 +94,7 @@ pub fn hash(
 /// * `filter` - String specifying the resize filter to use.
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 /// * `algo` - String specifying the hashing algorithm to use.
-///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 /// * `remove` - Boolean indicating whether duplicate files should be removed.
 ///
 /// # Returns
@@ -108,9 +108,9 @@ pub fn dupes(
 ) -> Result<HashMap<u64, Vec<PathBuf>>, Error> {
     let validated_path = validate_path(&path)?;
     let filter_type = select_filter_type(filter);
-    let algo = select_algo(algo);
+    let selected_algo = select_algo(algo);
 
-    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)?;
+    let mut hash_paths = collect_hashes(validated_path, filter_type, selected_algo)?;
     sort_hashes(&mut hash_paths);
 
     Ok(find_duplicates(&hash_paths, remove)?)

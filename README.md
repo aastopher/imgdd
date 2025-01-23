@@ -57,8 +57,8 @@ print(duplicates)
 
 ## Supported Algorithms
 - **aHash**: Average Hash
+- **mHash**: Median Hash
 - **dHash**: Difference Hash
-- **mHash**: Median Hash (WIP)
 - **pHash**: Perceptual Hash (WIP)
 - **wHash**: Wavelet Hash (WIP)
 

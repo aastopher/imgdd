@@ -41,7 +41,7 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 ///     - **Default:** `Triangle`
 /// - `algo (str)`: Hashing algorithm. 
-///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///     - **Default:** `dHash`
 /// - `sort (bool)`: Whether to sort the results by hash values.
 ///     - **Default:** `False`
@@ -99,7 +99,7 @@ pub fn hash(
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 ///     - **Default:** `Triangle`
 /// - `algo (str)`: Hashing algorithm. 
-///     - **Options:** [`aHash`, `dHash`, `mHash`, `pHash`, `wHash`]
+///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///     - **Default:** `dHash`
 /// - `remove (bool)`: Whether to remove duplicate files
 ///     - **Default:** `False`

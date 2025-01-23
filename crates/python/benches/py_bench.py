@@ -93,7 +93,7 @@ def calc_diff(imgdd_result: dict, imagehash_result: dict):
 
 if __name__ == "__main__":
     IMAGE_DIR = "../../../imgs/test/"
-    ALGORITHMS = ["dHash", "aHash"]
+    ALGORITHMS = ["dHash", "aHash"] # mhash has no equivalent in imagehash
     NUM_RUNS = 50
     WARM_UP = 3
 

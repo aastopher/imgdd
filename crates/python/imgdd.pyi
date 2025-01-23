@@ -3,7 +3,7 @@ from typing import Literal, Dict
 def hash(
     path: str,
     filter: Literal["Nearest", "Triangle", "CatmullRom", "Gaussian", "Lanczos3"] = "Nearest",
-    algo: Literal["aHash", "dHash", "mHash", "pHash", "wHash"] = "dHash",
+    algo: Literal["aHash", "mHash", "dHash", "pHash", "wHash"] = "dHash",
     sort: bool = False,
 ) -> Dict[str, str]:
     """
@@ -22,7 +22,7 @@ def hash(
 def dupes(
     path: str,
     filter: Literal["Nearest", "Triangle", "CatmullRom", "Gaussian", "Lanczos3"] = "Nearest",
-    algo: Literal["aHash", "dHash", "mHash", "pHash", "wHash"] = "dHash",
+    algo: Literal["aHash", "mHash", "dHash", "pHash", "wHash"] = "dHash",
     remove: bool = False,
 ) -> Dict[str, list[str]]:
     """

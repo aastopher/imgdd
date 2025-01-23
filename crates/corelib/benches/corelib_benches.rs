@@ -111,13 +111,13 @@ fn benchmark_ahash(c: &mut Criterion) {
 
 criterion_group! {
     name = group1;
-    config = Criterion::default().sample_size(60);
+    config = Criterion::default().sample_size(40);
     targets = open_image_bench, benchmark_normalize
 }
 
 criterion_group! {
     name = group2;
-    config = Criterion::default().sample_size(40);
+    config = Criterion::default().sample_size(30);
     targets = benchmark_collect_hashes, benchmark_sort_hashes
 }
 

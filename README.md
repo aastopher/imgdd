@@ -59,7 +59,7 @@ print(duplicates)
 - **aHash**: Average Hash
 - **mHash**: Median Hash
 - **dHash**: Difference Hash
-- **pHash**: Perceptual Hash (WIP)
+- **pHash**: Perceptual Hash
 - **wHash**: Wavelet Hash (WIP)
 
 ## Supported Filters

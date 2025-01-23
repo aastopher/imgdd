@@ -148,12 +148,20 @@ impl ImageHash {
             }
         }
 
-        // Collect median
-        let median = {
-            let mut sorted = dct_lowfreq;
-            sorted.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
-            (sorted[HASH_SIZE * HASH_SIZE / 2 - 1] + sorted[HASH_SIZE * HASH_SIZE / 2]) / 2.0
-        };
+        // // Collect median
+        // let median = {
+        //     let mut sorted = dct_lowfreq;
+        //     sorted.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
+        //     (sorted[HASH_SIZE * HASH_SIZE / 2 - 1] + sorted[HASH_SIZE * HASH_SIZE / 2]) / 2.0
+        // };
+
+        // Sort the DCT coefficients (in-place to avoid unnecessary allocations)
+        let mut sorted = dct_lowfreq;
+        sorted.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
+
+        // Calculate the median from the sorted values
+        // let median_index = HASH_SIZE * HASH_SIZE / 2;
+        let median = (sorted[(HASH_SIZE * HASH_SIZE / 2) - 1] + sorted[HASH_SIZE * HASH_SIZE / 2]) / 2.0;
 
         // Generate hash
         let mut hash = 0u64;

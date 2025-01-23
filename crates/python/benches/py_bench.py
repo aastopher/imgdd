@@ -46,7 +46,7 @@ def imgdd_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dic
 
 def imagehash_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dict:
     """Benchmark imagehash library."""
-    def run_imagehash():
+    def run_imagehash(algo: str):
         for root, _, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
@@ -66,7 +66,7 @@ def imagehash_benchmark(path: str, algo: str, num_runs: int, num_images: int) ->
                 except Exception as e:
                     print(f"Error processing {file_path}: {e}")
     
-    results = benchmark_function(run_imagehash, algo=algo, num_runs=num_runs)
+    results = benchmark_function(run_imagehash, num_runs=num_runs, algo=algo)
     for key in results:
         results[key] /= num_images  # Convert to per-image timing
     return results

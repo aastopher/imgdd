@@ -13,16 +13,31 @@ mod tests {
     }
 
 
+    // #[test]
+    // fn test_collect_hashes() {
+    //     let temp_dir = tempfile::tempdir().unwrap();
+    //     let image_path = temp_dir.path().join("test_image.png");
+    //     create_mock_image().save(&image_path).unwrap();
+
+    //     let hashes = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, "dhash")
+    //         .unwrap();
+    //     assert_eq!(hashes.len(), 1);
+    // }
+
     #[test]
     fn test_collect_hashes() {
         let temp_dir = tempfile::tempdir().unwrap();
         let image_path = temp_dir.path().join("test_image.png");
         create_mock_image().save(&image_path).unwrap();
-
-        let hashes = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, "dhash")
-            .unwrap();
-        assert_eq!(hashes.len(), 1);
+    
+        let algorithms = ["dhash", "ahash", "mhash", "phash"]; // UPDATE with whash when ready
+        for algo in algorithms {
+            let hashes = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, algo)
+                .unwrap();
+            assert_eq!(hashes.len(), 1, "Algorithm {} failed", algo);
+        }
     }
+    
 
     #[test]
     fn test_sort_hashes() {

@@ -141,6 +141,22 @@ fn benchmark_phash(c: &mut Criterion) {
     });
 }
 
+fn benchmark_whash(c: &mut Criterion) {
+    let img_path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
+
+    // Unwrap the image and normalize it outside the benchmark iteration
+    let image = open_image(&img_path).expect("Failed to open image");
+    let normalized_image = normalize(&image, image::imageops::FilterType::Triangle, 8, 8)
+        .expect("Failed to normalize image");
+
+    c.bench_function("whash", |b| {
+        b.iter(|| {
+            // Compute wHash for the normalized image
+            ImageHash::whash(black_box(&normalized_image)).expect("Failed to compute whash");
+        });
+    });
+}
+
 
 criterion_group! {
     name = group1;
@@ -160,6 +176,7 @@ criterion_group!(
     benchmark_mhash,
     benchmark_dhash,
     benchmark_phash,
+    benchmark_whash,
     benchmark_find_duplicates
 );
 

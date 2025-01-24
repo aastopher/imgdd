@@ -35,30 +35,36 @@ pub fn collect_hashes(
         .map(|entry| entry.path().to_path_buf())
         .collect();
 
-    let hash_paths: Vec<(u64, PathBuf)> = files
+        let hash_paths: Vec<(u64, PathBuf)> = files
         .par_iter()
         .filter_map(|file_path| {
             match open_image(file_path) {
                 Ok(image) => {
-                    let normalized = match algo {
-                        "dhash" => normalize::proc(&image, filter, 9, 8).ok()?,
-                        "ahash" => normalize::proc(&image, filter, 8, 8).ok()?,
-                        "mhash" => normalize::proc(&image, filter, 8, 8).ok()?,
-                        "phash" => normalize::proc(&image, filter, 32, 32).ok()?,
-                        "whash" => normalize::proc(&image, filter, 8, 8).ok()?,
-                        _ => panic!("Unsupported hashing algorithm: {}", algo),
-                    };
-                
                     let hash = match algo {
-                        "dhash" => ImageHash::dhash(&normalized).ok()?.get_hash(),
-                        "ahash" => ImageHash::ahash(&normalized).ok()?.get_hash(),
-                        "mhash" => ImageHash::mhash(&normalized).ok()?.get_hash(),
-                        "phash" => ImageHash::phash(&normalized).ok()?.get_hash(),
-                        "whash" => ImageHash::whash(&normalized).ok()?.get_hash(),
+                        "dhash" => {
+                            let normalized = normalize::proc(&image, filter, 9, 8).ok()?;
+                            ImageHash::dhash(&normalized).ok()?.get_hash()
+                        }
+                        "ahash" => {
+                            let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                            ImageHash::ahash(&normalized).ok()?.get_hash()
+                        }
+                        "mhash" => {
+                            let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                            ImageHash::mhash(&normalized).ok()?.get_hash()
+                        }
+                        "phash" => {
+                            let normalized = normalize::proc(&image, filter, 32, 32).ok()?;
+                            ImageHash::phash(&normalized).ok()?.get_hash()
+                        }
+                        "whash" => {
+                            let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                            ImageHash::whash(&normalized).ok()?.get_hash()
+                        }
                         _ => panic!("Unsupported hashing algorithm: {}", algo),
                     };
                     Some((hash, file_path.clone()))
-                }                
+                }
                 Err(e) => {
                     eprintln!("Failed to open image {}: {}", file_path.display(), e);
                     None

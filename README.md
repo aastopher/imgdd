@@ -60,7 +60,7 @@ print(duplicates)
 - **mHash**: Median Hash
 - **dHash**: Difference Hash
 - **pHash**: Perceptual Hash
-- **wHash**: Wavelet Hash (WIP)
+- **wHash**: Wavelet Hash
 
 ## Supported Filters
 - `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`

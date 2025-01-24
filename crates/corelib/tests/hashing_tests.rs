@@ -66,7 +66,7 @@ mod tests {
         let test_image = create_mock_image((8, 8));
         let hash = ImageHash::whash(&test_image)?;
         println!("wHash: {:064b}", hash.get_hash());
-        let expected_hash = 0b0000000000000000000000000000000000000101000001010000000000001111;
+        let expected_hash = 0b0000000000000000000000000000000000000101000001010000010100000101;
 
         assert_eq!(hash.get_hash(), expected_hash, "wHash does not match expected value");
 

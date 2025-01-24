@@ -182,55 +182,65 @@ impl ImageHash {
     #[inline]
     pub fn whash(image: &DynamicImage) -> Result<Self> {
         const HASH_SIZE: usize = 8; // Hash size (8x8)
-    
+        let image_scale = HASH_SIZE * 2; // Scaled for decomposition
+
+        // Convert image pixels to a normalized f64 array
         let pixels: Vec<f64> = image
             .pixels()
             .map(|p| p.2[0] as f64 / 255.0) // Normalize pixel values to [0.0, 1.0]
             .collect();
-    
-        // Calculate maximum Haar decomposition level
-        let max_level = (HASH_SIZE as f64).log2() as usize;
-    
+
+        // Calculate maximum Haar decomposition level based on the image scale
+        let ll_max_level = (image_scale as f64).log2().floor() as usize;
+
         // Perform Haar wavelet decomposition up to max_level
-        let mut size = HASH_SIZE;
-        let mut transformed_pixels = pixels.clone();
-        for _ in 0..max_level {
+        let mut coeffs = vec![pixels.clone()];
+        let mut current = pixels.clone();
+        for _ in 0..ll_max_level {
+            let size = (current.len() as f64).sqrt() as usize; // Assume a square image
             let half_size = size / 2;
-    
+
+            let mut next = vec![0.0; current.len()];
             for y in 0..half_size {
                 for x in 0..half_size {
-                    let top_left = transformed_pixels[y * size + x];
-                    let top_right = transformed_pixels[y * size + x + half_size];
-                    let bottom_left = transformed_pixels[(y + half_size) * size + x];
-                    let bottom_right = transformed_pixels[(y + half_size) * size + x + half_size];
-    
-                    let avg = (top_left + top_right + bottom_left + bottom_right) / 4.0;
-                    let hor_diff = (top_left + top_right - bottom_left - bottom_right) / 4.0;
-                    let ver_diff = (top_left - top_right + bottom_left - bottom_right) / 4.0;
-                    let diag_diff = (top_left - top_right - bottom_left + bottom_right) / 4.0;
-    
-                    transformed_pixels[y * size + x] = avg; // LL
-                    transformed_pixels[y * size + x + half_size] = hor_diff; // HL
-                    transformed_pixels[(y + half_size) * size + x] = ver_diff; // LH
-                    transformed_pixels[(y + half_size) * size + x + half_size] = diag_diff; // HH
+                    let top_left = current[y * size + x];
+                    let top_right = current[y * size + x + half_size];
+                    let bottom_left = current[(y + half_size) * size + x];
+                    let bottom_right = current[(y + half_size) * size + x + half_size];
+
+                    let avg = (top_left + top_right + bottom_left + bottom_right) / 4.0; // LL
+                    let hor_diff = (top_left + top_right - bottom_left - bottom_right) / 4.0; // HL
+                    let ver_diff = (top_left - top_right + bottom_left - bottom_right) / 4.0; // LH
+                    let diag_diff = (top_left - top_right - bottom_left + bottom_right) / 4.0; // HH
+
+                    let idx = y * size + x;
+                    next[idx] = avg; // Approximation coefficients (LL)
+                    next[idx + half_size] = hor_diff; // Horizontal details (HL)
+                    next[(y + half_size) * size + x] = ver_diff; // Vertical details (LH)
+                    next[(y + half_size) * size + x + half_size] = diag_diff; // Diagonal details (HH)
                 }
             }
-    
-            size /= 2;
+
+            coeffs.push(next.clone());
+            current = next;
         }
-    
-        // Extract the LL coefficients
-        let low_freq: Vec<f64> = transformed_pixels
+
+        // Zero out LL component at max level (making it less sensitive to large-scale image changes)
+        coeffs.last_mut().unwrap().iter_mut().for_each(|v| *v = 0.0);
+
+        // Use LL coefficients at appropriate level (based on HASH_SIZE)
+        let dwt_level = ll_max_level - (HASH_SIZE as f64).log2().floor() as usize;
+        let low_freq = coeffs[dwt_level]
             .iter()
-            .take(HASH_SIZE * HASH_SIZE)
             .cloned()
-            .collect();
-    
-        // Calculate median of the coefficients
+            .take(HASH_SIZE * HASH_SIZE)
+            .collect::<Vec<f64>>();
+
+        // Calculate median of coefficients
         let mut sorted_low_freq = low_freq.clone();
         sorted_low_freq.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
         let median = sorted_low_freq[HASH_SIZE * HASH_SIZE / 2];
-    
+
         // Generate hash
         let mut hash = 0u64;
         for (i, &val) in low_freq.iter().enumerate() {
@@ -238,7 +248,7 @@ impl ImageHash {
                 hash |= 1 << i;
             }
         }
-    
+
         Ok(Self { hash })
     }
 

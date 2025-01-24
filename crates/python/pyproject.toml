@@ -50,7 +50,6 @@ dev = [
 test = [
     "tox==4.16.0",
     "pytest==8.3.2",
-    "numpy==2.2.2",
 ]
 
 [tool.maturin]

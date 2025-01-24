@@ -6,14 +6,16 @@
 `imgdd` is a performance-first perceptual hashing library that combines Rust's speed with Python's accessibility, making it perfect for handling large datasets. Designed to quickly process nested folder structures, commonly found in image datasets.
 
 ## Features
-- **Multiple Hashing Algorithms**: Supports `aHash`, `mHash`, `dHash`, `pHash`, `wHash`.
+- **Multiple Hashing Algorithms**: Supports `aHash`, `dHash`, `mHash`, `pHash`, `wHash`.
 - **Multiple Filter Types**: Supports `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
 - **Identify Duplicates**: Harness Rust's performance to quickly identify duplicate hash pairs.
 - **Simplicity**: Simple interface with robust performance.
 
 ## Why imgdd?
-`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning fast 1:1 replacement with additional features. To ensure enhanced performance `imgdd` has been benchmarked against `imagehash`.
 
-## Planned Features
-- **Expanded Algorithm Support**: Add full support for additional perceptual hashing algorithms.
-- **Distance Metrics**: Output comprehensive distance metrics to evaluate algorithm and downsampling robustness.
+`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning-fast replacement with additional features. To ensure enhanced performance, `imgdd` has been benchmarked against `imagehash`.
+
+### Benchmark Summary - (imagehash vs imgdd)
+
+- In Python, **imgdd consistently outperforms imagehash by ~60%–96%**, demonstrating a significant reduction in hashing time per image.
+- Corelib rust benchmarks achieve **sub-1 ms performance** for dHash and aHash, while maintaining excellent speeds across all algorithms.

@@ -12,19 +12,20 @@
 - **Simplicity**: Simple interface with robust performance.
 
 ## Why imgdd?
-`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning fast 1:1 replacement with additional features. To ensure enhanced performance `imgdd` has been benchmarked against `imagehash`.
 
-[imaghash benchmark reference](https://content-blockchain.org/research/testing-different-image-hash-functions/)
+`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning-fast replacement with additional features. To ensure enhanced performance, `imgdd` has been benchmarked against `imagehash`.
 
-## Planned Features
-- **Expanded Algorithm Support**: Add full support for additional perceptual hashing algorithms.
-- **Distance Metrics**: Output comprehensive distance metrics to evaluate algorithm and downsampling robustness.
+### Benchmark Summary - (imagehash vs imgdd)
+
+- In Python, **imgdd consistently outperforms imagehash by ~60%–96%**, demonstrating a significant reduction in hashing time per image.
+- Corelib rust benchmarks achieve **sub-1 ms performance** for dHash and aHash, while maintaining excellent speeds across all algorithms.
 
 ---
 
 # Quick Start
 
 ## Installation
+
 ```bash
 pip install imgdd
 ```
@@ -32,25 +33,27 @@ pip install imgdd
 ## Usage Examples
 
 ### Hash Images
+
 ```python
 import imgdd as dd
 
 results = dd.hash(
     path="path/to/images",
     algo="dhash",  # Optional: default = dhash
-    filter="nearest"  # Optional: default = nearest
-    sort=True # Optional: default = False
+    filter="nearest"  # Optional: default = triangle
+    sort=False # Optional: default = False
 )
 print(results)
 ```
 
 ### Find Duplicates
+
 ```python
 duplicates = dd.dupes(
     path="path/to/images",
     algo="dhash", # Optional: default = dhash
-    filter="gaussian", # Optional: default = nearest
-    remove=True # Optional: default = False
+    filter="triangle", # Optional: default = triangle
+    remove=False # Optional: default = False
 )
 print(duplicates)
 ```

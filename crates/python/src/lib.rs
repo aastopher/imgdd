@@ -55,9 +55,9 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 ///
 /// results = dd.hash(
 ///     path="path/to/images",
-///     algo="dhash",  # Optional: default = dhash
-///     filter="triangle"  # Optional: default = triangle
-///     sort=True # Optional: default = False
+///     algo="dhash",
+///     filter="triangle"
+///     sort=False
 /// )
 /// print(results)
 /// ```
@@ -111,9 +111,9 @@ pub fn hash(
 /// ```python
 /// duplicates = dd.dupes(
 ///     path="path/to/images",
-///     algo="dhash", # Optional: default = dhash
-///     filter="triangle", # Optional: default = triangle
-///     remove=True # Optional: default = False
+///     algo="dhash",
+///     filter="triangle",
+///     remove=False
 /// )
 /// print(duplicates)
 /// ```

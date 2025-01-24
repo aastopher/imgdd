@@ -2,12 +2,11 @@ use image::{DynamicImage, GenericImageView};
 use rustdct::DctPlanner;
 use anyhow::Result;
 
-/// A structure representing the hash of an image.
+/// A structure representing the hash of an image as u64.
 ///
 /// The `ImageHash` structure is used to store and compare the hash of an image for deduplication purposes.
 #[derive(Eq, PartialEq, Hash, Clone)]
 pub struct ImageHash {
-    /// Computed hash value.
     hash: u64,
 }
 

@@ -46,5 +46,5 @@ nav:
   - Home: index.md
   - Quickstart: quickstart.md
   - Imgdd: imgdd.md
-  - Development: dev.md
   - Benchmarks: benches.md
+  - Development: dev.md

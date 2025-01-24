@@ -20,9 +20,9 @@ def benchmark_function(func, num_runs=50, warmup=3, **kwargs):
     
     timings = []
     for _ in range(num_runs):
-        start_time = time.perf_counter()
+        start_time = time.perf_counter_ns()
         func(**kwargs)
-        end_time = time.perf_counter()
+        end_time = time.perf_counter_ns()
         timings.append(end_time - start_time)
     
     return {
@@ -75,10 +75,10 @@ def imagehash_benchmark(path: str, algo: str, num_runs: int, num_images: int) ->
 def compare_benchmarks(imgdd_result: dict, imagehash_result: dict, algo: str):
     """Prints a comparison of benchmark results."""
     print(f"Benchmark Results for {algo} (in seconds per image):\n")
-    print(f"{'Metric':<12}{'imgdd':<12}{'imagehash':<12}")
-    print("-" * 36)
+    print(f"{'Metric':<12}{'imgdd (ns)':<12}{'imagehash (ns)':<12}")
+    print("-" * 46)
     for metric in ["min_time", "max_time", "avg_time", "median_time"]:
-        print(f"{metric:<12}{imgdd_result[metric]:<12.6f}{imagehash_result[metric]:<12.6f}")
+        print(f"{metric:<12}{imgdd_result[metric]:<12.6f} {imagehash_result[metric]:<12.6f}")
 
 
 def calc_diff(imgdd_result: dict, imagehash_result: dict):
@@ -95,8 +95,8 @@ def calc_diff(imgdd_result: dict, imagehash_result: dict):
 if __name__ == "__main__":
     IMAGE_DIR = "../../../imgs/test/"
     ALGORITHMS = ["dHash", "aHash", "pHash", "wHash"] # mHash has no equivalent in imagehash
-    NUM_RUNS = 50
-    WARM_UP = 3
+    NUM_RUNS = 100
+    WARM_UP = 5
 
     num_images = collect_image_count(IMAGE_DIR)
     if num_images == 0:

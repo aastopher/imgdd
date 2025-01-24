@@ -15,12 +15,15 @@ impl ImageHash {
     /// Computes the average hash (aHash) of a given image.
     ///
     /// # Arguments
-    ///
     /// * `image` - A reference to a `DynamicImage` for which the hash is to be calculated.
     ///
     /// # Returns
-    ///
     /// * An `ImageHash` instance containing the computed aHash value.
+    ///
+    /// # Details
+    /// **aHash (Average Hash):**
+    /// - Simple and fast to compute.
+    /// - Based on average brightness, making it suitable for detecting overall image similarity.
     #[inline]
     pub fn ahash(image: &DynamicImage) -> Result<Self> {
         // Collect pixel values from normalized 8x8 image
@@ -48,6 +51,11 @@ impl ImageHash {
     ///
     /// # Returns
     /// * An `ImageHash` instance containing the computed mHash value.
+    ///
+    /// # Details
+    /// **mHash (Median Hash):**
+    /// - Similar to aHash but uses the median brightness for more robustness to lighting changes.
+    /// - Suitable for images with varying brightness or exposure levels.
     #[inline]
     pub fn mhash(image: &DynamicImage) -> Result<Self> {
         // Collect pixel values from normalized 8x8 image
@@ -73,12 +81,15 @@ impl ImageHash {
     /// Computes the difference hash (dHash) of a given image.
     ///
     /// # Arguments
-    ///
     /// * `image` - A reference to a `DynamicImage` for which the hash is to be calculated.
     ///
     /// # Returns
-    ///
     /// * An `ImageHash` instance containing the computed dHash value.
+    ///
+    /// # Details
+    /// **dHash (Difference Hash):**
+    /// - Encodes relative changes between adjacent pixels.
+    /// - Resistant to small transformations like cropping or rotation.
     #[inline]
     pub fn dhash(image: &DynamicImage) -> Result<Self> {
         let mut hash = 0u64;
@@ -94,15 +105,16 @@ impl ImageHash {
 
     /// Computes the perceptual hash (pHash) of a given image.
     ///
-    /// pHash analyzes the frequency domain of the image using a Discrete Cosine Transform (DCT). 
-    /// It extracts low-frequency components, which are less susceptible to changes like resizing or compression, 
-    /// making it ideal for perceptual similarity comparisons.
-    ///
     /// # Arguments:
     /// * `image` - A reference to a `DynamicImage` for which the hash is to be calculated.
     ///
     /// # Returns:
     /// * An `ImageHash` instance containing the computed pHash value.
+    ///
+    /// # Details
+    /// **pHash (Perceptual Hash):**
+    /// - Analyzes the frequency domain using Discrete Cosine Transform (DCT).
+    /// - Focuses on low-frequency components, which are less affected by resizing or compression.
     #[inline]
     pub fn phash(image: &DynamicImage) -> Result<Self> {
         const IMG_SIZE: usize = 32;
@@ -170,15 +182,16 @@ impl ImageHash {
 
     /// Computes the wavelet hash (wHash) of a given image.
     ///
-    /// wHash applies Haar wavelet transformations multiple times to the input image,
-    /// removes the lowest LL frequency, then calculates the hash by comparing each
-    /// coefficient to the median.
-    ///
     /// # Arguments
     /// * `image` - A reference to a `DynamicImage` for which the hash is to be calculated.
     ///
     /// # Returns
     /// * An `ImageHash` instance containing the computed wHash value.
+    ///
+    /// # Details
+    /// **wHash (Wavelet Hash):**
+    /// - Uses Haar wavelet transformations to capture image features.
+    /// - Robust against scaling, rotation, and noise.
     #[inline]
     pub fn whash(image: &DynamicImage) -> Result<Self> {
         const HASH_SIZE: usize = 8; // Hash size (8x8)
@@ -190,7 +203,7 @@ impl ImageHash {
             .map(|p| p.2[0] as f64 / 255.0) // Normalize pixel values to [0.0, 1.0]
             .collect();
 
-        // Calculate maximum Haar decomposition level based on the image scale
+        // Calculate maximum Haar decomposition level based on image scale
         let ll_max_level = (image_scale as f64).log2().floor() as usize;
 
         // Perform Haar wavelet decomposition up to max_level

@@ -1,0 +1,22 @@
+name: Publish Rust Crate
+
+on:
+  push:
+    branches: "stage"
+    tags: "*.*.*"
+    
+jobs:
+  integration-tests:
+    uses: ./.github/workflows/integration.yml
+    with:
+      branch: ${{ github.ref_name }}
+
+  build:
+    needs: integration-tests
+    runs-on: ubuntu-latest
+    
+
+    steps:
+    # Checkout the code
+    - name: Checkout Code
+      uses: actions/checkout@v3

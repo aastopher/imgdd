@@ -43,7 +43,6 @@ jobs:
 
           # Extract version from the tag (py-v*)
           VERSION=$(echo "py-v0.1.0-stage" | sed 's/^py-v//')
-          echo "VERSION extracted: $VERSION"
 
           # Build and deploy using mike
           cd crates/python/

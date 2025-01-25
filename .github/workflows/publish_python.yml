@@ -41,9 +41,6 @@ jobs:
           # Fetch the gh-pages branch
           git fetch origin gh-pages
 
-          # Ensure the branch is up-to-date
-          git pull origin gh-pages
-
           # Extract version from the tag (py-v*)
           VERSION=$(echo "py-v0.1.0-stage" | sed 's/^py-v//')
           echo "VERSION extracted: $VERSION"

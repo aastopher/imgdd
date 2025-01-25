@@ -3,7 +3,7 @@ import imgdd as dd
 from pathlib import Path
 
 # Directory for testing
-TEST_IMAGE_DIR = Path(__file__).parent / "../../../../imgs/test/"
+TEST_IMAGE_DIR = Path(__file__).parent / "../../../../imgs/test/single"
 
 @pytest.mark.benchmark
 def test_imgdd_hash_benchmark(benchmark):

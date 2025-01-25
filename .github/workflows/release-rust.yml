@@ -1,9 +1,10 @@
 name: Publish Rust Crate
 
-on:
-  # push:
-  #   tags: "rs-v*"
+# on:
+#   push:
+#     tags: "rs-v*"
 
+on:
   workflow_dispatch:
     inputs:
       sha:

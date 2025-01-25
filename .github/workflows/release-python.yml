@@ -1,9 +1,11 @@
 name: Publish Python Package
 
-on:
-  # push:
-  #   tags: "py-v*"
+# on:
+#   push:
+#   tags: "py-v*"
 
+
+on:
   workflow_dispatch:
     inputs:
       sha:

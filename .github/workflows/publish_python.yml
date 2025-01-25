@@ -30,6 +30,7 @@ jobs:
 
       - name: Build and deploy documentation with mike
         run: |
+          cd crates/python/
           # Extract version from the tag (py-v*)
           VERSION=$(echo "${{ github.ref_name }}" | sed 's/^py-v//')
           # Build and deploy using mike

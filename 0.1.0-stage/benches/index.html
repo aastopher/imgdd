@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/aastopher/imgdd/0.1.0-stage/benches/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Benchmarks - imgdd</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../css/version-select.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Benchmarks";
+        var mkdocs_page_input_path = "benches.md";
+        var mkdocs_page_url = "/aastopher/imgdd/0.1.0-stage/benches/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> imgdd
+        </a>
+        <div class="version">
+          {'provider': 'mike'}
+        </div><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../quickstart/">Quickstart</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../imgdd/">Imgdd</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Benchmarks</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#cpu-details">CPU Details</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#rust-benchmarks">Rust Benchmarks</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#python-integration-benchmarks">Python Integration Benchmarks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#dhash">dHash</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ahash">aHash</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#phash">pHash</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#whash">wHash</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dev/">Development</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">imgdd</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Benchmarks</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="benchmarks">Benchmarks<a class="headerlink" href="#benchmarks" title="Permanent link">&para;</a></h1>
+<p>This section highlights the performance benchmarks for the hashing algorithms provided by <a href="https://github.com/aastopher/imgdd">imgdd</a> compared to the <a href="https://github.com/JohannesBuchner/imagehash">imagehash</a> library. The following benchmarks demonstrate significant speed improvements across supported algorithms.</p>
+<h2 id="cpu-details">CPU Details<a class="headerlink" href="#cpu-details" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Architecture</strong>: x86_64</li>
+<li><strong>CPU</strong>: Intel(R) Core(TM) i5-8365U CPU @ 1.60GHz<ul>
+<li><strong>Cores</strong>: 4 (8 Threads)</li>
+<li><strong>Max Frequency</strong>: 4.1 GHz</li>
+<li><strong>Base Frequency</strong>: 1.6 GHz</li>
+</ul>
+</li>
+</ul>
+<h2 id="rust-benchmarks">Rust Benchmarks<a class="headerlink" href="#rust-benchmarks" title="Permanent link">&para;</a></h2>
+<p>Below are local benchmarks taken using Criterion directly on the corelib Rust crate, based on the hardware details above.</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Time (ms)</th>
+<th>Measurements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aHash</td>
+<td>0.815</td>
+<td>100</td>
+</tr>
+<tr>
+<td>mHash</td>
+<td>1.369</td>
+<td>100</td>
+</tr>
+<tr>
+<td>dHash</td>
+<td>0.541</td>
+<td>100</td>
+</tr>
+<tr>
+<td>pHash</td>
+<td>23.709</td>
+<td>100</td>
+</tr>
+<tr>
+<td>wHash</td>
+<td>3.345</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="python-integration-benchmarks">Python Integration Benchmarks<a class="headerlink" href="#python-integration-benchmarks" title="Permanent link">&para;</a></h2>
+<p>The table below compares the local performance of <a href="https://github.com/aastopher/imgdd">imgdd</a> with the <a href="https://github.com/JohannesBuchner/imagehash">imagehash</a> library, based on the hardware details above.</p>
+<h3 id="dhash">dHash<a class="headerlink" href="#dhash" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th><code>imgdd</code> (ms)</th>
+<th><code>imagehash</code> (ms)</th>
+<th>Improvement (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Min Time</td>
+<td>1.788</td>
+<td>5.098</td>
+<td>64.92</td>
+</tr>
+<tr>
+<td>Max Time</td>
+<td>2.792</td>
+<td>7.684</td>
+<td>63.67</td>
+</tr>
+<tr>
+<td>Avg Time</td>
+<td>1.942</td>
+<td>5.645</td>
+<td>65.59</td>
+</tr>
+<tr>
+<td>Median Time</td>
+<td>1.888</td>
+<td>5.554</td>
+<td>66.02</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ahash">aHash<a class="headerlink" href="#ahash" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th><code>imgdd</code> (ms)</th>
+<th><code>imagehash</code> (ms)</th>
+<th>Improvement (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Min Time</td>
+<td>1.683</td>
+<td>5.666</td>
+<td>70.29</td>
+</tr>
+<tr>
+<td>Max Time</td>
+<td>3.207</td>
+<td>15.403</td>
+<td>79.18</td>
+</tr>
+<tr>
+<td>Avg Time</td>
+<td>2.055</td>
+<td>8.346</td>
+<td>75.38</td>
+</tr>
+<tr>
+<td>Median Time</td>
+<td>2.043</td>
+<td>7.683</td>
+<td>73.41</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phash">pHash<a class="headerlink" href="#phash" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th><code>imgdd</code> (ms)</th>
+<th><code>imagehash</code> (ms)</th>
+<th>Improvement (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Min Time</td>
+<td>1.798</td>
+<td>5.726</td>
+<td>68.60</td>
+</tr>
+<tr>
+<td>Max Time</td>
+<td>4.063</td>
+<td>20.099</td>
+<td>79.78</td>
+</tr>
+<tr>
+<td>Avg Time</td>
+<td>2.361</td>
+<td>7.896</td>
+<td>70.10</td>
+</tr>
+<tr>
+<td>Median Time</td>
+<td>2.138</td>
+<td>7.196</td>
+<td>70.29</td>
+</tr>
+</tbody>
+</table>
+<h3 id="whash">wHash<a class="headerlink" href="#whash" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th><code>imgdd</code> (ms)</th>
+<th><code>imagehash</code> (ms)</th>
+<th>Improvement (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Min Time</td>
+<td>1.750</td>
+<td>42.418</td>
+<td>95.87</td>
+</tr>
+<tr>
+<td>Max Time</td>
+<td>4.422</td>
+<td>97.446</td>
+<td>95.46</td>
+</tr>
+<tr>
+<td>Avg Time</td>
+<td>2.192</td>
+<td>62.656</td>
+<td>96.50</td>
+</tr>
+<tr>
+<td>Median Time</td>
+<td>1.978</td>
+<td>60.397</td>
+<td>96.72</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>In Python, <strong>imgdd consistently outperforms imagehash by ~60%–96%</strong>, demonstrating a significant reduction in hashing time per image.</li>
+<li>Corelib rust benchmarks achieve <strong>sub-1 ms performance</strong> for dHash and aHash, while maintaining excellent speeds across all algorithms.</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../imgdd/" class="btn btn-neutral float-left" title="Imgdd"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../dev/" class="btn btn-neutral float-right" title="Development">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/aastopher/imgdd" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../imgdd/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../dev/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+      <script src="../js/version-select.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

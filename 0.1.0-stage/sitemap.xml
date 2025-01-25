@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://github.com/aastopher/imgdd/0.1.0-stage/</loc>
+         <lastmod>2025-01-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://github.com/aastopher/imgdd/0.1.0-stage/benches/</loc>
+         <lastmod>2025-01-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://github.com/aastopher/imgdd/0.1.0-stage/dev/</loc>
+         <lastmod>2025-01-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://github.com/aastopher/imgdd/0.1.0-stage/imgdd/</loc>
+         <lastmod>2025-01-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://github.com/aastopher/imgdd/0.1.0-stage/quickstart/</loc>
+         <lastmod>2025-01-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>

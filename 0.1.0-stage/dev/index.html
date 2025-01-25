@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/aastopher/imgdd/0.1.0-stage/dev/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Development - imgdd</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../css/version-select.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Development";
+        var mkdocs_page_input_path = "dev.md";
+        var mkdocs_page_url = "/aastopher/imgdd/0.1.0-stage/dev/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> imgdd
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../quickstart/">Quickstart</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../imgdd/">Imgdd</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../benches/">Benchmarks</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Development</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#building">Building</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#python-package">Python package</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rust-crates">Rust Crates</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-tests">Running Tests</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#python-integration-tests">Python (integration) Tests</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rust-tests">Rust Tests</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-benchmarks">Running Benchmarks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#rust-benchmarks">Rust Benchmarks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#python-integration-benchmarks">Python (integration) Benchmarks</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#docs">Docs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#python-docs">Python Docs</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rust-docs">Rust Docs</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">imgdd</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Development</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h1>
+<h2 id="building">Building<a class="headerlink" href="#building" title="Permanent link">&para;</a></h2>
+<h3 id="python-package">Python package<a class="headerlink" href="#python-package" title="Permanent link">&para;</a></h3>
+<p>Build local python wheel file, from the project root:</p>
+<div class="codehilite"><pre><span></span><code>maturin<span class="w"> </span>build<span class="w"> </span>--release<span class="w"> </span>--manifest-path<span class="w"> </span>crates/python/Cargo.toml
+</code></pre></div>
+
+<h3 id="rust-crates">Rust Crates<a class="headerlink" href="#rust-crates" title="Permanent link">&para;</a></h3>
+<p>Build local rust crates, from the project root:</p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span>build
+</code></pre></div>
+
+<h2 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h2>
+<h3 id="python-integration-tests">Python (integration) Tests<a class="headerlink" href="#python-integration-tests" title="Permanent link">&para;</a></h3>
+<p>WIP</p>
+<h3 id="rust-tests">Rust Tests<a class="headerlink" href="#rust-tests" title="Permanent link">&para;</a></h3>
+<p>Run local tests, from the project root:</p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--features<span class="w"> </span>testing
+</code></pre></div>
+
+<h2 id="running-benchmarks">Running Benchmarks<a class="headerlink" href="#running-benchmarks" title="Permanent link">&para;</a></h2>
+<h3 id="rust-benchmarks">Rust Benchmarks<a class="headerlink" href="#rust-benchmarks" title="Permanent link">&para;</a></h3>
+<p>Run rust benchmarks, from the project root:</p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span>bench<span class="w"> </span>--features<span class="w"> </span>benchmarks
+</code></pre></div>
+
+<h3 id="python-integration-benchmarks">Python (integration) Benchmarks<a class="headerlink" href="#python-integration-benchmarks" title="Permanent link">&para;</a></h3>
+<p>Navigate to <code>benches</code> directory:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>crates/python/benches/
+</code></pre></div>
+
+<p>Install dependencies:</p>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div>
+
+<p>Run the benchmark script:</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>py_bench.py
+</code></pre></div>
+
+<h2 id="docs">Docs<a class="headerlink" href="#docs" title="Permanent link">&para;</a></h2>
+<h3 id="python-docs">Python Docs<a class="headerlink" href="#python-docs" title="Permanent link">&para;</a></h3>
+<p>Navigate to <code>python</code> directory:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>crates/python/
+</code></pre></div>
+
+<p>Install dependencies:</p>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</code></pre></div>
+
+<p>Build docs</p>
+<div class="codehilite"><pre><span></span><code>mkdocs<span class="w"> </span>build
+</code></pre></div>
+
+<p>Serve docs</p>
+<div class="codehilite"><pre><span></span><code>mkdocs<span class="w"> </span>serve
+</code></pre></div>
+
+<h3 id="rust-docs">Rust Docs<a class="headerlink" href="#rust-docs" title="Permanent link">&para;</a></h3>
+<p>Build docs</p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span>doc<span class="w"> </span>--no-deps
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../benches/" class="btn btn-neutral float-left" title="Benchmarks"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/aastopher/imgdd" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../benches/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+      <script src="../js/version-select.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

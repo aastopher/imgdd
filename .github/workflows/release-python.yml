@@ -42,7 +42,7 @@ jobs:
 
       - name: Build source distribution
         run: |
-          maturin sdist --manifest-path crates/python/Cargo.toml
+          maturin sdist --release --manifest-path crates/python/Cargo.toml
           ls -l target/wheels/
 
       - name: Test source distribution

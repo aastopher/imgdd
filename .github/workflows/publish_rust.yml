@@ -2,8 +2,7 @@ name: Publish Rust Crate
 
 on:
   push:
-    branches: "stage"
-    tags: "*.*.*"
+    tags: "rs-v*"
     
 jobs:
   integration-tests:

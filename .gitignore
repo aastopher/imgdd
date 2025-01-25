@@ -52,7 +52,7 @@ imgs/standard
 
 
 # testing
-**/.tox
+.codspeed
 
 # coverage
 **/htmlcov

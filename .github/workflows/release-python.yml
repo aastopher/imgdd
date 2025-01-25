@@ -23,6 +23,8 @@ jobs:
     uses: ./.github/workflows/coverage.yml
     with:
       branch: ${{ github.ref_name }}
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
   integration-tests:
     uses: ./.github/workflows/integration.yml
@@ -35,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Rust
         uses: actions-rs/toolchain@v1
@@ -44,7 +46,7 @@ jobs:
           override: true
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -110,6 +112,8 @@ jobs:
     needs: [create-sdist, build-wheels]
     name: Publish to PyPI
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     if: ${{ !inputs.dry-run }}
     steps:
       - name: Download all artifacts
@@ -120,7 +124,7 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          verbose: true
 
   dry-run-check:
     needs: [create-sdist, build-wheels]

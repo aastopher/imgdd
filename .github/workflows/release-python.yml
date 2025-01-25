@@ -3,16 +3,8 @@ name: Publish Python Package
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: Repo Branch
-        required: true
-        default: 'main'
-        type: choice
-        options:
-        - main
-        - stage
       dry-run:
-        description: Dry run
+        description: Dry run (skip publish)
         type: boolean
         default: false
 
@@ -21,25 +13,73 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  PYTHON_VERSION: '3.9'
   CARGO_INCREMENTAL: 0
   CARGO_NET_RETRY: 10
   RUSTUP_MAX_RETRIES: 10
 
 jobs:
-  build-and-publish:
-    name: Build and Publish Python Package
+  coverage:
+    uses: ./.github/workflows/coverage.yml
+    with:
+      branch: ${{ github.ref_name }}
+
+  integration-tests:
+    uses: ./.github/workflows/integration.yml
+    with:
+      branch: ${{ github.ref_name }}
+
+  create-sdist:
+    needs: [coverage, integration-tests]
+    name: Build and Test Source Distributions
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install maturin
+        run: pip install maturin
+
+      - name: Build source distribution
+        run: |
+          maturin sdist --manifest-path crates/python/Cargo.toml
+          ls -l target/wheels/
+
+      - name: Test source distribution
+        run: |
+          pip install --force-reinstall --verbose target/wheels/*.tar.gz
+          python -c 'import imgdd'  # Replace 'imgdd' with the correct import
+
+      - name: Upload sdist artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sdist-imgdd
+          path: target/wheels/*.tar.gz
+
+  build-wheels:
+    needs: [coverage, integration-tests]
+    name: Build Wheels
+    runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-    permissions:
-      contents: write
+        architecture: [x86-64, aarch64]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.sha || 'main' }}
 
       - name: Install Rust
         uses: actions-rs/toolchain@v1
@@ -55,23 +95,45 @@ jobs:
       - name: Install maturin
         run: pip install maturin
 
-      - name: Build Python wheels
+      - name: Build wheel
         run: |
           maturin build --release --manifest-path crates/python/Cargo.toml
-          ls -l target/wheels
+          ls -l target/wheels/
 
-      - name: Build Python source distributions
-        run: |
-          maturin sdist --manifest-path crates/python/Cargo.toml
-          ls -l dist
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheel-${{ matrix.platform }}-${{ matrix.architecture }}-${{ matrix.python-version }}
+          path: target/wheels/*.whl
 
-      - name: Dry run or Publish
-        if: ${{ inputs.dry-run }}
-        run: |
-          echo "Dry run: Skipping upload to PyPI."
+  publish-to-pypi:
+    needs: [create-sdist, build-wheels]
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.dry-run }}
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: dist
 
       - name: Publish to PyPI
-        if: ${{ !inputs.dry-run }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+
+  dry-run-check:
+    needs: [create-sdist, build-wheels]
+    name: Dry Run
+    runs-on: ubuntu-latest
+    if: ${{ inputs.dry-run }}
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: dist
+
+      - name: Dry run output
+        run: |
+          echo "Dry run completed. Artifacts are built and available:"
+          ls -l dist/

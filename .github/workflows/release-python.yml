@@ -19,6 +19,13 @@ env:
   RUSTUP_MAX_RETRIES: 10
 
 jobs:
+  benchmark:
+    uses: ./.github/workflows/benchmark.yml
+    with:
+      branch: ${{ github.ref_name }}
+    secrets:
+      codspeed_token: ${{ secrets.CODSPEED_TOKEN }}
+
   coverage:
     uses: ./.github/workflows/coverage.yml
     with:
@@ -32,7 +39,7 @@ jobs:
       branch: ${{ github.ref_name }}
 
   create-sdist:
-    needs: [coverage, integration-tests]
+    needs: [benchmark, coverage, integration-tests]
     name: Build and Test Source Distributions
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +77,7 @@ jobs:
           path: target/wheels/*.tar.gz
 
   build-wheels:
-    needs: [coverage, integration-tests]
+    needs: [benchmark, coverage, integration-tests]
     name: Build Wheels
     runs-on: ${{ matrix.platform }}
     strategy:

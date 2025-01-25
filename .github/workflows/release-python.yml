@@ -43,7 +43,7 @@ jobs:
       - name: Build source distribution
         run: |
           maturin sdist --manifest-path crates/python/Cargo.toml
-          ls -l dist/
+          ls -l target/wheels/
 
       - name: Test source distribution
         run: |
@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: sdist
-          path: dist/*.tar.gz
+          path: target/wheels/*.tar.gz
 
   build-wheels:
     name: Build Wheels

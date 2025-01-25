@@ -12,12 +12,6 @@ theme:
       - python
       - rust
 
-extra:
-  version:
-    provider: mike
-    default: latest
-    alias: true
-
 plugins:
   - include-markdown
   - mkdocstrings:

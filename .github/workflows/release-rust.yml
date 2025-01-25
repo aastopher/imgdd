@@ -1,15 +1,16 @@
 name: Publish Rust Crate
 
-# on:
-#   push:
-#     tags: "rs-v*"
-
 on:
   workflow_dispatch:
     inputs:
-      sha:
-        description: Commit SHA
-        type: string
+      branch:
+        description: Branch to run
+        required: true
+        default: 'main'
+        type: choice
+        options:
+        - main
+        - stage
       dry-run:
         description: Dry run
         type: boolean

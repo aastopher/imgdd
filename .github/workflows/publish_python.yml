@@ -11,7 +11,7 @@ jobs:
       branch: ${{ github.ref_name }}
 
   publish-docs:
-    needs: integration-tests
+    # needs: integration-tests
     name: Release docs page
     runs-on: ubuntu-latest
     permissions:

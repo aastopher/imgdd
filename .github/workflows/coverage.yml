@@ -6,15 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-    inputs:
-      branch:
-        description: Repo Branch
-        required: true
-        default: 'main'
-        type: choice
-        options:
-        - main
-        - stage
   
 jobs:
   build:

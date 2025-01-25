@@ -3,14 +3,6 @@ name: Publish Python Package
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: Repo Branch
-        required: true
-        default: 'main'
-        type: choice
-        options:
-        - main
-        - stage
       dry-run:
         description: Dry run
         type: boolean
@@ -38,8 +30,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.sha || 'main' }}
 
       - name: Install Rust
         uses: actions-rs/toolchain@v1

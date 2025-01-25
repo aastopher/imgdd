@@ -3,14 +3,6 @@ name: Publish Rust Crate
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: Repo Branch
-        required: true
-        default: 'main'
-        type: choice
-        options:
-        - main
-        - stage
       dry-run:
         description: Dry run
         type: boolean

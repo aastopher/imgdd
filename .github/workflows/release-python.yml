@@ -19,13 +19,18 @@ env:
   RUSTUP_MAX_RETRIES: 10
 
 jobs:
+  coverage:
+    uses: ./.github/workflows/coverage.yml
+    with:
+      branch: ${{ github.ref_name }}
+
   integration-tests:
     uses: ./.github/workflows/integration.yml
     with:
       branch: ${{ github.ref_name }}
 
   create-sdist:
-    needs: integration-tests
+    needs: [coverage, integration-tests]
     name: Build and Test Source Distributions
     runs-on: ubuntu-latest
     steps:
@@ -63,7 +68,7 @@ jobs:
           path: target/wheels/*.tar.gz
 
   build-wheels:
-    needs: integration-tests
+    needs: [coverage, integration-tests]
     name: Build Wheels
     runs-on: ${{ matrix.platform }}
     strategy:

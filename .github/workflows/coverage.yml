@@ -5,6 +5,12 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: "main"
   workflow_dispatch:
   
 jobs:

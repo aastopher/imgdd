@@ -37,10 +37,18 @@ jobs:
           # Configure git
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@users.noreply.github.com"
-          git pull
+
+          # Fetch the gh-pages branch and switch to it
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          # Ensure the branch is up-to-date
+          git pull origin gh-pages
+
           # Extract version from the tag (py-v*)
-          VERSION=$(echo "${{ github.ref_name }}" | sed 's/^py-v//')
+          VERSION=$(echo "py-v0.1.0-stage" | sed 's/^py-v//')
           echo "VERSION extracted: $VERSION"
+
           # Build and deploy using mike
           cd crates/python/
           mike deploy --push --branch gh-pages "$VERSION" latest

@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       dry-run:
-        description: Dry run
+        description: Dry run (skip publish)
         type: boolean
         default: false
-        
+
 jobs:
   coverage:
     uses: ./.github/workflows/coverage.yml

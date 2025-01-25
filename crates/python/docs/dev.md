@@ -40,12 +40,23 @@ Run rust benchmarks, from the project root:
 cargo bench --features benchmarks
 ```
 
-### Python (integration) Benchmarks
+### Python Benchmarks
+Navigate to `python` directory:
+```bash
+cd crates/python/
+```
 
-Navigate to `benches` directory:
+Run python benchmarks, from the project root:
+```bash
+pytest -m benchmark --codspeed -v
+```
+    
+## Imgdd vs Imagehash Comparison
+
+Navigate to `comparison` directory:
     
 ```bash
-cd crates/python/benches/
+cd crates/python/comparison/
 ```
     
 Install dependencies:
@@ -54,12 +65,11 @@ Install dependencies:
 pip install -r requirements.txt
 ```
     
-Run the benchmark script:
+Run the compare script:
     
 ```bash
-python py_bench.py
+python compare.py
 ```
-    
 
 ## Docs
 

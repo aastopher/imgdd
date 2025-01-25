@@ -5,7 +5,7 @@ import pytest
 
 @pytest.fixture
 def test_images_path():
-    return Path(__file__).parent / "../../../imgs/test" 
+    return Path(__file__).parent / "../../../../imgs/test/" 
 
 
 def test_hash_required(test_images_path):

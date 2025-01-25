@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: sdist-imgdd
-          path: dist/*.tar.gz
+          path: target/wheels/*.tar.gz
 
   build-wheels:
     name: Build Wheels

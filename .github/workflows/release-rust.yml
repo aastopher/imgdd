@@ -13,6 +13,8 @@ jobs:
     uses: ./.github/workflows/coverage.yml
     with:
       branch: ${{ github.ref_name }}
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
   integration-tests:
     uses: ./.github/workflows/integration.yml

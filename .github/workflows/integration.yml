@@ -33,4 +33,4 @@ jobs:
       - name: Run tests
         run: |
             cd crates/python/
-            tox -e ${{ matrix.python-version }}
+            pytest

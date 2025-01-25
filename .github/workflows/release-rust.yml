@@ -3,6 +3,16 @@ name: Publish Rust Crate
 on:
   push:
     tags: "rs-v*"
+
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit SHA
+        type: string
+      dry-run:
+        description: Dry run
+        type: boolean
+        default: false
     
 jobs:
   integration-tests:
@@ -19,3 +29,15 @@ jobs:
     # Checkout the code
     - name: Checkout Code
       uses: actions/checkout@v3
+
+    - name: Dry run or Publish
+      if: ${{ inputs.dry-run }}
+      run: |
+        echo "Dry run: Skipping upload to Crate.io."
+
+    # UPDATE COPIED PYPI BLOCK
+    # - name: Publish to PyPi
+    #   if: ${{ !inputs.dry-run }}
+    #   uses: pypa/gh-action-pypi-publish@release/v1
+    #   with:
+    #     password: ${{ secrets.PYPI_API_TOKEN }}

@@ -47,7 +47,7 @@ jobs:
 
       - name: Test source distribution
         run: |
-          pip install --force-reinstall --verbose dist/*.tar.gz
+          pip install --force-reinstall --verbose target/wheels/*.tar.gz
           python -c 'import imgdd'  # Replace 'imgdd' with the correct import
 
       - name: Upload sdist artifact

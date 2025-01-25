@@ -28,7 +28,14 @@ jobs:
           cd crates/python/
           pip install .[dev]
 
+      
       - name: Build and deploy documentation with mike
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: gh-pages 
+          USER_NAME: "doc publish action"
+          USER_EMAIL: "actions@users.noreply.github.com"
+
         run: |
           cd crates/python/
           # Extract version from the tag (py-v*)

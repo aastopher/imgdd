@@ -32,6 +32,7 @@ plugins:
           options:
             show_signature: false
   - search
+  - mike
 
 markdown_extensions:
   - admonition

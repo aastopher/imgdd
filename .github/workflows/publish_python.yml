@@ -14,6 +14,8 @@ jobs:
     needs: integration-tests
     name: Release docs page
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -27,18 +29,15 @@ jobs:
         run: |
           cd crates/python/
           pip install .[dev]
-
-      - name: Configure Publish
-        run: |
-          # Configure git
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@users.noreply.github.com"
       
       - name: Build and Deploy Documentation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd crates/python/
+          # Configure git
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
           # Extract version from the tag (py-v*)
           VERSION=$(echo "${{ github.ref_name }}" | sed 's/^py-v//')
           echo "VERSION extracted: $VERSION"

@@ -53,22 +53,27 @@ jobs:
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sdist-${{ matrix.package }}
-          path: target/wheels/*.tar.gz
+          name: sdist-imgdd
+          path: dist/*.tar.gz
 
   build-wheels:
     name: Build Wheels
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
-        package: [imgdd]
         platform: [ubuntu-latest, macos-latest, windows-latest, windows-arm64-16gb]
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         architecture: [x86-64, aarch64]
         exclude:
-          - os: windows-latest
+          # Exclude all versions below 3.11 for Windows ARM
+          - platform: windows-arm64-16gb
+            python-version: "3.9"
+          - platform: windows-arm64-16gb
+            python-version: "3.10"
+          # Exclude other unsupported combinations
+          - platform: windows-latest
             architecture: aarch64
-          - os: windows-arm64-16gb
+          - platform: windows-arm64-16gb
             architecture: x86-64
 
     steps:

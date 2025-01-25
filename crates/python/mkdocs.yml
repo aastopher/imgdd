@@ -4,10 +4,11 @@ site_description: "Rust-based Python library for image deduplication with percep
 repo_url: https://github.com/aastopher/imgdd
 repo_name: GitHub
 edit_uri: ""
-
 extra:
   version:
     provider: mike
+    default: latest
+    alias: true
 
 theme: 
   name: readthedocs

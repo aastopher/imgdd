@@ -1,0 +1,51 @@
+name: Publish Python Documentation
+
+on:
+  push:
+    tags: "py-v*"
+    
+jobs:
+  integration-tests:
+    uses: ./.github/workflows/integration.yml
+    with:
+      branch: ${{ github.ref_name }}
+
+  publish-docs:
+    needs: integration-tests
+    name: Release docs page
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install Dependencies
+        run: |
+          cd crates/python/
+          pip install .[dev]
+      
+      - name: Build and Deploy Documentation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Configure git
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+          # Fetch the gh-pages branch
+          git fetch origin gh-pages
+
+          # Extract version from the tag (py-v*)
+          VERSION=$(echo "py-v0.1.0-stage" | sed 's/^py-v//')
+          echo "VERSION extracted: $VERSION"
+
+          # Build and deploy using mike
+          cd crates/python/
+          mike deploy --push --branch gh-pages "$VERSION" latest
+          mike set-default --push --branch gh-pages latest

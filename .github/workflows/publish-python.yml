@@ -1,0 +1,40 @@
+name: Publish Python Package
+
+on:
+  push:
+    tags: "py-v*"
+    
+jobs:
+  integration-tests:
+    uses: ./.github/workflows/integration.yml
+    with:
+      branch: ${{ github.ref_name }}
+
+  publish:
+    needs: integration-tests
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+    #   - name: Set up Python
+    #     uses: actions/setup-python@v4
+    #     with:
+    #       python-version: 3.13
+
+    #   - name: Install dependencies
+    #     run: |
+    #       python -m pip install --upgrade pip
+    #       pip install build
+    #       pip install .
+
+    #   - name: Create Distributions
+    #     run: |
+    #       python -m build --sdist
+    #       python -m build --wheel
+
+    #   - name: Publish package distributions to PyPI
+    #     uses: pypa/gh-action-pypi-publish@release/v1

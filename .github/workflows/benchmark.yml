@@ -15,13 +15,7 @@ on:
                 type: string
                 default: "main"
     workflow_dispatch:
-        inputs:
-            dry-run:
-                description: Dry run
-                type: boolean
-                default: false
   
-
 jobs:
   build-and-test:
     name: Build and Benchmark
@@ -43,7 +37,6 @@ jobs:
 
       - name: Run benchmark tests
         uses: CodSpeedHQ/action@v3
-        if: ${{ !inputs.dry-run }}
         with:
           working-directory: crates/python
           run: pytest -m benchmark --codspeed -v

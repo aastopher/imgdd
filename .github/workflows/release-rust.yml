@@ -22,7 +22,7 @@ jobs:
       branch: ${{ github.ref_name }}
 
   build:
-    needs: [coverage,integration-tests]
+    needs: [coverage, integration-tests]
     runs-on: ubuntu-latest
     
     steps:

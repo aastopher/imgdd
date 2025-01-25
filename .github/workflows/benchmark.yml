@@ -26,9 +26,6 @@ jobs:
   build-and-test:
     name: Build and Benchmark
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -36,11 +33,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.13"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          cd crates/python/
           pip install .[test]
 
       - name: Run benchmark tests

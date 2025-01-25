@@ -98,7 +98,7 @@ jobs:
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v3
         with:
-          name: wheel-${{ matrix.platform }}-${{ matrix.python-version }}
+          name: wheel-${{ matrix.platform }}-${{ matrix.architecture }}-${{ matrix.python-version }}
           path: target/wheels/*.whl
 
   publish-to-pypi:

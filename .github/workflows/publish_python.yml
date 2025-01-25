@@ -28,14 +28,12 @@ jobs:
           cd crates/python/
           pip install .[dev]
 
-      - name: Build and Deploy Docs with Mike
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and deploy documentation with mike
         run: |
           # Extract version from the tag (py-v*)
           VERSION=$(echo "${{ github.ref_name }}" | sed 's/^py-v//')
           # Build and deploy using mike
-          mike deploy --push --branch gh-pages --prefix "" "$VERSION" latest
+          mike deploy --push --branch gh-pages "$VERSION" latest
           mike set-default --push --branch gh-pages latest
 
   # publish:

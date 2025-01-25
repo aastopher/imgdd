@@ -38,9 +38,8 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@users.noreply.github.com"
 
-          # Fetch the gh-pages branch and switch to it
+          # Fetch the gh-pages branch
           git fetch origin gh-pages
-          git checkout gh-pages
 
           # Ensure the branch is up-to-date
           git pull origin gh-pages

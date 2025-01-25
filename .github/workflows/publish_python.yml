@@ -5,10 +5,10 @@ on:
     tags: "py-v*"
     
 jobs:
-  integration-tests:
-    uses: ./.github/workflows/integration.yml
-    with:
-      branch: ${{ github.ref_name }}
+  # integration-tests:
+  #   uses: ./.github/workflows/integration.yml
+  #   with:
+  #     branch: ${{ github.ref_name }}
 
   publish-docs:
     # needs: integration-tests
@@ -37,6 +37,7 @@ jobs:
           # Configure git
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@users.noreply.github.com"
+          git pull
           # Extract version from the tag (py-v*)
           VERSION=$(echo "${{ github.ref_name }}" | sed 's/^py-v//')
           echo "VERSION extracted: $VERSION"

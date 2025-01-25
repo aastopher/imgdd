@@ -1,12 +1,16 @@
 name: Python Integration Tests
 
 on:
-    workflow_call:
-      inputs:
-        branch:
-          required: false
-          type: string
-          default: "main"
+  push:
+    branches: "main"
+  pull_request:
+    branches: "main" 
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: "main"
 
 jobs:
   build-and-test:

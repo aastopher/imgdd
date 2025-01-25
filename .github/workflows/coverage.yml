@@ -2,10 +2,20 @@ name: Code Coverage
 
 on:
   push:
-    branches: [ "main", "stage" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Repo Branch
+        required: true
+        default: 'main'
+        type: choice
+        options:
+        - main
+        - stage
+  
 jobs:
   build:
     runs-on: ubuntu-latest

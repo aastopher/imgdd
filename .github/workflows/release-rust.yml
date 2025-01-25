@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: Branch to run
+        description: Repo Branch
         required: true
         default: 'main'
         type: choice

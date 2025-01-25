@@ -61,9 +61,14 @@ jobs:
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest, windows-latest, windows-arm64-16gb]
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         architecture: [x86-64, aarch64]
+        exclude:
+          - os: windows-latest
+            architecture: aarch64
+          - os: windows-arm64-16gb
+            architecture: x86-64
 
     steps:
       - name: Checkout code

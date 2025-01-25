@@ -1,0 +1,34 @@
+[package]
+name = "imgdd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+
+[dependencies]
+corelib = { path = "../corelib" }
+image.workspace = true
+anyhow.workspace = true
+criterion = { version = "0.5.1", optional = true }
+
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[features]
+default = []
+benchmark = ["criterion"]
+testing = []
+
+
+[lib]
+name = "imgdd"
+crate-type = ["rlib"]
+
+
+[[bench]]
+name = "rust_benches"
+path = "benches/rust_benches.rs"
+harness = false
+required-features = ["benchmark"]

@@ -1,0 +1,39 @@
+site_name: imgdd
+site_url: https://github.com/aastopher/imgdd
+site_description: "Rust-based Python library for image deduplication with perceptual hashing."
+repo_url: https://github.com/aastopher/imgdd
+repo_name: GitHub
+edit_uri: ""
+
+theme: 
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+      - python
+      - rust
+
+plugins:
+  - include-markdown
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_signature: false
+  - search
+  - mike
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - codehilite:
+      guess_lang: false 
+      use_pygments: true
+  - fenced_code 
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Imgdd: imgdd.md
+  - Benchmarks: benches.md
+  - Development: dev.md

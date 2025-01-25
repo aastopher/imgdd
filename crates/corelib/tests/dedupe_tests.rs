@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use imgdd::dedupe::*;
+    use corelib::dedupe::*;
     use image::imageops::FilterType;
     use image::{DynamicImage, Rgba};
     use std::path::PathBuf;
@@ -12,17 +12,20 @@ mod tests {
         DynamicImage::ImageRgba8(image::ImageBuffer::from_pixel(9, 8, Rgba([255, 0, 0, 255])))
     }
 
-
     #[test]
     fn test_collect_hashes() {
         let temp_dir = tempfile::tempdir().unwrap();
         let image_path = temp_dir.path().join("test_image.png");
         create_mock_image().save(&image_path).unwrap();
-
-        let hashes = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, "dhash")
-            .unwrap();
-        assert_eq!(hashes.len(), 1);
+    
+        let algorithms = ["dhash", "ahash", "mhash", "phash", "whash"];
+        for algo in algorithms {
+            let hashes = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, algo)
+                .unwrap();
+            assert_eq!(hashes.len(), 1, "Algorithm {} failed", algo);
+        }
     }
+    
 
     #[test]
     fn test_sort_hashes() {
@@ -74,10 +77,10 @@ mod tests {
         let temp_dir = tempfile::tempdir().unwrap();
         let invalid_image_path = temp_dir.path().join("nonexistent_image.jpg");
 
-        // Ensure the file does not exist
+        // Assert file does not exist
         assert!(!invalid_image_path.exists());
 
-        // Attempt to open a non-existent image to trigger the error
+        // Attempt to open non-existent image to trigger error
         let result = open_image(&invalid_image_path);
         assert!(result.is_err());
 
@@ -142,7 +145,5 @@ mod tests {
         // Second file should not exist, and removal should fail gracefully
         assert!(!file_path_2.exists(), "File {} should not exist.", file_path_2.display());
     }
-    
-
     
 }

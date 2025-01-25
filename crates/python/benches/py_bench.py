@@ -7,20 +7,22 @@ import os
 
 
 def collect_image_count(path: str) -> int:
-    """Count the number of images in given directory."""
+    """Count number of images in given directory."""
     return sum(
         len(files) for _, _, files in os.walk(path)
         if any(file.lower().endswith((".png", ".jpg", ".jpeg")) for file in files)
     )
 
-
-def benchmark_function(func, num_runs=10, **kwargs) -> dict:
+def benchmark_function(func, num_runs=50, warmup=3, **kwargs):
     """Benchmark a function and return timing metrics."""
+    for _ in range(warmup):  # Warm-up runs
+        func(**kwargs)
+    
     timings = []
     for _ in range(num_runs):
-        start_time = time.perf_counter()
+        start_time = time.perf_counter_ns()
         func(**kwargs)
-        end_time = time.perf_counter()
+        end_time = time.perf_counter_ns()
         timings.append(end_time - start_time)
     
     return {
@@ -34,7 +36,7 @@ def benchmark_function(func, num_runs=10, **kwargs) -> dict:
 def imgdd_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dict:
     """Benchmark imgdd library."""
     def run_imgdd_hash():
-        dd.hash(path=path, algo=algo)
+        dd.hash(path=path, algo=algo, filter="Nearest", sort=False)
 
     results = benchmark_function(run_imgdd_hash, num_runs=num_runs)
     for key in results:
@@ -44,38 +46,39 @@ def imgdd_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dic
 
 def imagehash_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dict:
     """Benchmark imagehash library."""
-    def run_imagehash():
+    def run_imagehash(algo: str):
         for root, _, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
                 try:
+                    algo = algo.lower()
                     image = Image.open(file_path)
-                    if algo == "aHash":
+                    if algo == "ahash":
                         imagehash.average_hash(image)
-                    elif algo == "pHash":
+                    elif algo == "phash":
                         imagehash.phash(image)
-                    elif algo == "dHash":
+                    elif algo == "dhash":
                         imagehash.dhash(image)
-                    elif algo == "wHash":
+                    elif algo == "whash":
                         imagehash.whash(image)
                     else:
                         raise ValueError(f"Unsupported algorithm: {algo}")
                 except Exception as e:
                     print(f"Error processing {file_path}: {e}")
     
-    results = benchmark_function(run_imagehash, num_runs=num_runs)
+    results = benchmark_function(run_imagehash, num_runs=num_runs, algo=algo)
     for key in results:
         results[key] /= num_images  # Convert to per-image timing
     return results
 
 
-def compare_benchmarks(imgdd_result: dict, imagehash_result: dict):
+def compare_benchmarks(imgdd_result: dict, imagehash_result: dict, algo: str):
     """Prints a comparison of benchmark results."""
-    print("Benchmark Results (in seconds per image):\n")
-    print(f"{'Metric':<12}{'imgdd':<12}{'imagehash':<12}")
-    print("-" * 36)
+    print(f"Benchmark Results for {algo} (in seconds per image):\n")
+    print(f"{'Metric':<12}{'imgdd (ns)':<12}{'imagehash (ns)':<12}")
+    print("-" * 46)
     for metric in ["min_time", "max_time", "avg_time", "median_time"]:
-        print(f"{metric:<12}{imgdd_result[metric]:<12.6f}{imagehash_result[metric]:<12.6f}")
+        print(f"{metric:<12}{imgdd_result[metric]:<12.6f} {imagehash_result[metric]:<12.6f}")
 
 
 def calc_diff(imgdd_result: dict, imagehash_result: dict):
@@ -86,30 +89,32 @@ def calc_diff(imgdd_result: dict, imagehash_result: dict):
     for metric in ["min_time", "max_time", "avg_time", "median_time"]:
         difference = ((imagehash_result[metric] - imgdd_result[metric]) / imagehash_result[metric]) * 100
         print(f"{metric:<12}{difference:<15.2f}")
+    print("\n")
 
 
 if __name__ == "__main__":
-    IMAGE_DIR = "../imgs/test/"
-    ALGORITHM = "dHash" 
-    NUM_RUNS = 50
+    IMAGE_DIR = "../../../imgs/test/"
+    ALGORITHMS = ["dHash", "aHash", "pHash", "wHash"] # mHash has no equivalent in imagehash
+    NUM_RUNS = 100
+    WARM_UP = 5
 
     num_images = collect_image_count(IMAGE_DIR)
     if num_images == 0:
-        print("No images found in the directory.")
-        exit(1)
+        raise ValueError("No images found in directory.")
 
     print(f"Found {num_images} images in {IMAGE_DIR}. Running benchmarks for {NUM_RUNS} runs...\n")
 
-    # Benchmark imgdd
-    imgdd_result = imgdd_benchmark(IMAGE_DIR, ALGORITHM, NUM_RUNS, num_images)
-    # print(f"imgdd benchmark result (per image): {imgdd_result}\n")
+    for algo in ALGORITHMS:
+        print(f"Benchmarking {algo}...\n")
+        
+        # Benchmark imgdd
+        imgdd_result = imgdd_benchmark(IMAGE_DIR, algo, NUM_RUNS, num_images)
 
-    # Benchmark imagehash
-    imagehash_result = imagehash_benchmark(IMAGE_DIR, ALGORITHM, NUM_RUNS, num_images)
-    # print(f"imagehash benchmark result (per image): {imagehash_result}\n")
+        # Benchmark imagehash
+        imagehash_result = imagehash_benchmark(IMAGE_DIR, algo, NUM_RUNS, num_images)
 
-    # Compare results
-    compare_benchmarks(imgdd_result, imagehash_result)
+        # Compare results
+        compare_benchmarks(imgdd_result, imagehash_result, algo)
 
-    # Calculate difference in percentage
-    calc_diff(imgdd_result, imagehash_result)
+        # Calculate percentage difference
+        calc_diff(imgdd_result, imagehash_result)

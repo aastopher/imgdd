@@ -1,0 +1,40 @@
+name: Python Integration Tests
+
+on:
+  push:
+    branches: "main"
+  pull_request:
+    branches: "main" 
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: "main"
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          cd crates/python/
+          pip install .[test]
+
+      - name: Run tests
+        run: |
+            cd crates/python/
+            pytest

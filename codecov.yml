@@ -1,6 +1,6 @@
 ignore:
-  - "__init__.py"
-  - "imgdd.pyi"
-  - src/lib.rs
-  - "benches"
-  - "tests"
+  - "crates/python/**/*" # ignore pyo3 lib in favor of python integration testing / benchmarking
+  - "crates/corelib/benches/**/*"
+  - "crates/corelib/tests/**/*"
+  - "crates/rust/benches/**/*"
+  - "crates/rust/tests/**/*"

@@ -53,7 +53,7 @@ jobs:
       - name: Build Python source distributions
         run: |
           maturin sdist --manifest-path crates/python/Cargo.toml
-          ls -l dist
+          ls -l target/wheels
 
       - name: Dry run or Publish
         if: ${{ inputs.dry-run }}

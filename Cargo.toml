@@ -9,6 +9,18 @@ version = "0.1.0"
 edition = "2021"
 license = "GNU GPLv3"
 authors = ["Aaron Stopher <aaron.stopher@gmail.com>"]
+description = """
+performance-first perceptual hashing library; perfect for handling large datasets. 
+Designed to quickly process nested folder structures, commonly found in image datasets
+"""
+repository = "https://github.com/aastopher/imgdd"
+documentation = "https://github.com/aastopher/imgdd"
+homepage = "https://github.com/aastopher/imgdd"
+
+keywords = ["imagehash", "hash", "perceptual hash", "deduplication", "image deduplication", "ahash", "mhash", "dhash", "phash", "whash"]
+readme = "./README.md" 
+categories = ["image-processing", "utilities", "image-hash", "hashing"]
+
 
 [workspace.dependencies]
 image = "0.25.5"

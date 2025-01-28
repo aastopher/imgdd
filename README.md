@@ -35,7 +35,7 @@ import imgdd as dd
 results = dd.hash(
     path="path/to/images",
     algo="dhash",  # Optional: default = dhash
-    filter="nearest"  # Optional: default = triangle
+    filter="triangle"  # Optional: default = triangle
     sort=False # Optional: default = False
 )
 print(results)

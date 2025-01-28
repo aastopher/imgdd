@@ -90,8 +90,8 @@ jobs:
             publish \
             --allow-branch HEAD \
             --no-confirm \
-            --dry-run
             --manifest-path crates/${{ inputs.crate }}/Cargo.toml
+            --dry-run
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 

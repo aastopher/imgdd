@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
-        rust-version: ["stable"]
+        rust-version: ["stable", "beta", "nightly"]
         architecture: [x86_64, aarch64]
 
     steps:

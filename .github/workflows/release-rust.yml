@@ -197,7 +197,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.crate }}-${{ matrix.platform }}-${{ matrix.architecture }}
-          path: crates/target/*.crate
+          path: target/package/*.crate
 
   # dry-run:
   #   needs: test-packaging
@@ -240,12 +240,12 @@ jobs:
       - name: Download All Crate Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: crates/target/*.crate
+          name: crates/*.crate
 
       - name: Dry Run Output
         run: |
           echo "Dry run completed. Artifacts are built and available:"
-          ls -l crates/target/*.crate
+          ls -l crates/*.crate
 
 
   publish:

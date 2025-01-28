@@ -37,7 +37,7 @@ mod tests {
         let temp_dir = tempdir().unwrap();
         let image_path = temp_dir.path().join("test_image.png");
 
-        // Create a mock image
+        // Create an invalid image
         let mut file = File::create(&image_path).unwrap();
         file.write_all(b"not a valid image").unwrap();
 
@@ -57,7 +57,6 @@ mod tests {
         let img_dir = PathBuf::from("../../imgs/test/apple_pie");
         let result = hash(img_dir, Some("nearest"), Some("dhash"), Some(true));
 
-        // Assert result is OK
         assert!(result.is_ok(), "Hash function failed: {:?}", result.err());
 
         // Unwrap result and assert expected number of hashes
@@ -69,7 +68,7 @@ mod tests {
             hash_paths.len()
         );
 
-        // Assert hashes are sorted
+        // Assert hashes sorted
         let sorted = hash_paths.windows(2).all(|w| w[0].0 <= w[1].0);
         assert!(sorted, "Hashes are not sorted: {:?}", hash_paths);
     }
@@ -81,7 +80,7 @@ mod tests {
         let image_path_1 = temp_dir.path().join("test_image_1.png");
         let image_path_2 = temp_dir.path().join("test_image_2.png");
 
-        // Create mock images
+        // Create an invalid images
         let mut file1 = File::create(&image_path_1).unwrap();
         file1.write_all(b"not a valid image").unwrap();
 

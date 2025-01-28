@@ -24,7 +24,7 @@ fn benchmark_hash(c: &mut Criterion) {
     c.bench_function("hash_function", |b| {
         b.iter(|| {
             let result = hash(black_box(dir_path.clone()), Some("nearest"), Some("dhash"), Some(false));
-            let _ = black_box(result).is_ok(); // Explicitly ignore the result
+            let _ = black_box(result).is_ok(); // Ignore the result
         });
     });
 }
@@ -40,7 +40,7 @@ fn benchmark_dupes(c: &mut Criterion) {
                 Some("dhash"),
                 false,
             );
-            let _ = black_box(result).is_ok(); // Explicitly ignore the result
+            let _ = black_box(result).is_ok(); // Ignore the result
         });
     });
 }

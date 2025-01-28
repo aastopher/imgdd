@@ -65,7 +65,7 @@ jobs:
 
       - name: Build and Package Selected Crate
         run: |
-          cargo package --allow-dirty --no-verify --manifest-path crates/${{ inputs.crate }}/Cargo.toml
+          cargo package --manifest-path crates/${{ inputs.crate }}/Cargo.toml
 
       - name: Upload Crate Artifact
         uses: actions/upload-artifact@v3
@@ -112,10 +112,14 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !inputs.dry-run }}
     steps:
-      - name: Download Crate Artifact
-        uses: actions/download-artifact@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
         with:
-          path: crates/${{ inputs.crate }}-stable-ubuntu-latest-x86_64.crate
+          toolchain: 'stable'
+          override: true
 
       - name: Check Version
         run: |

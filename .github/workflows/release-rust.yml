@@ -82,7 +82,7 @@ jobs:
       - name: Download Test Crate Artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.crate }}-stable-ubuntu-latest-x86_64.crate
+          path: crates/${{ inputs.crate }}-stable-ubuntu-latest-x86_64.crate
 
       - name: Dry Run Cargo Release Publish
         run: |-

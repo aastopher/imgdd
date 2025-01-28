@@ -30,7 +30,7 @@ testing = []
 
 
 [[bench]]
-name = "imgdd_core_benches"
-path = "benches/imgdd_core_benches.rs"
+name = "core_benches"
+path = "benches/core_benches.rs"
 harness = false
 required-features = ["benchmark"]

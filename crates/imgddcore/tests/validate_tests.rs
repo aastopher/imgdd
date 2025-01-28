@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use corelib::validate::*;
+    use imgddcore::validate::*;
     use std::path::PathBuf;
     use tempfile::{tempdir, NamedTempFile};
 

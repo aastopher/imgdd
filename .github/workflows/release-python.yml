@@ -62,7 +62,7 @@ jobs:
 
       - name: Build source distribution
         run: |
-          maturin sdist --manifest-path crates/python/Cargo.toml
+          maturin sdist --manifest-path crates/imgddpy/Cargo.toml
           ls -l target/wheels/
 
       - name: Test source distribution
@@ -106,7 +106,7 @@ jobs:
 
       - name: Build wheel
         run: |
-          maturin build --release --manifest-path crates/python/Cargo.toml
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml
           ls -l target/wheels/
 
       - name: Upload wheel artifact

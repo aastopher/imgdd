@@ -1,8 +1,8 @@
 use criterion::{criterion_group, criterion_main, Criterion, black_box};
 
-use corelib::dedupe::{open_image, collect_hashes, sort_hashes, find_duplicates};
-use corelib::hashing::ImageHash;
-use corelib::normalize::proc as normalize;
+use imgddcore::dedupe::{open_image, collect_hashes, sort_hashes, find_duplicates};
+use imgddcore::hashing::ImageHash;
+use imgddcore::normalize::proc as normalize;
 use std::path::PathBuf;
 
 // WARNING! 

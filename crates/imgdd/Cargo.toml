@@ -14,7 +14,7 @@ categories.workspace = true
 
 
 [dependencies]
-corelib = { path = "../corelib", version = "0.1.0" }
+imgddcore = { path = "../imgddcore", version = "0.1.0" }
 image.workspace = true
 anyhow.workspace = true
 criterion = { version = "0.5.1", optional = true }

@@ -1,8 +1,8 @@
 //! Rust interface for fast and efficient image deduplication.
 //! Leverages perceptual hashing algorithms to identify duplicate or visually similar images in a directory.
 
-use corelib::dedupe::*;
-use corelib::validate::*;
+use imgddcore::dedupe::*;
+use imgddcore::validate::*;
 use image::imageops::FilterType;
 use std::collections::HashMap;
 use std::path::PathBuf;

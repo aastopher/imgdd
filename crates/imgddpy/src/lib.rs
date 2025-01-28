@@ -1,5 +1,5 @@
-use corelib::dedupe::*;
-use corelib::validate::*;
+use imgddcore::dedupe::*;
+use imgddcore::validate::*;
 use pyo3::prelude::*;
 use image::imageops::FilterType;
 use std::collections::HashMap;

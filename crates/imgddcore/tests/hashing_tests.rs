@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use corelib::hashing::ImageHash;
+    use imgddcore::hashing::ImageHash;
     use image::{DynamicImage, Rgba};
     use anyhow::Result;
 

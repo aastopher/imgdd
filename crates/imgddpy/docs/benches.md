@@ -12,7 +12,7 @@ This section highlights the performance benchmarks for the hashing algorithms pr
 
 ## Rust Benchmarks
 
-Below are local benchmarks taken using Criterion directly on the corelib Rust crate, based on the hardware details above.
+Below are local benchmarks taken using Criterion directly on the imgddcore Rust crate, based on the hardware details above.
 
 |Algorithm|Time (ms)|Measurements|
 |---|---|---|

@@ -197,7 +197,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.crate }}-${{ matrix.platform }}-${{ matrix.architecture }}
-          path: crates/target/${{ inputs.crate }}-${{ matrix.platform }}-${{ matrix.architecture }}.crate
+          path: crates/target/*.crate
 
   # dry-run:
   #   needs: test-packaging

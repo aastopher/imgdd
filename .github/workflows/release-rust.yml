@@ -86,12 +86,12 @@ jobs:
 
       - name: Dry Run Cargo Release Publish
         run: |-
-          cd crates/${{ inputs.crate }}
           cargo release \
             publish \
             --allow-branch HEAD \
             --no-confirm \
             --dry-run
+            --manifest-path crates/${{ inputs.crate }}/Cargo.toml
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
@@ -114,7 +114,7 @@ jobs:
       - name: Download Crate Artifact
         uses: actions/download-artifact@v3
         with:
-          name: crates/target/${{ inputs.crate }}-ubuntu-latest-x86_64
+          path: crates/${{ inputs.crate }}-stable-ubuntu-latest-x86_64.crate
 
       - name: Check Version
         run: |
@@ -124,10 +124,10 @@ jobs:
 
       - name: Cargo Release Publish
         run: |-
-          cd crates/${{ inputs.crate }}
           cargo release \
             publish \
             --allow-branch HEAD \
             --no-confirm \
+            --manifest-path crates/${{ inputs.crate }}/Cargo.toml
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

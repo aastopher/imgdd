@@ -3,13 +3,20 @@ name: Publish Rust Crate
 on:
   workflow_dispatch:
     inputs:
+      crate:
+        description: Select the crate to publish
+        type: choice
+        options:
+          - imgdd
+          - imgddcore
+        default: imgdd
       dry-run:
         description: Dry run (skip publish)
         type: boolean
         default: false
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ inputs.crate }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,12 +41,12 @@ jobs:
 
   test-packaging:
     needs: [benchmark, coverage, integration-tests]
-    name: Build and Test Main Crate
+    name: Build and Test ${{ inputs.crate }} Crate
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
-        rust-version: ["stable"]
+        rust-version: ["stable", "beta", "nightly"]
         architecture: [x86_64, aarch64]
 
     steps:
@@ -56,14 +63,15 @@ jobs:
         if: ${{ matrix.architecture == 'aarch64' }}
         run: rustup target add aarch64-unknown-linux-gnu
 
-      - name: Build and Package Main Crate
-        run: cargo package --allow-dirty --no-verify
+      - name: Build and Package Selected Crate
+        run: |
+          cargo package --manifest-path crates/${{ inputs.crate }}/Cargo.toml
 
       - name: Upload Crate Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: crate-${{ matrix.platform }}-${{ matrix.architecture }}
-          path: crates/rust/target/package/*.crate
+          name: ${{ inputs.crate }}-${{ matrix.rust-version }}-${{ matrix.platform }}-${{ matrix.architecture }}
+          path: target/package/*.crate
 
   dry-run:
     needs: test-packaging
@@ -71,51 +79,57 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.dry-run }}
     steps:
-      - name: Download Main Crate Artifact
-        uses: actions/download-artifact@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
         with:
-          name: crate-ubuntu-latest-x86_64
+          toolchain: 'stable'
+          override: true
 
       - name: Dry Run Cargo Release Publish
         run: |-
-          cargo release \
-            publish \
-            --allow-branch HEAD \
-            --no-confirm \
-            --no-verify \
+          cargo publish \
+            --manifest-path crates/${{ inputs.crate }}/Cargo.toml \
             --dry-run
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
+      - name: Download All Crate Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: crates/*.crate
+
       - name: Dry Run Output
         run: |
           echo "Dry run completed. Artifacts are built and available:"
-          ls -l crates/
+          ls -l crates/*.crate
 
   publish:
     needs: test-packaging
-    name: Publish Main Crate
+    name: Publish ${{ inputs.crate }} Crate
     runs-on: ubuntu-latest
     if: ${{ !inputs.dry-run }}
     steps:
-      - name: Download Main Crate Artifact
-        uses: actions/download-artifact@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
         with:
-          name: crate-ubuntu-latest-x86_64
+          toolchain: 'stable'
+          override: true
 
       - name: Check Version
         run: |
-          VERSION=$(toml get crates/rust/Cargo.toml package.version)
+          cd crates/${{ inputs.crate }}
+          VERSION=$(toml get Cargo.toml package.version)
           test "rs-v$VERSION" = "${{ github.ref_name }}"
 
       - name: Cargo Release Publish
         run: |-
-          cargo release \
-            publish \
-            --allow-branch HEAD \
-            --no-confirm \
-            --no-verify
+          cargo publish \
+            --manifest-path crates/${{ inputs.crate }}/Cargo.toml
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-
-          

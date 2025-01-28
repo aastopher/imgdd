@@ -12,7 +12,7 @@ This section highlights the performance benchmarks for the hashing algorithms pr
 
 ## Rust Benchmarks
 
-Below are local benchmarks taken using Criterion directly on the corelib Rust crate, based on the hardware details above.
+Below are local benchmarks taken using Criterion directly on the imgddcore Rust crate, based on the hardware details above.
 
 |Algorithm|Time (ms)|Measurements|
 |---|---|---|
@@ -69,4 +69,4 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 ## Summary
 
 - In Python, **imgdd consistently outperforms imagehash by ~60%–96%**, demonstrating a significant reduction in hashing time per image.
-- Corelib rust benchmarks achieve **sub-1 ms performance** for dHash and aHash, while maintaining excellent speeds across all algorithms.
+- imgddcore rust benchmarks achieve **sub-1 ms performance** for dHash and aHash, while maintaining excellent speeds across all algorithms.

@@ -32,13 +32,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          cd crates/python/
+          cd crates/imgddpy/
           pip install .[test]
 
       - name: Run benchmark tests
         uses: CodSpeedHQ/action@v3
         with:
-          working-directory: crates/python
+          working-directory: crates/imgddpy
           run: pytest -m benchmark --codspeed -v
           token: ${{ secrets.CODSPEED_TOKEN }}
 

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use corelib::normalize::*;
+    use imgddcore::normalize::*;
     use image::imageops::FilterType;
     use image::{DynamicImage, Rgba};
 

@@ -1,6 +1,6 @@
 ignore:
-  - "crates/python/**/*" # ignore pyo3 lib in favor of python integration testing / benchmarking
-  - "crates/corelib/benches/**/*"
-  - "crates/corelib/tests/**/*"
-  - "crates/rust/benches/**/*"
-  - "crates/rust/tests/**/*"
+  - "crates/imgddpy/**/*" # ignore pyo3 lib in favor of python integration testing / benchmarking
+  - "crates/imgddcore/benches/**/*"
+  - "crates/imgddcore/tests/**/*"
+  - "crates/imgdd/benches/**/*"
+  - "crates/imgdd/tests/**/*"

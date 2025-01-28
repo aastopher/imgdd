@@ -11,7 +11,7 @@ documentation.workspace = true
 homepage.workspace = true
 
 [dependencies]
-corelib = { path = "../corelib", version = "0.1.0" }
+imgddcore = { path = "../imgddcore", version = "0.1.0" }
 pyo3 = { version = "0.23", features = ["extension-module"] }
 image.workspace = true
 

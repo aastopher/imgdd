@@ -2,14 +2,25 @@ name: Publish Python Documentation
 
 on:
   workflow_dispatch:
-  # test manual publish from tag
-  # push:
-  #   tags: "py-v*"
-  #   tags: "py-v[0-9]+.[0-9]+.[0-9]+"
     
 jobs:
+  validate-version:
+    name: Validate Branch or Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Version
+        id: validate
+        run: |
+          echo "Checking branch or tag: ${{ github.ref_name }}"
+          if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "valid version, publishing docs!"
+          else
+            exit 1
+          fi
+
   coverage:
     uses: ./.github/workflows/coverage.yml
+    needs: validate-version
     with:
       branch: ${{ github.ref_name }}
     secrets:
@@ -17,6 +28,7 @@ jobs:
 
   integration-tests:
     uses: ./.github/workflows/integration.yml
+    needs: validate-version
     with:
       branch: ${{ github.ref_name }}
 
@@ -37,7 +49,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd crates/python/
+          cd crates/imgddpy/
           pip install .[dev]
       
       - name: Build and Deploy Documentation
@@ -56,6 +68,6 @@ jobs:
           echo "VERSION extracted: $VERSION"
 
           # Build and deploy using mike
-          cd crates/python/
+          cd crates/imgddpy/
           mike deploy --push --branch gh-pages "$VERSION" latest
           mike set-default --push --branch gh-pages latest

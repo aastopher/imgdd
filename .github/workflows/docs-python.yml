@@ -7,15 +7,13 @@ jobs:
   validate-version:
     name: Validate Branch or Tag
     runs-on: ubuntu-latest
-    outputs:
-      valid: ${{ steps.validate.outputs.valid }}
     steps:
       - name: Validate Version
         id: validate
         run: |
           echo "Checking branch or tag: ${{ github.ref_name }}"
           if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "valid=true" >> $GITHUB_OUTPUT
+            echo "valid version, publishing docs!"
           else
             exit 1
           fi

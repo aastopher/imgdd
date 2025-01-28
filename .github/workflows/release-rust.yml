@@ -8,7 +8,18 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  benchmark:
+    uses: ./.github/workflows/benchmark.yml
+    with:
+      branch: ${{ github.ref_name }}
+    secrets:
+      codspeed_token: ${{ secrets.CODSPEED_TOKEN }}
+
   coverage:
     uses: ./.github/workflows/coverage.yml
     with:
@@ -21,22 +32,90 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
 
-  build:
-    needs: [coverage, integration-tests]
-    runs-on: ubuntu-latest
-    
+  test-packaging:
+    needs: [benchmark, coverage, integration-tests]
+    name: Build and Test Main Crate
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+        rust-version: ["stable"]
+        architecture: [x86_64, aarch64]
+
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Dry run or Publish
-      if: ${{ inputs.dry-run }}
-      run: |
-        echo "Dry run: Skipping upload to Crate.io."
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust-version }}
+          override: true
 
-    # UPDATE COPIED PYPI BLOCK
-    - name: Publish to PyPi
-      if: ${{ !inputs.dry-run }}
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Add Rust Target (if needed)
+        if: ${{ matrix.architecture == 'aarch64' }}
+        run: rustup target add aarch64-unknown-linux-gnu
+
+      - name: Build and Package Main Crate
+        run: cargo package --allow-dirty --no-verify
+
+      - name: Upload Crate Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: crate-${{ matrix.platform }}-${{ matrix.architecture }}
+          path: crates/rust/target/package/*.crate
+
+  dry-run:
+    needs: test-packaging
+    name: Dry Run
+    runs-on: ubuntu-latest
+    if: ${{ inputs.dry-run }}
+    steps:
+      - name: Download Main Crate Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: crate-ubuntu-latest-x86_64
+
+      - name: Dry Run Cargo Release Publish
+        run: |-
+          cargo release \
+            publish \
+            --allow-branch HEAD \
+            --no-confirm \
+            --no-verify \
+            --dry-run
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      - name: Dry Run Output
+        run: |
+          echo "Dry run completed. Artifacts are built and available:"
+          ls -l crates/
+
+  publish:
+    needs: test-packaging
+    name: Publish Main Crate
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.dry-run }}
+    steps:
+      - name: Download Main Crate Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: crate-ubuntu-latest-x86_64
+
+      - name: Check Version
+        run: |
+          VERSION=$(toml get crates/rust/Cargo.toml package.version)
+          test "rs-v$VERSION" = "${{ github.ref_name }}"
+
+      - name: Cargo Release Publish
+        run: |-
+          cargo release \
+            publish \
+            --allow-branch HEAD \
+            --no-confirm \
+            --no-verify
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+          

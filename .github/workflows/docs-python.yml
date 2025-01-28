@@ -1,8 +1,11 @@
 name: Publish Python Documentation
 
 on:
-  push:
-    tags: "py-v*"
+  workflow_dispatch:
+  # test manual publish from tag
+  # push:
+  #   tags: "py-v*"
+  #   tags: "py-v[0-9]+.[0-9]+.[0-9]+"
     
 jobs:
   coverage:

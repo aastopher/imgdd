@@ -57,7 +57,9 @@ jobs:
         run: rustup target add aarch64-unknown-linux-gnu
 
       - name: Build and Package Main Crate
-        run: cargo package --allow-dirty --no-verify
+        run: |
+          cd crates/rust 
+          cargo package --allow-dirty --no-verify
 
       - name: Upload Crate Artifact
         uses: actions/upload-artifact@v3
@@ -78,6 +80,7 @@ jobs:
 
       - name: Dry Run Cargo Release Publish
         run: |-
+          cd crates/rust
           cargo release \
             publish \
             --allow-branch HEAD \
@@ -110,6 +113,7 @@ jobs:
 
       - name: Cargo Release Publish
         run: |-
+          cd crates/rust
           cargo release \
             publish \
             --allow-branch HEAD \

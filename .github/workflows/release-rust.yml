@@ -190,13 +190,12 @@ jobs:
 
       - name: Build and Package Selected Crate
         run: |
-          cd crates/${{ inputs.crate }}
-          cargo package --allow-dirty --no-verify
+          cargo package --allow-dirty --no-verify --manifest-path crates/${{ inputs.crate }}/Cargo.toml
 
       - name: Upload Crate Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.crate }}-${{ matrix.platform }}-${{ matrix.architecture }}
+          name: crate-${{ inputs.crate }}-${{ matrix.platform }}-${{ matrix.architecture }}
           path: target/package/*.crate
 
   # dry-run:

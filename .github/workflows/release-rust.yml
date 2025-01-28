@@ -91,7 +91,6 @@ jobs:
       - name: Dry Run Cargo Release Publish
         run: |-
           cargo publish \
-            --allow-branch HEAD \
             --no-confirm \
             --manifest-path crates/${{ inputs.crate }}/Cargo.toml \
             --dry-run
@@ -128,7 +127,6 @@ jobs:
       - name: Cargo Release Publish
         run: |-
           cargo publish \
-            --allow-branch HEAD \
             --no-confirm \
             --manifest-path crates/${{ inputs.crate }}/Cargo.toml
         env:

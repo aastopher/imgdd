@@ -22,6 +22,7 @@ jobs:
 
   coverage:
     uses: ./.github/workflows/coverage.yml
+    needs: validate-version
     with:
       branch: ${{ github.ref_name }}
     secrets:
@@ -29,6 +30,7 @@ jobs:
 
   integration-tests:
     uses: ./.github/workflows/integration.yml
+    needs: validate-version
     with:
       branch: ${{ github.ref_name }}
 

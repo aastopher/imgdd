@@ -18,7 +18,7 @@ on:
   
 jobs:
   python:
-    name: Build and Benchmark
+    name: Python Build and Benchmark
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -43,7 +43,7 @@ jobs:
           token: ${{ secrets.CODSPEED_TOKEN }}
 
   rust:
-    name: Build and Benchmark
+    name: Rust Build and Benchmark
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

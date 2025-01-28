@@ -2,16 +2,26 @@ name: Publish Python Documentation
 
 on:
   workflow_dispatch:
-    inputs:
-      skip-checks:
-        description: Skip quality checks
-        type: boolean
-        default: false
     
 jobs:
+  validate-version:
+    name: Validate Branch or Tag
+    runs-on: ubuntu-latest
+    outputs:
+      valid: ${{ steps.validate.outputs.valid }}
+    steps:
+      - name: Validate Version
+        id: validate
+        run: |
+          echo "Checking branch or tag: ${{ github.ref_name }}"
+          if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "valid=false" >> $GITHUB_OUTPUT
+          fi
+
   coverage:
     uses: ./.github/workflows/coverage.yml
-    if: ${{ !inputs.skip-checks }}
     with:
       branch: ${{ github.ref_name }}
     secrets:
@@ -19,7 +29,6 @@ jobs:
 
   integration-tests:
     uses: ./.github/workflows/integration.yml
-    if: ${{ !inputs.skip-checks }}
     with:
       branch: ${{ github.ref_name }}
 

@@ -14,10 +14,6 @@ on:
         description: Dry run (skip publish)
         type: boolean
         default: false
-      skip-checks:
-        description: Skip quality checks
-        type: boolean
-        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ inputs.crate }}-${{ github.ref }}
@@ -26,7 +22,6 @@ concurrency:
 jobs:
   benchmark:
     uses: ./.github/workflows/benchmark.yml
-    if: ${{ !inputs.skip-checks }}
     with:
       branch: ${{ github.ref_name }}
     secrets:
@@ -34,7 +29,6 @@ jobs:
 
   coverage:
     uses: ./.github/workflows/coverage.yml
-    if: ${{ !inputs.skip-checks }}
     with:
       branch: ${{ github.ref_name }}
     secrets:
@@ -42,7 +36,6 @@ jobs:
 
   integration-tests:
     uses: ./.github/workflows/integration.yml
-    if: ${{ !inputs.skip-checks }}
     with:
       branch: ${{ github.ref_name }}
 

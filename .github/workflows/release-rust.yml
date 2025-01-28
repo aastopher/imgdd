@@ -91,7 +91,6 @@ jobs:
       - name: Dry Run Cargo Release Publish
         run: |-
           cargo publish \
-            --no-confirm \
             --manifest-path crates/${{ inputs.crate }}/Cargo.toml \
             --dry-run
         env:
@@ -127,7 +126,6 @@ jobs:
       - name: Cargo Release Publish
         run: |-
           cargo publish \
-            --no-confirm \
             --manifest-path crates/${{ inputs.crate }}/Cargo.toml
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

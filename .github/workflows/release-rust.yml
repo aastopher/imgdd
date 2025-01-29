@@ -70,16 +70,6 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
-      - name: Download All Crate Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: crates/*.crate
-
-      - name: Dry Run Output
-        run: |
-          echo "Dry run completed. Artifacts are built and available:"
-          ls -l crates/*.crate
-
   publish:
     needs: [benchmark, coverage, integration-tests]
     name: Publish ${{ inputs.crate }} Crate

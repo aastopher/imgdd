@@ -59,12 +59,14 @@ jobs:
 
   coverage:
     uses: ./.github/workflows/coverage.yml
+    needs: validate-version
     with:
       branch: ${{ github.ref_name }}
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
   integration-tests:
+    needs: validate-version
     uses: ./.github/workflows/integration.yml
     with:
       branch: ${{ github.ref_name }}

@@ -2,21 +2,40 @@ name: Publish Python Documentation
 
 on:
   workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.13'
     
 jobs:
   validate-version:
     name: Validate Branch or Tag
     runs-on: ubuntu-latest
     steps:
-      - name: Validate Version
+      - name: Validate Version Pattern
         id: validate
         run: |
           echo "Checking branch or tag: ${{ github.ref_name }}"
-          if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "valid version, publishing docs!"
+          if [[ "${{ github.ref_name }}" =~ ^rs-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✅ Valid version pattern."
           else
+            echo "❌ Version pattern mismatch! Expected: rs-v[0-9]+\.[0-9]+\.[0-9]+"
             exit 1
           fi
+
+      - name: Validate Version Match
+        run: |
+          cd crates/imgddpy
+          VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "imgddpy") | .version')
+          EXPECTED_VERSION="rs-v$VERSION"
+          CURRENT_BRANCH="${{ github.ref_name }}"
+
+          if [ "$EXPECTED_VERSION" = "$CURRENT_BRANCH" ]; then
+            echo "✅ Version matches the branch/tag: $CURRENT_BRANCH"
+          else
+            echo "❌ Version mismatch! Expected: $EXPECTED_VERSION, Found: $CURRENT_BRANCH"
+            exit 1
+          fi
+
 
   coverage:
     uses: ./.github/workflows/coverage.yml
@@ -38,8 +57,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      PYTHON_VERSION: '3.13'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -66,7 +83,7 @@ jobs:
           git fetch origin gh-pages
 
           # Extract version from the tag (py-v*)
-          VERSION=$(echo "py-v0.1.0-stage" | sed 's/^py-v//')
+          VERSION=$(echo "${{ github.ref_name }}" | sed 's/^py-v//')
           echo "VERSION extracted: $VERSION"
 
           # Build and deploy using mike

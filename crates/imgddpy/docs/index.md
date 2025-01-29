@@ -8,9 +8,9 @@
 ## Features
 - **Multiple Hashing Algorithms**: Supports `aHash`, `dHash`, `mHash`, `pHash`, `wHash`.
 - **Multiple Filter Types**: Supports `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
-- **Identify Duplicates**: Harness Rust's performance to quickly identify duplicate hash pairs.
-- **Simplicity**: Simple interface with robust performance.
+- **Identify Duplicates**: Quickly identify duplicate hash pairs.
+- **Simplicity**: Simple interface, robust performance.
 
 ## Why imgdd?
 
-`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning-fast replacement with additional features. To ensure enhanced performance, `imgdd` has been benchmarked against `imagehash`. In Python, **imgdd consistently outperforms imagehash by ~60%–96%**, demonstrating a significant reduction in hashing time per image.
+`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning-fast replacement with additional features. To ensure enhanced performance, `imgdd` has been benchmarked against `imagehash`. In Python, **imgdd consistently outperforms imagehash by ~60%–95%**, demonstrating a significant reduction in hashing time per image.

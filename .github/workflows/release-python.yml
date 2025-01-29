@@ -74,7 +74,7 @@ jobs:
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sdist-imgdd
+          name: sdist
           path: target/wheels/*.tar.gz
 
   build-wheels:
@@ -172,8 +172,8 @@ jobs:
       - name: Merge all wheels and source distributions into `output/`
         run: |
           mkdir -p output
-          find wheels/ -type f -name "*.whl" -exec mv {} output/ \;
-          find dist/ -type f -name "*.tar.gz" -exec mv {} output/ \;
+          find root/wheels/ -type f -name "*.whl" -exec mv {} output/ \;
+          find root/sdist/ -type f -name "*.tar.gz" -exec mv {} output/ \;
           ls -l output/
 
       - name: Publish to PyPI
@@ -196,9 +196,9 @@ jobs:
       - name: Merge all wheels and source distributions into `output/`
         run: |
           mkdir -p output
-          find wheels/ -type f -name "*.whl" -exec mv {} output/ \;
-          find dist/ -type f -name "*.tar.gz" -exec mv {} output/ \;
-          ls -l output/
+          find root/wheels/ -type f -name "*.whl" -exec mv {} output/ \;
+          find root/sdist/ -type f -name "*.tar.gz" -exec mv {} output/ \;
+          ls -l root/output/
 
       - name: Dry run output
         run: |

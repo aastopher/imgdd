@@ -21,7 +21,7 @@ on:
       dry-run:
         description: Dry run (skip publish)
         type: boolean
-        default: false
+        default: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ inputs.crate }}-${{ github.ref }}

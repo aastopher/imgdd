@@ -86,10 +86,10 @@ jobs:
         include:
           # Linux (x64 and ARM)
           - os: ubuntu-latest
-            compatibility: manylinux_2_34
+            compatibility: manylinux_2_17
 
           - os: ubuntu-22.04-arm
-            compatibility: manylinux_2_34
+            compatibility: manylinux_2_24
 
           - os: ubuntu-latest
             compatibility: musllinux_1_2
@@ -126,35 +126,33 @@ jobs:
           python-version: "3.9"
 
       - name: Install maturin
-        run: |
-          if [ "${{ matrix.compatibility }}" == "musllinux_1_2" ]; then
-            pip install maturin[patchelf]
-          else
-            pip install maturin
-          fi
+        run: pip install maturin
 
       - name: Prepare Rust target (Linux x64 only)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: matrix.os == 'ubuntu-latest'
         run: |
           if [ "${{ matrix.compatibility }}" == "musllinux_1_2" ]; then
             rustup target add x86_64-unknown-linux-musl
-          elif [ "${{ matrix.compatibility }}" == "manylinux_2_34" ]; then
+          elif [ "${{ matrix.compatibility }}" == "manylinux_2_17" ]; then
             rustup target add x86_64-unknown-linux-gnu
           fi
 
-      - name: Build wheel
+      - name: Build wheel (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
-          if [[ "${{ matrix.compatibility }}" == "none" ]]; then
-            maturin build --release --manifest-path crates/imgddpy/Cargo.toml
-          else
-            maturin build --release --manifest-path crates/imgddpy/Cargo.toml --compatibility ${{ matrix.compatibility }}
-          fi
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml --compatibility ${{ matrix.compatibility }}
+          ls -l target/wheels/
+
+      - name: Build wheel (macOS/Windows)
+        if: matrix.compatibility == 'none'
+        run: |
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml
           ls -l target/wheels/
 
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v3
         with:
-          path: target/wheels/*.whl
+          path: target/wheels/*.whl        
         
 
   publish-to-pypi:

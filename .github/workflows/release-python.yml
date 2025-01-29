@@ -36,7 +36,7 @@ jobs:
         id: validate
         run: |
           echo "Checking branch or tag: ${{ github.ref_name }}"
-          if [[ "${{ github.ref_name }}" =~ ^rs-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "✅ Valid version pattern."
           else
             echo "❌ Version pattern mismatch! Expected: rs-v[0-9]+\.[0-9]+\.[0-9]+"

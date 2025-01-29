@@ -43,6 +43,9 @@ jobs:
             exit 1
           fi
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Validate Version Match
         run: |
           cd crates/imgddpy

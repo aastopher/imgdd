@@ -62,6 +62,20 @@ jobs:
           toolchain: ${{ inputs.toolchain }}
           override: true
 
+      - name: Check Version
+        run: |
+          cd crates/${{ inputs.crate }}
+          VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "${{ inputs.crate }}") | .version')
+          EXPECTED_VERSION="rs-v$VERSION"
+          CURRENT_BRANCH="${{ github.ref_name }}"
+
+          if [ "$EXPECTED_VERSION" = "$CURRENT_BRANCH" ]; then
+            echo "✅ Version matches the branch/tag: $CURRENT_BRANCH"
+          else
+            echo "❌ Version mismatch! Expected: $EXPECTED_VERSION, Found: $CURRENT_BRANCH"
+            exit 1
+          fi
+
       - name: Dry Run Cargo Release Publish
         run: |-
           cargo publish \

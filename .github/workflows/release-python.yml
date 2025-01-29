@@ -85,13 +85,13 @@ jobs:
       matrix:
         include:
           # Linux (x64 and ARM)
-          - os: ubuntu-latest
+          - os: ubuntu-latest # x64
             compatibility: manylinux_2_34
 
           - os: ubuntu-22.04-arm
             compatibility: manylinux_2_34
 
-          - os: ubuntu-latest
+          - os: ubuntu-latest # x64
             compatibility: musllinux_1_2
 
           - os: ubuntu-22.04-arm
@@ -140,20 +140,19 @@ jobs:
       - name: Build wheel (Linux)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          maturin build --release --manifest-path crates/imgddpy/Cargo.toml --compatibility ${{ matrix.compatibility }}
-          ls -l target/wheels/
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml --compatibility ${{ matrix.compatibility }} -o dist/
+          ls -l dist/
 
       - name: Build wheel (macOS/Windows)
         if: matrix.compatibility == 'none'
         run: |
-          maturin build --release --manifest-path crates/imgddpy/Cargo.toml
-          ls -l target/wheels/
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml -o dist/
+          ls -l dist/
 
-      - name: Upload wheel artifacts (Preserve Filenames)
+      - name: Upload wheel artifact
         uses: actions/upload-artifact@v3
         with:
-          path: target/wheels/
-          retention-days: 7      
+          path: dist/*.whl        
         
 
   publish-to-pypi:

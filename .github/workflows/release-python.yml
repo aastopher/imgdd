@@ -6,7 +6,15 @@ on:
       dry-run:
         description: Dry run (skip publish)
         type: boolean
-        default: false
+        default: true
+      toolchain:
+        description: Select the toolchain to build with
+        type: choice
+        options:
+          - stable
+          - beta
+          - nightly
+        default: stable
         
 
 concurrency:
@@ -20,15 +28,41 @@ env:
   RUSTUP_MAX_RETRIES: 10
 
 jobs:
-  benchmark:
-    uses: ./.github/workflows/benchmark.yml
-    with:
-      branch: ${{ github.ref_name }}
-    secrets:
-      codspeed_token: ${{ secrets.CODSPEED_TOKEN }}
+  validate-version:
+    name: Validate Branch or Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Version Pattern
+        id: validate
+        run: |
+          echo "Checking branch or tag: ${{ github.ref_name }}"
+          if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✅ Valid version pattern."
+          else
+            echo "❌ Version pattern mismatch! Expected: rs-v[0-9]+\.[0-9]+\.[0-9]+"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate Version Match
+        run: |
+          cd crates/imgddpy
+          VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "imgddpy") | .version')
+          EXPECTED_VERSION="py-v$VERSION"
+          CURRENT_BRANCH="${{ github.ref_name }}"
+
+          if [ "$EXPECTED_VERSION" = "$CURRENT_BRANCH" ]; then
+            echo "✅ Version matches the branch/tag: $CURRENT_BRANCH"
+          else
+            echo "❌ Version mismatch! Expected: $EXPECTED_VERSION, Found: $CURRENT_BRANCH"
+            exit 1
+          fi
 
   coverage:
     uses: ./.github/workflows/coverage.yml
+    needs: validate-version
     with:
       branch: ${{ github.ref_name }}
     secrets:
@@ -36,11 +70,12 @@ jobs:
 
   integration-tests:
     uses: ./.github/workflows/integration.yml
+    needs: validate-version
     with:
       branch: ${{ github.ref_name }}
 
   create-sdist:
-    needs: [benchmark, coverage, integration-tests]
+    needs: [coverage, integration-tests]
     name: Build and Test Source Distributions
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +85,7 @@ jobs:
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ inputs.toolchain }}
           override: true
 
       - name: Set up Python
@@ -69,23 +104,46 @@ jobs:
       - name: Test source distribution
         run: |
           pip install --force-reinstall --verbose target/wheels/*.tar.gz
-          python -c 'import imgdd'  # Replace 'imgdd' with the correct import
+          python -c 'import imgdd'
 
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sdist-imgdd
+          name: sdist
           path: target/wheels/*.tar.gz
 
   build-wheels:
-    needs: [benchmark, coverage, integration-tests]
+    needs: [coverage, integration-tests]
     name: Build Wheels
-    runs-on: ${{ matrix.platform }}
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        architecture: [x86-64, aarch64]
+        include:
+          # Linux (x64 and ARM)
+          - os: ubuntu-latest
+            compatibility: manylinux_2_34
+
+          - os: ubuntu-22.04-arm
+            compatibility: manylinux_2_34
+
+          - os: ubuntu-latest
+            compatibility: musllinux_1_2
+
+          - os: ubuntu-22.04-arm
+            compatibility: musllinux_1_2
+
+          # macOS (x64 and ARM)
+          - os: macos-latest # ARM
+            compatibility: none
+
+          - os: macos-13 # x64
+            compatibility: none
+
+          # Windows (x64 only)
+          - os: windows-latest
+            compatibility: none
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -94,18 +152,34 @@ jobs:
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ inputs.toolchain }}
           override: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install maturin
         run: pip install maturin
 
-      - name: Build wheel
+      - name: Prepare Rust target (Linux x64 only)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          if [ "${{ matrix.compatibility }}" == "musllinux_1_2" ]; then
+            rustup target add x86_64-unknown-linux-musl
+          elif [ "${{ matrix.compatibility }}" == "manylinux_2_34" ]; then
+            rustup target add x86_64-unknown-linux-gnu
+          fi
+
+      - name: Build wheel (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml --compatibility ${{ matrix.compatibility }}
+          ls -l target/wheels/
+
+      - name: Build wheel (macOS/Windows)
+        if: matrix.compatibility == 'none'
         run: |
           maturin build --release --manifest-path crates/imgddpy/Cargo.toml
           ls -l target/wheels/
@@ -113,8 +187,9 @@ jobs:
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v3
         with:
-          name: wheel-${{ matrix.platform }}-${{ matrix.architecture }}-${{ matrix.python-version }}
-          path: target/wheels/*.whl
+          name: wheels
+          path: target/wheels/*.whl        
+        
 
   publish-to-pypi:
     needs: [create-sdist, build-wheels]
@@ -127,12 +202,20 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: dist
+          path: root
+          
+      - name: Merge all wheels and source distributions into `output/`
+        run: |
+          mkdir -p output
+          mv root/wheels/*.whl output/
+          mv root/sdist/*.tar.gz output/
+          ls -l output/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
+          packages-dir: output
 
   dry-run-check:
     needs: [create-sdist, build-wheels]
@@ -143,9 +226,16 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: dist
+          path: root
+
+      - name: Merge all wheels and source distributions into `output/`
+        run: |
+          mkdir -p output
+          mv root/wheels/*.whl output/
+          mv root/sdist/*.tar.gz output/
+          ls -l output/
 
       - name: Dry run output
         run: |
           echo "Dry run completed. Artifacts are built and available:"
-          ls -l dist/
+          ls -l output/

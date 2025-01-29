@@ -52,6 +52,7 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
     }
 }
 
+
 /// Calculates hashes for all images in a directory recursively.
 ///
 /// # Arguments
@@ -59,13 +60,31 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
 /// - `path` - String representing the directory containing images.
 /// - `filter` - String specifying the resize filter to use.
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
+///     - **Default:** "Triangle"
 /// - `algo` - String specifying the hashing algorithm to use.
 ///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
+///     - **Default:** "dHash"
 /// - `sort` - Boolean to determine if the hashes should be sorted.
+///     - **Default:** false
 ///
 /// # Returns
 ///
 /// * A vector of tuples where each tuple contains a hash value and the corresponding file path.
+///
+/// # Usage
+/// ```rust
+/// use imgdd::*;
+/// use std::path::PathBuf;
+///
+/// let result = hash(
+///     PathBuf::from("path/to/images"),
+///     Some("Triangle"), // Optional: default = "Triangle"
+///     Some("dHash"),   // Optional: default = "dHash"
+///     Some(false),     // Optional: default = false
+/// );
+///
+/// println!("{:#?}", result);
+/// ```
 pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
@@ -86,20 +105,38 @@ pub fn hash(
     Ok(hash_paths)
 }
 
+
 /// Finds duplicate images in a directory.
 ///
 /// # Arguments
 ///
-/// * `path` - String representing the directory containing images.
-/// * `filter` - String specifying the resize filter to use.
+/// - `path` - String representing the directory containing images.
+/// - `filter` - String specifying the resize filter to use.
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
-/// * `algo` - String specifying the hashing algorithm to use.
+///     - **Default:** "Triangle"
+/// - `algo` - String specifying the hashing algorithm to use.
 ///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
-/// * `remove` - Boolean indicating whether duplicate files should be removed.
+///     - **Default:** "dhash"
+/// - `remove` - Boolean indicating whether duplicate files should be removed.
 ///
 /// # Returns
 ///
 /// * A hashmap of hash values to lists of file paths.
+///
+/// # Usage
+/// ```rust
+/// use imgdd::*;
+/// use std::path::PathBuf;
+///
+/// let result = dupes(
+///     PathBuf::from("path/to/images"),
+///     Some("Triangle"), // Optional: default = "Triangle"
+///     Some("dHash"),   // Optional: default = "dHash"
+///     false,
+/// );
+///
+/// println!("{:#?}", result);
+/// ```
 pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,

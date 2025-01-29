@@ -146,7 +146,7 @@ jobs:
       - name: Build wheel (macOS/Windows)
         if: matrix.compatibility == 'none'
         run: |
-          maturin build --release --manifest-path crates/imgddpy/Cargo.toml -o dist/
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml
           ls -l target/wheels/
 
       - name: Upload wheel artifact

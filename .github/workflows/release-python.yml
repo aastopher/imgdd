@@ -77,45 +77,6 @@ jobs:
           name: sdist-imgdd
           path: target/wheels/*.tar.gz
 
-  # build-wheels:
-  #   needs: [benchmark, coverage, integration-tests]
-  #   name: Build Wheels
-  #   runs-on: ${{ matrix.platform }}
-  #   strategy:
-  #     matrix:
-  #       platform: [ubuntu-latest, macos-latest, windows-latest]
-  #       python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-  #       architecture: [x86-64, aarch64]
-
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-
-  #     - name: Install Rust
-  #       uses: actions-rs/toolchain@v1
-  #       with:
-  #         toolchain: stable
-  #         override: true
-
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-
-  #     - name: Install maturin
-  #       run: pip install maturin
-
-  #     - name: Build wheel
-  #       run: |
-  #         maturin build --release --manifest-path crates/imgddpy/Cargo.toml
-  #         ls -l target/wheels/
-
-  #     - name: Upload wheel artifact
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: wheel-${{ matrix.platform }}-${{ matrix.architecture }}-${{ matrix.python-version }}
-  #         path: target/wheels/*.whl
-
   build-wheels:
     needs: [benchmark, coverage, integration-tests]
     name: Build Wheels
@@ -123,21 +84,27 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # --- Linux (x64 and ARM) ---
+          # Linux (x64 and ARM)
           - os: ubuntu-latest
             compatibility: manylinux_2_17
 
           - os: ubuntu-22.04-arm
             compatibility: manylinux_2_24
 
-          # --- macOS (x64 and ARM) ---
+          - os: ubuntu-latest
+            compatibility: musllinux_1_2
+
+          - os: ubuntu-22.04-arm
+            compatibility: musllinux_1_2
+
+          # macOS (x64 and ARM)
           - os: macos-latest # ARM
             compatibility: none
 
           - os: macos-13 # x64
             compatibility: none
 
-          # --- Windows (x64 only) ---
+          # Windows (x64 only)
           - os: windows-latest
             compatibility: none
 
@@ -159,7 +126,21 @@ jobs:
           python-version: "3.9"
 
       - name: Install maturin
-        run: pip install maturin
+        run: |
+          if [[ "${{ matrix.compatibility }}" == "musllinux_1_2" ]]; then
+            pip install maturin[patchelf]
+          else
+            pip install maturin
+          fi
+
+      - name: Prepare Rust target (Linux x64 only)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          if [[ "${{ matrix.compatibility }}" == "musllinux_1_2" ]]; then
+            rustup target add x86_64-unknown-linux-musl
+          elif [[ "${{ matrix.compatibility }}" == "manylinux_2_17" ]]; then
+            rustup target add x86_64-unknown-linux-gnu
+          fi
 
       - name: Build wheel
         run: |
@@ -174,8 +155,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: target/wheels/*.whl
+        
 
-          
   publish-to-pypi:
     needs: [create-sdist, build-wheels]
     name: Publish to PyPI

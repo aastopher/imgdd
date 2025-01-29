@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/gh/aastopher/imgdd/graph/badge.svg?token=XZ1O2X04SO)](https://codecov.io/gh/aastopher/imgdd)
+[![Documentation Status](https://img.shields.io/badge/docs-online-brightgreen)](https://aastopher.github.io/imgdd/)
 [![DeepSource](https://app.deepsource.com/gh/aastopher/imgdd.svg/?label=active+issues&show_trend=true&token=IiuhCO6n1pK-GAJ800k6Z_9t)](https://app.deepsource.com/gh/aastopher/imgdd/)
 
 # imgdd: Image DeDuplication
@@ -44,6 +45,8 @@ print(results)
 ### Find Duplicates
 
 ```python
+import imgdd as dd
+
 duplicates = dd.dupes(
     path="path/to/images",
     algo="dhash", # Optional: default = dhash

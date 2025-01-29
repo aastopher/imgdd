@@ -1,16 +1,49 @@
 site_name: imgdd
 site_url: https://github.com/aastopher/imgdd
-site_description: "Rust-based Python library for image deduplication with perceptual hashing."
+site_description: "Performance-first perceptual hashing library; perfect for handling large datasets."
 repo_url: https://github.com/aastopher/imgdd
 repo_name: GitHub
 edit_uri: ""
 
 theme: 
-  name: readthedocs
-  highlightjs: true
-  hljs_languages:
-      - python
-      - rust
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: "Switch to light mode"
+
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: "Switch to dark mode"
+
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - search.highlight
+    - content.code.copy  # Add copy button
+    - navigation.sections  # Group TOC by section
+    - navigation.expand  # Expand full navigation tree
+    - navigation.footer  # Add previous/next buttons
+    - content.code.annotate  # Enables code annotations
+
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/github-dark.min.css  # Uses a dark-friendly syntax highlighting theme
+
+extra:
+  version:
+    provider: mike
+    default: latest 
 
 plugins:
   - include-markdown
@@ -26,10 +59,17 @@ markdown_extensions:
   - admonition
   - toc:
       permalink: true
+  - pymdownx.highlight:
+      linenums: false
+      use_pygments: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.extra
+  - fenced_code
   - codehilite:
       guess_lang: false 
       use_pygments: true
-  - fenced_code 
 
 nav:
   - Home: index.md

@@ -85,13 +85,13 @@ jobs:
       matrix:
         include:
           # Linux (x64 and ARM)
-          - os: ubuntu-latest # x64
+          - os: ubuntu-latest
             compatibility: manylinux_2_34
 
           - os: ubuntu-22.04-arm
             compatibility: manylinux_2_34
 
-          - os: ubuntu-latest # x64
+          - os: ubuntu-latest
             compatibility: musllinux_1_2
 
           - os: ubuntu-22.04-arm
@@ -140,19 +140,20 @@ jobs:
       - name: Build wheel (Linux)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          maturin build --release --manifest-path crates/imgddpy/Cargo.toml --compatibility ${{ matrix.compatibility }} -o dist/
-          ls -l dist/
+          maturin build --release --manifest-path crates/imgddpy/Cargo.toml --compatibility ${{ matrix.compatibility }}
+          ls -l target/wheels/
 
       - name: Build wheel (macOS/Windows)
         if: matrix.compatibility == 'none'
         run: |
           maturin build --release --manifest-path crates/imgddpy/Cargo.toml -o dist/
-          ls -l dist/
+          ls -l target/wheels/
 
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v3
         with:
-          path: dist/*.whl        
+          name: wheels
+          path: target/wheels/*.whl        
         
 
   publish-to-pypi:
@@ -166,14 +167,20 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: dist
+          path: root
           
+      - name: Merge all wheels and source distributions into `output/`
+        run: |
+          mkdir -p output
+          find wheels/ -type f -name "*.whl" -exec mv {} output/ \;
+          find dist/ -type f -name "*.tar.gz" -exec mv {} output/ \;
+          ls -l output/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
-          packages-dir: dist
+          packages-dir: output
 
   dry-run-check:
     needs: [create-sdist, build-wheels]
@@ -184,9 +191,16 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: dist
+          path: root
+
+      - name: Merge all wheels and source distributions into `output/`
+        run: |
+          mkdir -p output
+          find wheels/ -type f -name "*.whl" -exec mv {} output/ \;
+          find dist/ -type f -name "*.tar.gz" -exec mv {} output/ \;
+          ls -l output/
 
       - name: Dry run output
         run: |
           echo "Dry run completed. Artifacts are built and available:"
-          ls -l dist/
+          ls -l output/

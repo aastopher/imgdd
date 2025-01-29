@@ -28,13 +28,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  benchmark:
-    uses: ./.github/workflows/benchmark.yml
-    with:
-      branch: ${{ github.ref_name }}
-    secrets:
-      codspeed_token: ${{ secrets.CODSPEED_TOKEN }}
-
   coverage:
     uses: ./.github/workflows/coverage.yml
     with:
@@ -48,7 +41,7 @@ jobs:
       branch: ${{ github.ref_name }}
 
   dry-run:
-    needs: [benchmark, coverage, integration-tests]
+    needs: [coverage, integration-tests]
     name: Dry Run
     runs-on: ubuntu-latest
     if: ${{ inputs.dry-run }}
@@ -85,7 +78,7 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   publish:
-    needs: [benchmark, coverage, integration-tests]
+    needs: [coverage, integration-tests]
     name: Publish ${{ inputs.crate }} Crate
     runs-on: ubuntu-latest
     if: ${{ !inputs.dry-run }}

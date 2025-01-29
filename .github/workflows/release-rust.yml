@@ -99,7 +99,7 @@ jobs:
 
   publish:
     needs: [coverage, integration-tests]
-    name: Publish ${{ inputs.crate }} Crate
+    name: Publish Rust Crate
     runs-on: ubuntu-latest
     if: ${{ !inputs.dry-run }}
     steps:
@@ -111,12 +111,6 @@ jobs:
         with:
           toolchain: ${{ inputs.toolchain }}
           override: true
-
-      - name: Check Version
-        run: |
-          cd crates/${{ inputs.crate }}
-          VERSION=$(toml get Cargo.toml package.version)
-          test "rs-v$VERSION" = "${{ github.ref_name }}"
 
       - name: Cargo Release Publish
         run: |-

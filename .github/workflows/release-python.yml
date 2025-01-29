@@ -69,7 +69,7 @@ jobs:
       - name: Test source distribution
         run: |
           pip install --force-reinstall --verbose target/wheels/*.tar.gz
-          python -c 'import imgdd'  # Replace 'imgdd' with the correct import
+          python -c 'import imgdd'
 
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
@@ -149,10 +149,11 @@ jobs:
           maturin build --release --manifest-path crates/imgddpy/Cargo.toml
           ls -l target/wheels/
 
-      - name: Upload wheel artifact
+      - name: Upload wheel artifacts (Preserve Filenames)
         uses: actions/upload-artifact@v3
         with:
-          path: target/wheels/*.whl        
+          path: target/wheels/
+          retention-days: 7      
         
 
   publish-to-pypi:
@@ -167,11 +168,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: dist
+          
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
+          packages-dir: dist
 
   dry-run-check:
     needs: [create-sdist, build-wheels]

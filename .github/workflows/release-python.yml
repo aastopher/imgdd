@@ -86,10 +86,10 @@ jobs:
         include:
           # Linux (x64 and ARM)
           - os: ubuntu-latest
-            compatibility: manylinux_2_17
+            compatibility: manylinux_2_34
 
           - os: ubuntu-22.04-arm
-            compatibility: manylinux_2_24
+            compatibility: manylinux_2_34
 
           - os: ubuntu-latest
             compatibility: musllinux_1_2
@@ -133,7 +133,7 @@ jobs:
         run: |
           if [ "${{ matrix.compatibility }}" == "musllinux_1_2" ]; then
             rustup target add x86_64-unknown-linux-musl
-          elif [ "${{ matrix.compatibility }}" == "manylinux_2_17" ]; then
+          elif [ "${{ matrix.compatibility }}" == "manylinux_2_34" ]; then
             rustup target add x86_64-unknown-linux-gnu
           fi
 

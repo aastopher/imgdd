@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "imgdd"
-version = "0.1.4"
+version = "0.1.3"
 description = """
 Performance-first perceptual hashing library; perfect for handling large datasets. 
 Designed to quickly process nested folder structures, commonly found in image datasets

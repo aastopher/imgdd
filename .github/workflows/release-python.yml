@@ -210,8 +210,8 @@ jobs:
       - name: Merge all wheels and source distributions into `output/`
         run: |
           mkdir -p output
-          mv root/wheels/*.whl output/
-          mv root/sdist/*.tar.gz output/
+          mv root/wheels-${{ github.run_id }}/*.whl output/ || true
+          mv root/sdist-${{ github.run_id }}/*.tar.gz output/ || true
           ls -l output/
 
       - name: Publish to PyPI

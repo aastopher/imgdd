@@ -16,7 +16,7 @@ repository = "https://github.com/aastopher/imgdd"
 documentation = "https://github.com/aastopher/imgdd"
 homepage = "https://github.com/aastopher/imgdd"
 
-keywords = ["imagehash", "hash", "perceptual hash", "deduplication", "image deduplication"]
+keywords = ["imagehash", "hash", "perceptual", "deduplication", "wavelet"]
 readme = "./README.md" 
 categories = ["image-processing", "utilities", "image-hash", "hashing"]
 

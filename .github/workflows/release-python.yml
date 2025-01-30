@@ -107,7 +107,7 @@ jobs:
           python -c 'import imgdd'
 
       - name: Upload sdist artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sdist
           path: target/wheels/*.tar.gz
@@ -185,7 +185,7 @@ jobs:
           ls -l target/wheels/
 
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wheels
           path: target/wheels/*.whl        

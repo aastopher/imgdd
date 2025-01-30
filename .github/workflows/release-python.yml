@@ -111,6 +111,8 @@ jobs:
         with:
           name: sdist
           path: target/wheels/*.tar.gz
+          compression-level: 9
+          overwrite: true
 
   build-wheels:
     needs: [coverage, integration-tests]
@@ -189,7 +191,8 @@ jobs:
         with:
           name: wheels
           path: target/wheels/*.whl        
-        
+          compression-level: 9
+          overwrite: true
 
   publish-to-pypi:
     needs: [create-sdist, build-wheels]

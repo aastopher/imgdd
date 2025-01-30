@@ -11,7 +11,7 @@ Designed to quickly process nested folder structures, commonly found in image da
 """
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
-readme = "README.md"
+readme = { file = "README.md", content-type = "text/markdown"}
 keywords = [
     "rust", 
     "imagehash", 

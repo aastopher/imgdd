@@ -6,7 +6,7 @@ members = [
 
 [workspace.package]
 edition = "2021"
-license = "GNU GPLv3"
+license = "GPL-3.0-or-later"
 authors = ["Aaron Stopher <aaron.stopher@gmail.com>"]
 description = """
 Performance-first perceptual hashing library; perfect for handling large datasets. 

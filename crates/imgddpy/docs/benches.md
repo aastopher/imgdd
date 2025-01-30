@@ -68,5 +68,5 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 
 ## Summary
 
-- In Python, **imgdd consistently outperforms imagehash by ~60%–96%**, demonstrating a significant reduction in hashing time per image.
+- In Python, **imgdd consistently outperforms imagehash by ~60%–95%**, demonstrating a significant reduction in hashing time per image.
 - imgddcore rust benchmarks achieve **sub-1 ms performance** for dHash and aHash, while maintaining excellent speeds across all algorithms.

@@ -1,3 +1,4 @@
+[![imgdd pypi](https://img.shields.io/pypi/v/imgdd?label=imgdd%20pypi)](https://pypi.org/project/imgdd)
 [![imgdd crate](https://img.shields.io/crates/v/imgdd?label=imgdd)](https://crates.io/crates/imgdd)
 [![imgddcore crate](https://img.shields.io/crates/v/imgddcore?label=imgddcore)](https://crates.io/crates/imgddcore)
 [![codecov](https://codecov.io/gh/aastopher/imgdd/graph/badge.svg?token=XZ1O2X04SO)](https://codecov.io/gh/aastopher/imgdd)

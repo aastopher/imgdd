@@ -1,6 +1,6 @@
 [package]
 name = "imgdd"
-version = "0.1.0"
+version = "0.1.1"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
@@ -9,12 +9,11 @@ repository.workspace = true
 documentation.workspace = true
 homepage.workspace = true
 keywords.workspace = true
-readme.workspace = true
 categories.workspace = true
-
+readme = "README.md" 
 
 [dependencies]
-imgddcore = { path = "../imgddcore", version = "0.1.0" }
+imgddcore = { path = "../imgddcore", version = "0.1.1" }
 image.workspace = true
 anyhow.workspace = true
 criterion = { version = "0.5.1", optional = true }

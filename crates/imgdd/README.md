@@ -1,6 +1,3 @@
-[![imgdd pypi](https://img.shields.io/pypi/v/imgdd?label=imgdd%20pypi)](https://pypi.org/project/imgdd)
-[![imgdd crate](https://img.shields.io/crates/v/imgdd?label=imgdd)](https://crates.io/crates/imgdd)
-[![imgddcore crate](https://img.shields.io/crates/v/imgddcore?label=imgddcore)](https://crates.io/crates/imgddcore)
 [![codecov](https://codecov.io/gh/aastopher/imgdd/graph/badge.svg?token=XZ1O2X04SO)](https://codecov.io/gh/aastopher/imgdd)
 [![Documentation Status](https://img.shields.io/badge/docs-online-brightgreen)](https://aastopher.github.io/imgdd/)
 [![DeepSource](https://app.deepsource.com/gh/aastopher/imgdd.svg/?label=active+issues&show_trend=true&token=IiuhCO6n1pK-GAJ800k6Z_9t)](https://app.deepsource.com/gh/aastopher/imgdd/)
@@ -33,30 +30,33 @@ pip install imgdd
 
 ### Hash Images
 
-```python
-import imgdd as dd
+```rust
+use imgdd::*;
+use std::path::PathBuf;
 
-results = dd.hash(
-    path="path/to/images",
-    algo="dhash",  # Optional: default = dhash
-    filter="triangle"  # Optional: default = triangle
-    sort=False # Optional: default = False
-)
-print(results)
+let result = hash(
+    PathBuf::from("path/to/images"),
+    Some("Triangle"), // Optional: default = "Triangle"
+    Some("dHash"),   // Optional: default = "dHash"
+    Some(false),     // Optional: default = false
+);
+println!("{:#?}", result);
 ```
 
 ### Find Duplicates
 
-```python
-import imgdd as dd
+```rust
+use imgdd::*;
+use std::path::PathBuf;
 
-duplicates = dd.dupes(
-    path="path/to/images",
-    algo="dhash", # Optional: default = dhash
-    filter="triangle", # Optional: default = triangle
-    remove=False # Optional: default = False
-)
-print(duplicates)
+let result = dupes(
+    PathBuf::from("path/to/images"),
+    Some("Triangle"), // Optional: default = "Triangle"
+    Some("dHash"),   // Optional: default = "dHash"
+    false,
+);
+println!("{:#?}", result);
+```(duplicates)
 ```
 
 ## Supported Algorithms

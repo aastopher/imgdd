@@ -107,7 +107,7 @@ jobs:
           python -c 'import imgdd'
 
       - name: Upload sdist artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sdist
           path: target/wheels/*.tar.gz
@@ -147,7 +147,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Rust
         uses: actions-rs/toolchain@v1
@@ -185,7 +185,7 @@ jobs:
           ls -l target/wheels/
 
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wheels
           path: target/wheels/*.whl        
@@ -200,7 +200,7 @@ jobs:
     if: ${{ !inputs.dry-run }}
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: root
           
@@ -224,7 +224,7 @@ jobs:
     if: ${{ inputs.dry-run }}
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: root
 

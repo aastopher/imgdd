@@ -67,4 +67,5 @@ test = [
 [tool.maturin]
 bindings = "pyo3"
 module-name = "imgdd"
-include = ["README.md"]
+include = ["LICENSE", "README.md"]
+sdist-include = ["LICENSE", "README.md"]

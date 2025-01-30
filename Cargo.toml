@@ -18,7 +18,7 @@ homepage = "https://github.com/aastopher/imgdd"
 
 keywords = ["imagehash", "hash", "perceptual", "deduplication", "wavelet"]
 readme = "./README.md" 
-categories = ["algorithms", "image-processing", "data-structures", "development-tools"]
+categories = ["algorithms", "computer-vision", "data-structures", "mathematics"]
 
 
 

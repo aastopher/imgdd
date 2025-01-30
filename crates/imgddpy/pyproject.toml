@@ -11,7 +11,7 @@ Designed to quickly process nested folder structures, commonly found in image da
 """
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
-readme = { file = "README.md", content-type = "text/markdown"}
+dynamic = ["readme"]
 keywords = [
     "rust", 
     "imagehash", 
@@ -41,6 +41,9 @@ classifiers = [
   "Programming Language :: Rust",
   "Topic :: Scientific/Engineering",
 ]
+
+[tool.setuptools.dynamic]
+readme = { file = "README.md", content-type = "text/markdown"}
 
 [project.urls]
 homepage = "https://github.com/aastopher/imgdd"

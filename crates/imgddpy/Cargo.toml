@@ -11,7 +11,7 @@ documentation.workspace = true
 homepage.workspace = true
 
 [dependencies]
-imgddcore = { path = "../imgddcore", version = "0.1.0" }
+imgddcore = { path = "../imgddcore", version = "0.1.1" }
 pyo3 = { version = "0.23", features = ["extension-module", "abi3-py39"] }
 image.workspace = true
 

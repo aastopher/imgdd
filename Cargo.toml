@@ -5,12 +5,11 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
 edition = "2021"
 license = "GNU GPLv3"
 authors = ["Aaron Stopher <aaron.stopher@gmail.com>"]
 description = """
-performance-first perceptual hashing library; perfect for handling large datasets. 
+Performance-first perceptual hashing library; perfect for handling large datasets. 
 Designed to quickly process nested folder structures, commonly found in image datasets
 """
 repository = "https://github.com/aastopher/imgdd"

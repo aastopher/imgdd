@@ -12,7 +12,7 @@ This section highlights the performance benchmarks for the hashing algorithms pr
 
 ## Rust Benchmarks
 
-Below are local benchmarks taken using Criterion directly on the imgddcore Rust crate, based on the hardware details above.
+Below is a snapshot of local bare metal benchmarks taken on using Criterion directly on the imgddcore Rust crate, based on the hardware details above.
 
 |Algorithm|Time (ms)|Measurements|
 |---|---|---|
@@ -30,7 +30,7 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 
 ### dHash
 
-|Metric|`imgdd` (ms)|`imagehash` (ms)|Improvement (%)|
+|Metric|imgdd (ms)|imagehash (ms)|Improvement (%)|
 |---|---|---|---|
 |Min Time|1.788|5.098|64.92|
 |Max Time|2.792|7.684|63.67|
@@ -39,7 +39,7 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 
 ### aHash
 
-|Metric|`imgdd` (ms)|`imagehash` (ms)|Improvement (%)|
+|Metric|imgdd (ms)|imagehash (ms)|Improvement (%)|
 |---|---|---|---|
 |Min Time|1.683|5.666|70.29|
 |Max Time|3.207|15.403|79.18|
@@ -48,7 +48,7 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 
 ### pHash
 
-|Metric|`imgdd` (ms)|`imagehash` (ms)|Improvement (%)|
+|Metric|imgdd (ms)|imagehash (ms)|Improvement (%)|
 |---|---|---|---|
 |Min Time|1.798|5.726|68.60|
 |Max Time|4.063|20.099|79.78|
@@ -57,7 +57,7 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 
 ### wHash
 
-|Metric|`imgdd` (ms)|`imagehash` (ms)|Improvement (%)|
+|Metric|imgdd (ms)|imagehash (ms)|Improvement (%)|
 |---|---|---|---|
 |Min Time|1.750|42.418|95.87|
 |Max Time|4.422|97.446|95.46|
@@ -68,5 +68,5 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 
 ## Summary
 
-- In Python, **imgdd consistently outperforms imagehash by ~60%–96%**, demonstrating a significant reduction in hashing time per image.
+- In Python, **imgdd consistently outperforms imagehash by ~60%–95%**, demonstrating a significant reduction in hashing time per image.
 - imgddcore rust benchmarks achieve **sub-1 ms performance** for dHash and aHash, while maintaining excellent speeds across all algorithms.

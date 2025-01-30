@@ -109,6 +109,8 @@ pub fn hash(
 /// # Usage
 ///
 /// ```python
+/// import imgdd as dd
+///
 /// duplicates = dd.dupes(
 ///     path="path/to/images",
 ///     algo="dhash",

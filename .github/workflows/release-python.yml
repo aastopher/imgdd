@@ -111,6 +111,7 @@ jobs:
         with:
           name: sdist-${{ github.run_id }}
           path: target/wheels/*.tar.gz
+          overwrite: true
 
   build-wheels:
     needs: [coverage, integration-tests]
@@ -188,7 +189,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ github.run_id }}
-          path: target/wheels/*.whl        
+          path: target/wheels/*.whl   
+          overwrite: true     
+
 
   publish-to-pypi:
     needs: [create-sdist, build-wheels]

@@ -56,7 +56,7 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 /// results = dd.hash(
 ///     path="path/to/images",
 ///     algo="dhash",
-///     filter="triangle"
+///     filter="triangle",
 ///     sort=False
 /// )
 /// print(results)

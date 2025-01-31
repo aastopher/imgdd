@@ -39,7 +39,7 @@ import imgdd as dd
 results = dd.hash(
     path="path/to/images",
     algo="dhash",  # Optional: default = dhash
-    filter="triangle"  # Optional: default = triangle
+    filter="triangle",  # Optional: default = triangle
     sort=False # Optional: default = False
 )
 print(results)
@@ -70,7 +70,7 @@ print(duplicates)
 - `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`
 
 ## Contributing
-Contributions are always welcome! 🚀  
+Contributions are always welcome! 🚀
 
 Found a bug or have a question? Open a GitHub issue. Pull requests for new features or fixes are encouraged!
 

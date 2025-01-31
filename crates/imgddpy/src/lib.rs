@@ -88,7 +88,7 @@ pub fn hash(
 }
 
 /// ```python
-/// hash(path, filter="triangle", algo="dhash", sort=False)
+/// dupes(path, filter="triangle", algo="dhash", remove=False)
 /// ```
 /// 
 /// Find duplicate images in a directory.

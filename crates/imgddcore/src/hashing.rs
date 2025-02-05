@@ -247,7 +247,7 @@ impl ImageHash {
         let mut hash = 0u64;
         for (i, &val) in pixels.iter().enumerate() {
             if val > median {
-                hash |= 1 << i;
+                hash |= 1 << (63 - i);
             }
         }
         

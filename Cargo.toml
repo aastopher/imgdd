@@ -31,6 +31,7 @@ anyhow = "1.0.95"
 log = "0.4.25"
 rustdct = "0.7.1"
 tempfile = "3.5"
+dwt = "0.5.2"
 
 [profile.release]
 opt-level = 3 

@@ -14,13 +14,13 @@ This section highlights the performance benchmarks for the hashing algorithms pr
 
 Below is a snapshot of local bare metal benchmarks taken on using Criterion directly on the imgddcore Rust crate, based on the hardware details above.
 
-|Algorithm|Time (ms)|Measurements|
-|---|---|---|
-|aHash|0.815|100|
-|mHash|1.369|100|
-|dHash|0.541|100|
-|pHash|23.709|100|
-|wHash|3.345|100|
+| Algorithm | Time (ms)  | Measurements |
+| --------- | ---------- | ------------ |
+| aHash     | 0.00021894 | 100          |
+| mHash     | 0.00045627 | 100          |
+| dHash     | 0.00020319 | 100          |
+| pHash     | 0.020221   | 100          |
+| wHash     | 0.0021888  | 100          |
 
 ---
 
@@ -30,21 +30,21 @@ The table below compares the local performance of [imgdd](https://github.com/aas
 
 ### dHash
 
-|Metric|imgdd (ms)|imagehash (ms)|Improvement (%)|
-|---|---|---|---|
-|Min Time|1.788|5.098|64.92|
-|Max Time|2.792|7.684|63.67|
-|Avg Time|1.942|5.645|65.59|
-|Median Time|1.888|5.554|66.02|
+| Metric      | imgdd (ms) | imagehash (ms) | Improvement (%) |
+| ----------- | ---------- | -------------- | --------------- |
+| Min Time    | 1.2488     | 4.3166         | 71.07           |
+| Max Time    | 3.5945     | 9.5155         | 62.22           |
+| Avg Time    | 1.6148     | 5.5629         | 70.97           |
+| Median Time | 1.3985     | 5.4049         | 74.12           |
 
 ### aHash
 
-|Metric|imgdd (ms)|imagehash (ms)|Improvement (%)|
-|---|---|---|---|
-|Min Time|1.683|5.666|70.29|
-|Max Time|3.207|15.403|79.18|
-|Avg Time|2.055|8.346|75.38|
-|Median Time|2.043|7.683|73.41|
+| Metric      | imgdd (ms) | imagehash (ms) | Improvement (%) |
+| ----------- | ---------- | -------------- | --------------- |
+| Min Time    | 1.683      | 5.666          | 70.29           |
+| Max Time    | 3.207      | 15.403         | 79.18           |
+| Avg Time    | 2.055      | 8.346          | 75.38           |
+| Median Time | 2.043      | 7.683          | 73.41           |
 
 ### pHash
 

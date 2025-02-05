@@ -13,15 +13,16 @@ mod tests {
             } else {
                 Rgba([0, 0, 0, 255]) // Black pixel
             }
-        }))
+        })).grayscale()
     }
+
 
     #[test]
     fn test_ahash() -> Result<()> {
         let test_image = create_mock_image((8, 8));
         let hash = ImageHash::ahash(&test_image)?;
         println!("aHash: {:064b}", hash.get_hash());
-        let expected_hash = 0b0101010101010101010101010101010101010101010101010101010101010101;
+        let expected_hash = 0b1010101010101010101010101010101010101010101010101010101010101010;
         assert_eq!(hash.get_hash(), expected_hash, "aHash does not match expected value");
 
         Ok(())
@@ -32,7 +33,7 @@ mod tests {
         let test_image = create_mock_image((8, 8));
         let hash = ImageHash::mhash(&test_image)?;
         println!("mHash: {:064b}", hash.get_hash());
-        let expected_hash = 0b0101010101010101010101010101010101010101010101010101010101010101;
+        let expected_hash = 0b1010101010101010101010101010101010101010101010101010101010101010;
         
         assert_eq!(hash.get_hash(), expected_hash, "mHash does not match expected value");
 
@@ -44,7 +45,7 @@ mod tests {
         let test_image = create_mock_image((9, 8));
         let hash = ImageHash::dhash(&test_image)?;
         println!("dHash: {:064b}", hash.get_hash());
-        let expected_hash = 0b1010101010101010101010101010101010101010101010101010101010101010;
+        let expected_hash = 0b0101010101010101010101010101010101010101010101010101010101010101;
         assert_eq!(hash.get_hash(), expected_hash, "dHash does not match expected value");
 
         Ok(())
@@ -54,7 +55,7 @@ mod tests {
     fn test_phash() -> Result<()> {
         let test_image = create_mock_image((32, 32));
         let hash = ImageHash::phash(&test_image)?;
-        let expected_hash = 0b0000000000000000000000000000000000000000000000000000000010101011;
+        let expected_hash = 0b1101010100000000000000000000000000000000000000000000000000000000;
         println!("pHash: {:064b}", hash.get_hash());
         assert_eq!(hash.get_hash(), expected_hash, "pHash does not match expected value");
 
@@ -66,7 +67,7 @@ mod tests {
         let test_image = create_mock_image((8, 8));
         let hash = ImageHash::whash(&test_image)?;
         println!("wHash: {:064b}", hash.get_hash());
-        let expected_hash = 0b0000000000000000000000000000000000000101000001010000010100000101;
+        let expected_hash = 0b1010101010101010101010101010101010101010101010101010101010101010;
 
         assert_eq!(hash.get_hash(), expected_hash, "wHash does not match expected value");
 

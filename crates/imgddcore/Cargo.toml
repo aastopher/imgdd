@@ -1,6 +1,6 @@
 [package]
 name = "imgddcore"
-version = "0.1.1"
+version = "0.1.2"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
@@ -19,6 +19,7 @@ walkdir.workspace = true
 anyhow.workspace = true
 log.workspace = true
 rustdct.workspace = true
+dwt.workspace = true
 criterion = { package = "codspeed-criterion-compat", version = "2.7.1", optional = true }
 
 [dev-dependencies]

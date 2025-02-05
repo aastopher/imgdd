@@ -292,7 +292,7 @@ dependencies = [
  "criterion-plot",
  "is-terminal",
  "itertools 0.10.5",
- "num-traits",
+ "num-traits 0.2.19",
  "once_cell",
  "oorandom",
  "plotters",
@@ -345,6 +345,15 @@ name = "crunchy"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43da5946c66ffcc7745f48db692ffbb10a83bfe0afd96235c5c2a4fb23994929"
+
+[[package]]
+name = "dwt"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "537fc1f78e72b8d14a7fd0d918996a3a33220149b89ef88864256af2f5b25c3f"
+dependencies = [
+ "num-traits 0.1.43",
+]
 
 [[package]]
 name = "either"
@@ -469,7 +478,7 @@ dependencies = [
  "exr",
  "gif",
  "image-webp",
- "num-traits",
+ "num-traits 0.2.19",
  "png",
  "qoi",
  "ravif",
@@ -492,7 +501,7 @@ dependencies = [
 
 [[package]]
 name = "imgdd"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "criterion",
@@ -503,10 +512,11 @@ dependencies = [
 
 [[package]]
 name = "imgddcore"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "codspeed-criterion-compat",
+ "dwt",
  "image",
  "log",
  "rayon",
@@ -517,7 +527,7 @@ dependencies = [
 
 [[package]]
 name = "imgddpy"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "image",
  "imgddcore",
@@ -736,7 +746,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a5e44f723f1133c9deac646763579fdb3ac745e418f2a7af9cd0c431da1f20b9"
 dependencies = [
  "num-integer",
- "num-traits",
+ "num-traits 0.2.19",
 ]
 
 [[package]]
@@ -745,7 +755,7 @@ version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73f88a1307638156682bada9d7604135552957b7818057dcef22705b4d509495"
 dependencies = [
- "num-traits",
+ "num-traits 0.2.19",
 ]
 
 [[package]]
@@ -765,7 +775,7 @@ version = "0.1.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7969661fd2958a5cb096e56c8e1ad0444ac2bbcd0061bd28660485a44879858f"
 dependencies = [
- "num-traits",
+ "num-traits 0.2.19",
 ]
 
 [[package]]
@@ -776,7 +786,16 @@ checksum = "f83d14da390562dca69fc84082e73e548e1ad308d24accdedd2720017cb37824"
 dependencies = [
  "num-bigint",
  "num-integer",
- "num-traits",
+ "num-traits 0.2.19",
+]
+
+[[package]]
+name = "num-traits"
+version = "0.1.43"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92e5113e9fd4cc14ded8e499429f396a20f98c772a47cc8622a736e1ec843c31"
+dependencies = [
+ "num-traits 0.2.19",
 ]
 
 [[package]]
@@ -818,7 +837,7 @@ version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5aeb6f403d7a4911efb1e33402027fc44f29b5bf6def3effcc22d7bb75f2b747"
 dependencies = [
- "num-traits",
+ "num-traits 0.2.19",
  "plotters-backend",
  "plotters-svg",
  "wasm-bindgen",
@@ -1044,7 +1063,7 @@ dependencies = [
  "new_debug_unreachable",
  "noop_proc_macro",
  "num-derive",
- "num-traits",
+ "num-traits 0.2.19",
  "once_cell",
  "paste",
  "profiling",
@@ -1144,7 +1163,7 @@ checksum = "43806561bc506d0c5d160643ad742e3161049ac01027b5e6d7524091fd401d86"
 dependencies = [
  "num-complex",
  "num-integer",
- "num-traits",
+ "num-traits 0.2.19",
  "primal-check",
  "strength_reduce",
  "transpose",
@@ -1407,7 +1426,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6f32aaa24bacd11e488aa9ba66369c7cd514885742c9fe08cfe85884db3e92b"
 dependencies = [
  "aligned-vec",
- "num-traits",
+ "num-traits 0.2.19",
  "wasm-bindgen",
 ]
 

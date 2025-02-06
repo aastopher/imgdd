@@ -1,7 +1,6 @@
 use anyhow::{anyhow, Result};
 use std::path::PathBuf;
 
-
 /// Validates a given path to ensure it exists and is a directory.
 ///
 /// This function checks whether the provided path exists and is a directory,

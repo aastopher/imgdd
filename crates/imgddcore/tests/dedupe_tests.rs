@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod tests {
-    use imgddcore::dedupe::*;
     use image::imageops::FilterType;
     use image::{DynamicImage, Rgba};
-    use std::path::PathBuf;
+    use imgddcore::dedupe::*;
     use std::fs::File;
     use std::io::Write;
     use std::panic;
+    use std::path::PathBuf;
 
     fn create_mock_image() -> DynamicImage {
         DynamicImage::ImageRgba8(image::ImageBuffer::from_pixel(9, 8, Rgba([255, 0, 0, 255])))
@@ -17,21 +17,23 @@ mod tests {
         let temp_dir = tempfile::tempdir().unwrap();
         let image_path = temp_dir.path().join("test_image.png");
         create_mock_image().save(&image_path).unwrap();
-    
+
         let algorithms = ["dhash", "ahash", "mhash", "phash", "whash"];
         for algo in algorithms {
-            let hashes = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, algo)
-                .unwrap();
+            let hashes =
+                collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, algo).unwrap();
             assert_eq!(hashes.len(), 1, "Algorithm {} failed", algo);
         }
     }
-    
 
     #[test]
     fn test_sort_hashes() {
         let mut hashes = vec![(2, PathBuf::from("b")), (1, PathBuf::from("a"))];
         sort_hashes(&mut hashes);
-        assert_eq!(hashes, vec![(1, PathBuf::from("a")), (2, PathBuf::from("b"))]);
+        assert_eq!(
+            hashes,
+            vec![(1, PathBuf::from("a")), (2, PathBuf::from("b"))]
+        );
     }
 
     #[test]
@@ -41,7 +43,11 @@ mod tests {
         create_mock_image().save(&image_path).unwrap();
 
         let result = panic::catch_unwind(|| {
-            collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, "unsupported_algo")
+            collect_hashes(
+                &temp_dir.path().to_path_buf(),
+                FilterType::Nearest,
+                "unsupported_algo",
+            )
         });
 
         assert!(result.is_err()); // Should panic due to unsupported algorithm
@@ -95,24 +101,21 @@ mod tests {
         let temp_dir = tempfile::tempdir().unwrap();
         let file_path_1 = temp_dir.path().join("test_file_1.txt");
         let file_path_2 = temp_dir.path().join("test_file_2.txt");
-    
+
         // Create two dummy files
         std::fs::write(&file_path_1, b"file 1 content").unwrap();
         std::fs::write(&file_path_2, b"file 2 content").unwrap();
-    
+
         // Mock duplicate hash paths
-        let hash_paths = vec![
-            (1, file_path_1.clone()),
-            (1, file_path_2.clone()),
-        ];
-    
+        let hash_paths = vec![(1, file_path_1.clone()), (1, file_path_2.clone())];
+
         // Test with `remove = true` to trigger file deletion
         let result = find_duplicates(&hash_paths, true);
         assert!(result.is_ok());
-    
+
         // First file should remain
         assert!(file_path_1.exists());
-    
+
         // Duplicate should be removed
         assert!(!file_path_2.exists());
     }
@@ -122,28 +125,28 @@ mod tests {
         let temp_dir = tempfile::tempdir().unwrap();
         let file_path_1 = temp_dir.path().join("test_file_1.txt");
         let file_path_2 = temp_dir.path().join("nonexistent_file.txt");
-    
+
         // Create single dummy file
         std::fs::write(&file_path_1, b"file 1 content").unwrap();
-    
+
         // Expect first file exists before test starts
         assert!(file_path_1.exists());
-    
+
         // Mock duplicate hash paths, including a non-existent file
-        let hash_paths = vec![
-            (1, file_path_1.clone()),
-            (1, file_path_2.clone()),
-        ];
-    
+        let hash_paths = vec![(1, file_path_1.clone()), (1, file_path_2.clone())];
+
         // Test with `remove = true` to trigger file deletion
         let result = find_duplicates(&hash_paths, true);
         assert!(result.is_ok());
-    
+
         // First file should remain untouched
         assert!(file_path_1.exists());
-    
+
         // Second file should not exist, and removal should fail gracefully
-        assert!(!file_path_2.exists(), "File {} should not exist.", file_path_2.display());
+        assert!(
+            !file_path_2.exists(),
+            "File {} should not exist.",
+            file_path_2.display()
+        );
     }
-    
 }

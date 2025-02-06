@@ -19,10 +19,7 @@ mod tests {
         assert!(result.is_err());
 
         if let Err(err) = result {
-            assert_eq!(
-                err.to_string(),
-                "Path does not exist: /non/existent/path"
-            );
+            assert_eq!(err.to_string(), "Path does not exist: /non/existent/path");
         }
     }
 

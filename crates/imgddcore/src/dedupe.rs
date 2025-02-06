@@ -1,23 +1,23 @@
 use crate::hashing::ImageHash;
 use crate::normalize;
+use anyhow::Error;
+use anyhow::{anyhow, Result};
 use image::imageops::FilterType;
 use image::{DynamicImage, ImageReader};
 use rayon::prelude::*;
-use walkdir::WalkDir;
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use anyhow::{anyhow, Result};
-use anyhow::Error;
+use walkdir::WalkDir;
 
 /// Collects hashes for all image files in a directory recursively.
 ///
 /// # Arguments
 ///
 /// * `path` - The directory containing images to process.
-/// * `filter` - The resize filter to use. 
+/// * `filter` - The resize filter to use.
 ///              Options: `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
-/// * `algo` - The hashing algorithm to use. 
+/// * `algo` - The hashing algorithm to use.
 ///              Options: `dhash`, `ahash`, `mhash`, `phash`, `whash`.
 ///
 /// # Returns
@@ -35,40 +35,38 @@ pub fn collect_hashes(
         .map(|entry| entry.path().to_path_buf())
         .collect();
 
-        let hash_paths: Vec<(u64, PathBuf)> = files
+    let hash_paths: Vec<(u64, PathBuf)> = files
         .par_iter()
-        .filter_map(|file_path| {
-            match open_image(file_path) {
-                Ok(image) => {
-                    let hash = match algo {
-                        "dhash" => {
-                            let normalized = normalize::proc(&image, filter, 9, 8).ok()?;
-                            ImageHash::dhash(&normalized).ok()?.get_hash()
-                        }
-                        "ahash" => {
-                            let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
-                            ImageHash::ahash(&normalized).ok()?.get_hash()
-                        }
-                        "mhash" => {
-                            let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
-                            ImageHash::mhash(&normalized).ok()?.get_hash()
-                        }
-                        "phash" => {
-                            let normalized = normalize::proc(&image, filter, 32, 32).ok()?;
-                            ImageHash::phash(&normalized).ok()?.get_hash()
-                        }
-                        "whash" => {
-                            let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
-                            ImageHash::whash(&normalized).ok()?.get_hash()
-                        }
-                        _ => panic!("Unsupported hashing algorithm: {}", algo),
-                    };
-                    Some((hash, file_path.clone()))
-                }
-                Err(e) => {
-                    eprintln!("Failed to open image {}: {}", file_path.display(), e);
-                    None
-                }
+        .filter_map(|file_path| match open_image(file_path) {
+            Ok(image) => {
+                let hash = match algo {
+                    "dhash" => {
+                        let normalized = normalize::proc(&image, filter, 9, 8).ok()?;
+                        ImageHash::dhash(&normalized).ok()?.get_hash()
+                    }
+                    "ahash" => {
+                        let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        ImageHash::ahash(&normalized).ok()?.get_hash()
+                    }
+                    "mhash" => {
+                        let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        ImageHash::mhash(&normalized).ok()?.get_hash()
+                    }
+                    "phash" => {
+                        let normalized = normalize::proc(&image, filter, 32, 32).ok()?;
+                        ImageHash::phash(&normalized).ok()?.get_hash()
+                    }
+                    "whash" => {
+                        let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        ImageHash::whash(&normalized).ok()?.get_hash()
+                    }
+                    _ => panic!("Unsupported hashing algorithm: {}", algo),
+                };
+                Some((hash, file_path.clone()))
+            }
+            Err(e) => {
+                eprintln!("Failed to open image {}: {}", file_path.display(), e);
+                None
             }
         })
         .collect();
@@ -150,4 +148,3 @@ pub fn find_duplicates(
 
     Ok(duplicates_map)
 }
-

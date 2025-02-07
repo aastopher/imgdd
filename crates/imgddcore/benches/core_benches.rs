@@ -1,14 +1,14 @@
-use criterion::{criterion_group, criterion_main, Criterion, black_box};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-use imgddcore::dedupe::{open_image, collect_hashes, sort_hashes, find_duplicates};
+use imgddcore::dedupe::{collect_hashes, find_duplicates, open_image, sort_hashes};
 use imgddcore::hashing::ImageHash;
 use imgddcore::normalize::proc as normalize;
 use std::path::PathBuf;
 
-// WARNING! 
+// WARNING!
 // dd.hash function benchmarks will be inaccurate because; this metric relies heavily on system calls.
 // Since they cannot be consistently instrumented, those calls are not included in the final measure.
-// To resolve this we must use hosted codspeed macro runners which require a pro plan. 
+// To resolve this we must use hosted codspeed macro runners which require a pro plan.
 // For now I will just leave this warning here.
 
 fn open_image_bench(c: &mut Criterion) {
@@ -27,8 +27,13 @@ fn benchmark_normalize(c: &mut Criterion) {
 
     c.bench_function("normalize", |b| {
         b.iter(|| {
-            normalize(black_box(&image), black_box(image::imageops::FilterType::Triangle), black_box(9), black_box(8))
-                .expect("Failed to normalize image");
+            normalize(
+                black_box(&image),
+                black_box(image::imageops::FilterType::Triangle),
+                black_box(9),
+                black_box(8),
+            )
+            .expect("Failed to normalize image");
         });
     });
 }
@@ -50,12 +55,8 @@ fn benchmark_collect_hashes(c: &mut Criterion) {
 
 fn benchmark_sort_hashes(c: &mut Criterion) {
     let dir_path = PathBuf::from("../../imgs/test");
-    let mut hash_paths = collect_hashes(
-        &dir_path,
-        image::imageops::FilterType::Triangle,
-        "dhash",
-    )
-    .expect("Failed to collect hashes");
+    let mut hash_paths = collect_hashes(&dir_path, image::imageops::FilterType::Triangle, "dhash")
+        .expect("Failed to collect hashes");
 
     c.bench_function("sort_hashes", |b| {
         b.iter(|| {
@@ -66,18 +67,14 @@ fn benchmark_sort_hashes(c: &mut Criterion) {
 
 fn benchmark_find_duplicates(c: &mut Criterion) {
     let dir_path = PathBuf::from("../../imgs/test");
-    let mut hash_paths = collect_hashes(
-        &dir_path,
-        image::imageops::FilterType::Triangle,
-        "dhash",
-    )
-    .expect("Failed to collect hashes");
+    let mut hash_paths = collect_hashes(&dir_path, image::imageops::FilterType::Triangle, "dhash")
+        .expect("Failed to collect hashes");
     sort_hashes(&mut hash_paths);
 
     c.bench_function("find_duplicates", |b| {
         b.iter(|| {
-            let _ = find_duplicates(black_box(&hash_paths), false)
-                .expect("Failed to find duplicates");
+            let _ =
+                find_duplicates(black_box(&hash_paths), false).expect("Failed to find duplicates");
         });
     });
 }
@@ -162,7 +159,6 @@ fn benchmark_whash(c: &mut Criterion) {
         });
     });
 }
-
 
 criterion_group! {
     name = group1;

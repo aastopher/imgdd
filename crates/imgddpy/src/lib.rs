@@ -1,7 +1,7 @@
+use image::imageops::FilterType;
 use imgddcore::dedupe::*;
 use imgddcore::validate::*;
 use pyo3::prelude::*;
-use image::imageops::FilterType;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -32,15 +32,15 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 /// ```python
 /// hash(path, filter="triangle", algo="dhash", sort=False)
 /// ```
-/// 
+///
 /// Calculate the hash of images in a directory.
 ///
 /// # Arguments
 /// - `path (str)`: Path to the directory containing images.
-/// - `filter (str)`: Resize filter to use. 
+/// - `filter (str)`: Resize filter to use.
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 ///     - **Default:** `Triangle`
-/// - `algo (str)`: Hashing algorithm. 
+/// - `algo (str)`: Hashing algorithm.
 ///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///     - **Default:** `dHash`
 /// - `sort (bool)`: Whether to sort the results by hash values.
@@ -90,15 +90,15 @@ pub fn hash(
 /// ```python
 /// dupes(path, filter="triangle", algo="dhash", remove=False)
 /// ```
-/// 
+///
 /// Find duplicate images in a directory.
 ///
 /// # Arguments
 /// - `path (str)`: Path to the directory containing images.
-/// - `filter (str)`: Resize filter to use. 
+/// - `filter (str)`: Resize filter to use.
 ///     - **Options:** [`Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`]
 ///     - **Default:** `Triangle`
-/// - `algo (str)`: Hashing algorithm. 
+/// - `algo (str)`: Hashing algorithm.
 ///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///     - **Default:** `dHash`
 /// - `remove (bool)`: Whether to remove duplicate files
@@ -143,7 +143,6 @@ pub fn dupes(
         .map(|(hash, paths)| (format!("{:x}", hash), paths))
         .collect())
 }
-
 
 #[pymodule]
 fn imgdd(m: &Bound<'_, PyModule>) -> PyResult<()> {

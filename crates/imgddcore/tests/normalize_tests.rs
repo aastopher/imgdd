@@ -1,11 +1,15 @@
 #[cfg(test)]
 mod tests {
-    use imgddcore::normalize::*;
     use image::imageops::FilterType;
     use image::{DynamicImage, Rgba};
+    use imgddcore::normalize::*;
 
     fn create_mock_image() -> DynamicImage {
-        DynamicImage::ImageRgba8(image::ImageBuffer::from_pixel(16, 16, Rgba([255, 0, 0, 255])))
+        DynamicImage::ImageRgba8(image::ImageBuffer::from_pixel(
+            16,
+            16,
+            Rgba([255, 0, 0, 255]),
+        ))
     }
 
     #[test]

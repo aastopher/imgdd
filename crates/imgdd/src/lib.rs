@@ -1,12 +1,12 @@
 //! Rust interface for fast and efficient image deduplication.
 //! Leverages perceptual hashing algorithms to identify duplicate or visually similar images in a directory.
 
+use anyhow::Error;
+use image::imageops::FilterType;
 use imgddcore::dedupe::*;
 use imgddcore::validate::*;
-use image::imageops::FilterType;
 use std::collections::HashMap;
 use std::path::PathBuf;
-use anyhow::Error;
 
 /// Converts a string to a `FilterType`.
 ///
@@ -51,7 +51,6 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
         other => panic!("Unsupported algorithm: {}", other),
     }
 }
-
 
 /// Calculates hashes for all images in a directory recursively.
 ///
@@ -104,7 +103,6 @@ pub fn hash(
 
     Ok(hash_paths)
 }
-
 
 /// Finds duplicate images in a directory.
 ///

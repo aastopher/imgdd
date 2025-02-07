@@ -28,54 +28,54 @@ env:
   RUSTUP_MAX_RETRIES: 10
 
 jobs:
-  # validate-version:
-  #   name: Validate Branch or Tag
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Validate Version Pattern
-  #       id: validate
-  #       run: |
-  #         echo "Checking branch or tag: ${{ github.ref_name }}"
-  #         if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  #           echo "✅ Valid version pattern."
-  #         else
-  #           echo "❌ Version pattern mismatch! Expected: rs-v[0-9]+\.[0-9]+\.[0-9]+"
-  #           exit 1
-  #         fi
+  validate-version:
+    name: Validate Branch or Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Version Pattern
+        id: validate
+        run: |
+          echo "Checking branch or tag: ${{ github.ref_name }}"
+          if [[ "${{ github.ref_name }}" =~ ^py-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✅ Valid version pattern."
+          else
+            echo "❌ Version pattern mismatch! Expected: rs-v[0-9]+\.[0-9]+\.[0-9]+"
+            exit 1
+          fi
 
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         
-  #     - name: Validate Version Match
-  #       run: |
-  #         cd crates/imgddpy
-  #         VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "imgddpy") | .version')
-  #         EXPECTED_VERSION="py-v$VERSION"
-  #         CURRENT_BRANCH="${{ github.ref_name }}"
+      - name: Validate Version Match
+        run: |
+          cd crates/imgddpy
+          VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "imgddpy") | .version')
+          EXPECTED_VERSION="py-v$VERSION"
+          CURRENT_BRANCH="${{ github.ref_name }}"
 
-  #         if [ "$EXPECTED_VERSION" = "$CURRENT_BRANCH" ]; then
-  #           echo "✅ Version matches the branch/tag: $CURRENT_BRANCH"
-  #         else
-  #           echo "❌ Version mismatch! Expected: $EXPECTED_VERSION, Found: $CURRENT_BRANCH"
-  #           exit 1
-  #         fi
+          if [ "$EXPECTED_VERSION" = "$CURRENT_BRANCH" ]; then
+            echo "✅ Version matches the branch/tag: $CURRENT_BRANCH"
+          else
+            echo "❌ Version mismatch! Expected: $EXPECTED_VERSION, Found: $CURRENT_BRANCH"
+            exit 1
+          fi
 
-  # coverage:
-  #   uses: ./.github/workflows/coverage.yml
-  #   needs: validate-version
-  #   with:
-  #     branch: ${{ github.ref_name }}
-  #   secrets:
-  #     codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  coverage:
+    uses: ./.github/workflows/coverage.yml
+    needs: validate-version
+    with:
+      branch: ${{ github.ref_name }}
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
-  # integration-tests:
-  #   uses: ./.github/workflows/integration.yml
-  #   needs: validate-version
-  #   with:
-  #     branch: ${{ github.ref_name }}
+  integration-tests:
+    uses: ./.github/workflows/integration.yml
+    needs: validate-version
+    with:
+      branch: ${{ github.ref_name }}
 
   create-sdist:
-    # needs: [coverage, integration-tests]
+    needs: [coverage, integration-tests]
     name: Build and Test Source Distributions
     runs-on: ubuntu-latest
     steps:
@@ -114,7 +114,7 @@ jobs:
           overwrite: true
 
   build-wheels:
-    # needs: [coverage, integration-tests]
+    needs: [coverage, integration-tests]
     name: Build Wheels
     strategy:
       fail-fast: false
@@ -188,61 +188,9 @@ jobs:
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v4
         with:
-          # name: wheels-${{ github.run_id }}
           name: wheels-${{ github.run_id }}-${{ matrix.os }}-${{ matrix.compatibility }}
           path: target/wheels/*.whl   
           overwrite: true     
-
-
-  # publish-to-pypi:
-  #   needs: [create-sdist, build-wheels]
-  #   name: Publish to PyPI
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     id-token: write
-  #   if: ${{ !inputs.dry-run }}
-  #   steps:
-  #     - name: Download all artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         path: root
-          
-  #     - name: Merge all wheels and source distributions into `output/`
-  #       run: |
-  #         mkdir -p output
-  #         mv root/wheels-${{ github.run_id }}/*.whl output/ || true
-  #         mv root/sdist-${{ github.run_id }}/*.tar.gz output/ || true
-  #         ls -l output/
-
-  #     - name: Publish to PyPI
-  #       uses: pypa/gh-action-pypi-publish@release/v1
-  #       with:
-  #         verbose: true
-  #         packages-dir: output
-
-  # dry-run-check:
-  #   needs: [create-sdist, build-wheels]
-  #   name: Dry Run
-  #   runs-on: ubuntu-latest
-  #   if: ${{ inputs.dry-run }}
-  #   steps:
-  #     - name: Download all artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         path: root
-
-  #     - name: Merge all wheels and source distributions into `output/`
-  #       run: |
-  #         mkdir -p output
-  #         mv root/wheels-${{ github.run_id }}/*.whl output/ || true
-  #         mv root/sdist-${{ github.run_id }}/*.tar.gz output/ || true
-  #         ls -l output/
-
-  #     - name: Dry run output
-  #       run: |
-  #         echo "Dry run completed. Artifacts are built and available:"
-  #         ls -l output/
-
 
 
   publish-to-pypi:

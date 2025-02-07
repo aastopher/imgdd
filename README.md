@@ -1,8 +1,8 @@
+[![Documentation Status](https://img.shields.io/badge/docs-online-brightgreen)](https://aastopher.github.io/imgdd/)
 [![imgdd pypi](https://img.shields.io/pypi/v/imgdd?label=imgdd%20pypi)](https://pypi.org/project/imgdd)
 [![imgdd crate](https://img.shields.io/crates/v/imgdd?label=imgdd)](https://crates.io/crates/imgdd)
 [![imgddcore crate](https://img.shields.io/crates/v/imgddcore?label=imgddcore)](https://crates.io/crates/imgddcore)
 [![codecov](https://codecov.io/gh/aastopher/imgdd/graph/badge.svg?token=XZ1O2X04SO)](https://codecov.io/gh/aastopher/imgdd)
-[![Documentation Status](https://img.shields.io/badge/docs-online-brightgreen)](https://aastopher.github.io/imgdd/)
 [![DeepSource](https://app.deepsource.com/gh/aastopher/imgdd.svg/?label=active+issues&show_trend=true&token=IiuhCO6n1pK-GAJ800k6Z_9t)](https://app.deepsource.com/gh/aastopher/imgdd/)
 
 # imgdd: Image DeDuplication
@@ -17,7 +17,7 @@
 
 ## Why imgdd?
 
-`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning-fast replacement with additional features. To ensure enhanced performance, `imgdd` has been benchmarked against `imagehash`. In Python, **imgdd consistently outperforms imagehash by ~60%–95%**, demonstrating a significant reduction in hashing time per image.
+`imgdd` has been inspired by [imagehash](https://github.com/JohannesBuchner/imagehash) and aims to be a lightning-fast replacement with additional features. To ensure enhanced performance, `imgdd` has been benchmarked against `imagehash`. In Python, [**imgdd consistently outperforms imagehash by ~60%–95%**](https://aastopher.github.io/imgdd/latest/benches), demonstrating a significant reduction in hashing time per image.
 
 ---
 

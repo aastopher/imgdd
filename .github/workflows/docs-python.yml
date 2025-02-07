@@ -91,5 +91,5 @@ jobs:
 
           # Build and deploy using mike
           cd crates/imgddpy/
-          mike deploy --push --branch gh-pages "$VERSION" latest
+          mike deploy --push --update-aliases --branch gh-pages "$VERSION" latest
           mike set-default --push --branch gh-pages latest

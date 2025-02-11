@@ -80,7 +80,7 @@ pub fn collect_hashes(
 ///
 /// * `hash_paths` - A mutable reference to a vector of hash-path tuples.
 #[inline]
-pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
+pub fn sort_hashes(hash_paths: &mut [(u64, PathBuf)]) {
     hash_paths.sort_by_key(|(hash, _)| *hash);
 }
 
@@ -130,7 +130,8 @@ pub fn find_duplicates(
             if hash1 == hash2 {
                 duplicates_map
                     .entry(*hash1)
-                    .or_insert_with(Vec::new)
+                    // .or_insert_with(Vec::new)
+                    .or_default()
                     .extend(vec![path1.clone(), path2.clone()]);
             }
         }

@@ -2,7 +2,7 @@
 mod tests {
     use image::imageops::FilterType;
     use image::{DynamicImage, Rgba};
-    use imgddcore::dedupe::*;
+    use imgddcore::dedupe::{collect_hashes, find_duplicates, open_image, sort_hashes};
     use std::fs::File;
     use std::io::Write;
     use std::panic;

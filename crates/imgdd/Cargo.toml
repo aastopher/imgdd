@@ -13,7 +13,7 @@ categories.workspace = true
 readme = "README.md" 
 
 [dependencies]
-imgddcore = { path = "../imgddcore", version = "0.1.3" }
+imgddcore = { path = "../imgddcore", version = "0.1.4" }
 image.workspace = true
 anyhow.workspace = true
 criterion = { version = "0.5.1", optional = true }

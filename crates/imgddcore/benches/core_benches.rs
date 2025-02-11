@@ -1,6 +1,7 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use imgddcore::dedupe::{collect_hashes, find_duplicates, open_image, sort_hashes};
+use imgddcore::utils::{select_algo, select_filter_type};
 use imgddcore::hashing::ImageHash;
 use imgddcore::normalize::proc as normalize;
 use std::path::PathBuf;
@@ -10,6 +11,22 @@ use std::path::PathBuf;
 // Since they cannot be consistently instrumented, those calls are not included in the final measure.
 // To resolve this we must use hosted codspeed macro runners which require a pro plan.
 // For now I will just leave this warning here.
+
+fn benchmark_select_filter_type(c: &mut Criterion) {
+    c.bench_function("select_filter_type", |b| {
+        b.iter(|| {
+            black_box(select_filter_type(Some("nearest")));
+        });
+    });
+}
+
+fn benchmark_select_algo(c: &mut Criterion) {
+    c.bench_function("select_algo", |b| {
+        b.iter(|| {
+            black_box(select_algo(Some("dhash")));
+        });
+    });
+}
 
 fn open_image_bench(c: &mut Criterion) {
     let path = PathBuf::from("../../imgs/test/single/file000898199107.jpg");
@@ -174,6 +191,8 @@ criterion_group! {
 
 criterion_group!(
     group3,
+    benchmark_select_filter_type,
+    benchmark_select_algo,
     benchmark_ahash,
     benchmark_mhash,
     benchmark_dhash,

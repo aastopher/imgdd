@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
-use std::path::PathBuf;
 use image::{imageops::FilterType, DynamicImage, ImageReader};
+use std::path::PathBuf;
 
 /// Converts a string to a `FilterType`.
 ///
@@ -46,7 +46,6 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
     }
 }
 
-
 /// Validates a given path to ensure it exists and is a directory.
 ///
 /// This function checks whether the provided path exists and is a directory,
@@ -75,7 +74,6 @@ pub fn validate_path(path: &PathBuf) -> Result<&PathBuf> {
     Ok(path)
 }
 
-
 /// Normalizes an image by resizing it to a given resolution and converting it to grayscale.
 ///
 /// # Arguments
@@ -96,7 +94,6 @@ pub fn normalize(
 ) -> Result<DynamicImage> {
     Ok(image.resize_exact(width, height, filter).grayscale())
 }
-
 
 /// Opens an image file and decodes it.
 ///

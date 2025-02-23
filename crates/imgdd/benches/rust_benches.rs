@@ -34,10 +34,6 @@ fn benchmark_dupes(c: &mut Criterion) {
     });
 }
 
-criterion_group!(
-    rust_interface_benchmarks,
-    benchmark_hash,
-    benchmark_dupes
-);
+criterion_group!(rust_interface_benchmarks, benchmark_hash, benchmark_dupes);
 
 criterion_main!(rust_interface_benchmarks);

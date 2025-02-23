@@ -1,14 +1,17 @@
-use anyhow::Result;
-use image::{DynamicImage, GenericImageView};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
+use anyhow::Result;
 use dwt::wavelet::Haar;
 use dwt::{Operation, Transform};
+use image::{DynamicImage, GenericImageView};
 use rustdct::DctPlanner;
 
 /// A structure representing the hash of an image as u64.
 ///
 /// The `ImageHash` structure is used to store and compare the hash of an image for deduplication purposes.
-#[derive(Eq, PartialEq, Hash, Clone)]
+#[derive(Debug, Default, Clone, Eq, PartialEq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ImageHash {
     hash: u64,
 }

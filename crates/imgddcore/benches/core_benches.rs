@@ -1,7 +1,7 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use imgddcore::dedupe::{collect_hashes, find_duplicates, sort_hashes};
-use imgddcore::utils::{select_algo, select_filter_type, normalize, open_image};
 use imgddcore::hashing::ImageHash;
+use imgddcore::utils::{normalize, open_image, select_algo, select_filter_type};
 use std::path::PathBuf;
 
 // WARNING!

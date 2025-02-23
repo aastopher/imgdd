@@ -32,10 +32,7 @@ mod selection_tests {
         let result = std::panic::catch_unwind(|| select_algo(Some("unsupported")));
         assert!(result.is_err(), "Expected panic for unsupported algorithm");
     }
-
 }
-
-
 
 #[cfg(test)]
 mod validate_tests {
@@ -76,9 +73,7 @@ mod validate_tests {
             );
         }
     }
-        
 }
-
 
 #[cfg(test)]
 mod normalize_tests {
@@ -105,5 +100,4 @@ mod normalize_tests {
         assert_eq!(normalized88.width(), 8);
         assert_eq!(normalized88.height(), 8);
     }
-        
 }

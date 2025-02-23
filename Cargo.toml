@@ -21,15 +21,12 @@ keywords = ["imagehash", "hash", "perceptual", "deduplication", "wavelet"]
 readme = "./README.md" 
 categories = ["algorithms", "computer-vision", "data-structures", "mathematics"]
 
-
-
-
 [workspace.dependencies]
 image = "0.25.5"
 rayon = "1.10.0"
 walkdir = "2.3"
-anyhow = "1.0.95"
-log = "0.4.25"
+anyhow = "1.0.96"
+log = "0.4.26"
 rustdct = "0.7.1"
 tempfile = "3.5"
 dwt = "0.5.2"

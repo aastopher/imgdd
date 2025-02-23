@@ -3,8 +3,8 @@
 
 use anyhow::Error;
 use imgddcore::dedupe::{collect_hashes, find_duplicates, sort_hashes};
-use imgddcore::utils::{select_algo, select_filter_type};
-use imgddcore::validate::validate_path;
+use imgddcore::utils::{select_algo, select_filter_type, validate_path};
+// use imgddcore::validate::validate_path;
 use std::collections::HashMap;
 use std::path::PathBuf;
 

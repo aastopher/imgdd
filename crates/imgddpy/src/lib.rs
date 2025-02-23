@@ -1,6 +1,6 @@
 use imgddcore::dedupe::{collect_hashes, find_duplicates, sort_hashes};
-use imgddcore::utils::{select_algo, select_filter_type};
-use imgddcore::validate::validate_path;
+use imgddcore::utils::{select_algo, select_filter_type, validate_path};
+// use imgddcore::validate::validate_path;
 use pyo3::prelude::*;
 use std::collections::HashMap;
 use std::path::PathBuf;

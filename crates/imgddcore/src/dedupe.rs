@@ -1,9 +1,7 @@
 use crate::hashing::ImageHash;
-use crate::normalize;
+use crate::utils::{normalize, open_image};
 use anyhow::Error;
-use anyhow::{anyhow, Result};
 use image::imageops::FilterType;
-use image::{DynamicImage, ImageReader};
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs;
@@ -41,23 +39,28 @@ pub fn collect_hashes(
             Ok(image) => {
                 let hash = match algo {
                     "dhash" => {
-                        let normalized = normalize::proc(&image, filter, 9, 8).ok()?;
+                        // let normalized = normalize::proc(&image, filter, 9, 8).ok()?;
+                        let normalized = normalize(&image, filter, 9, 8).ok()?;
                         ImageHash::dhash(&normalized).ok()?.get_hash()
                     }
                     "ahash" => {
-                        let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        // let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        let normalized = normalize(&image, filter, 8, 8).ok()?;
                         ImageHash::ahash(&normalized).ok()?.get_hash()
                     }
                     "mhash" => {
-                        let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        // let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        let normalized = normalize(&image, filter, 8, 8).ok()?;
                         ImageHash::mhash(&normalized).ok()?.get_hash()
                     }
                     "phash" => {
-                        let normalized = normalize::proc(&image, filter, 32, 32).ok()?;
+                        // let normalized = normalize::proc(&image, filter, 32, 32).ok()?;
+                        let normalized = normalize(&image, filter, 32, 32).ok()?;
                         ImageHash::phash(&normalized).ok()?.get_hash()
                     }
                     "whash" => {
-                        let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        // let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
+                        let normalized = normalize(&image, filter, 8, 8).ok()?;
                         ImageHash::whash(&normalized).ok()?.get_hash()
                     }
                     _ => panic!("Unsupported hashing algorithm: {}", algo),
@@ -82,27 +85,6 @@ pub fn collect_hashes(
 #[inline]
 pub fn sort_hashes(hash_paths: &mut [(u64, PathBuf)]) {
     hash_paths.sort_by_key(|(hash, _)| *hash);
-}
-
-/// Opens an image file and decodes it.
-///
-/// # Arguments
-///
-/// * `file_path` - The path to the image file.
-///
-/// # Returns
-///
-/// * A `DynamicImage` if the file is successfully opened and decoded.
-///
-/// # Errors
-///
-/// Returns an error if the file cannot be opened or decoded.
-#[inline]
-pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
-    ImageReader::open(file_path)
-        .map_err(|e| anyhow!("Error opening image {}: {}", file_path.display(), e))?
-        .decode()
-        .map_err(|e| anyhow!("Error decoding image {}: {}", file_path.display(), e))
 }
 
 /// Identifies duplicate images based on hash values.
@@ -130,7 +112,6 @@ pub fn find_duplicates(
             if hash1 == hash2 {
                 duplicates_map
                     .entry(*hash1)
-                    // .or_insert_with(Vec::new)
                     .or_default()
                     .extend(vec![path1.clone(), path2.clone()]);
             }

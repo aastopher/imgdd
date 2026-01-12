@@ -54,6 +54,7 @@ duplicates = dd.dupes(
     path="path/to/images",
     algo="dhash", # Optional: default = dhash
     filter="triangle", # Optional: default = triangle
+    hash_size=8, # Optional: default = 8 (only used for pHash)
     remove=False # Optional: default = False
 )
 print(duplicates)

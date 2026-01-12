@@ -65,6 +65,10 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
 ///     - **Default:** "dHash"
 /// - `sort` - Boolean to determine if the hashes should be sorted.
 ///     - **Default:** false
+/// - `hash_size` - Integer specifying the hash size to use for pHash.
+///   The resulting hash will be hash_size^2 bits long. The value is
+///   ignored for all hash methods other than pHash.
+///     - **Default:**  8
 ///
 /// # Returns
 ///
@@ -79,6 +83,7 @@ pub fn select_algo(algo: Option<&str>) -> &'static str {
 ///     PathBuf::from("path/to/images"),
 ///     Some("Triangle"), // Optional: default = "Triangle"
 ///     Some("dHash"),   // Optional: default = "dHash"
+///     None,            // Optional: default = 8
 ///     Some(false),     // Optional: default = false
 /// );
 ///
@@ -88,13 +93,14 @@ pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
+    hash_size: Option<usize>,
     sort: Option<bool>,
-) -> Result<Vec<(u64, PathBuf)>, Error> {
+) -> Result<Vec<(imgddcore::hashing::ImageHash, PathBuf)>, Error> {
     let validated_path = validate_path(&path)?;
     let filter_type = select_filter_type(filter);
     let selected_algo = select_algo(algo);
 
-    let mut hash_paths = collect_hashes(validated_path, filter_type, selected_algo)?;
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, selected_algo, hash_size)?;
 
     // Optionally sort hashes
     if sort.unwrap_or(false) {
@@ -115,6 +121,10 @@ pub fn hash(
 /// - `algo` - String specifying the hashing algorithm to use.
 ///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///     - **Default:** "dhash"
+/// - `hash_size` - Integer specifying the hash size to use for pHash.
+///   The resulting hash will be hash_size^2 bits long. The value is)
+///   ignored for all hash methods other than pHash.
+///     - **Default:**  8
 /// - `remove` - Boolean indicating whether duplicate files should be removed.
 ///
 /// # Returns
@@ -130,6 +140,7 @@ pub fn hash(
 ///     PathBuf::from("path/to/images"),
 ///     Some("Triangle"), // Optional: default = "Triangle"
 ///     Some("dHash"),   // Optional: default = "dHash"
+///     None,            // Optional: default = 8
 ///     false,
 /// );
 ///
@@ -139,13 +150,14 @@ pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
+    hash_size: Option<usize>,
     remove: bool,
-) -> Result<HashMap<u64, Vec<PathBuf>>, Error> {
+) -> Result<HashMap<imgddcore::hashing::ImageHash, Vec<PathBuf>>, Error> {
     let validated_path = validate_path(&path)?;
     let filter_type = select_filter_type(filter);
     let selected_algo = select_algo(algo);
 
-    let mut hash_paths = collect_hashes(validated_path, filter_type, selected_algo)?;
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, selected_algo, hash_size)?;
     sort_hashes(&mut hash_paths);
 
     Ok(find_duplicates(&hash_paths, remove)?)

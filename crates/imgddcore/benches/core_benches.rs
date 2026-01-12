@@ -47,6 +47,7 @@ fn benchmark_collect_hashes(c: &mut Criterion) {
                 black_box(&dir_path),
                 black_box(image::imageops::FilterType::Triangle),
                 black_box("dhash"),
+                black_box(None),
             )
             .expect("Failed to collect hashes");
         });
@@ -55,8 +56,13 @@ fn benchmark_collect_hashes(c: &mut Criterion) {
 
 fn benchmark_sort_hashes(c: &mut Criterion) {
     let dir_path = PathBuf::from("../../imgs/test");
-    let mut hash_paths = collect_hashes(&dir_path, image::imageops::FilterType::Triangle, "dhash")
-        .expect("Failed to collect hashes");
+    let mut hash_paths = collect_hashes(
+        &dir_path,
+        image::imageops::FilterType::Triangle,
+        "dhash",
+        None,
+    )
+    .expect("Failed to collect hashes");
 
     c.bench_function("sort_hashes", |b| {
         b.iter(|| {
@@ -67,8 +73,13 @@ fn benchmark_sort_hashes(c: &mut Criterion) {
 
 fn benchmark_find_duplicates(c: &mut Criterion) {
     let dir_path = PathBuf::from("../../imgs/test");
-    let mut hash_paths = collect_hashes(&dir_path, image::imageops::FilterType::Triangle, "dhash")
-        .expect("Failed to collect hashes");
+    let mut hash_paths = collect_hashes(
+        &dir_path,
+        image::imageops::FilterType::Triangle,
+        "dhash",
+        None,
+    )
+    .expect("Failed to collect hashes");
     sort_hashes(&mut hash_paths);
 
     c.bench_function("find_duplicates", |b| {
@@ -139,7 +150,7 @@ fn benchmark_phash(c: &mut Criterion) {
     c.bench_function("phash", |b| {
         b.iter(|| {
             // Compute pHash for the normalized image
-            ImageHash::phash(black_box(&normalized_image)).expect("Failed to compute phash");
+            ImageHash::phash(black_box(&normalized_image), 8).expect("Failed to compute phash");
         });
     });
 }

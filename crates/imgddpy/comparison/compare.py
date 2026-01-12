@@ -4,6 +4,7 @@ from PIL import Image
 import imgdd as dd
 import imagehash
 import os
+from typing import Optional
 
 
 def collect_image_count(path: str) -> int:
@@ -33,10 +34,10 @@ def benchmark_function(func, num_runs=50, warmup=3, **kwargs):
     }
 
 
-def imgdd_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dict:
+def imgdd_benchmark(path: str, algo: str, hash_size: Optional[int], num_runs: int, num_images: int) -> dict:
     """Benchmark imgdd library."""
     def run_imgdd_hash():
-        dd.hash(path=path, algo=algo, filter="Nearest", sort=False)
+        dd.hash(path=path, algo=algo, filter="Nearest", hash_size=hash_size, sort=False)
 
     results = benchmark_function(run_imgdd_hash, num_runs=num_runs)
     for key in results:
@@ -44,7 +45,7 @@ def imgdd_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dic
     return results
 
 
-def imagehash_benchmark(path: str, algo: str, num_runs: int, num_images: int) -> dict:
+def imagehash_benchmark(path: str, algo: str, hash_size: Optional[int], num_runs: int, num_images: int) -> dict:
     """Benchmark imagehash library."""
     def run_imagehash(algo: str):
         for root, _, files in os.walk(path):
@@ -56,7 +57,10 @@ def imagehash_benchmark(path: str, algo: str, num_runs: int, num_images: int) ->
                     if algo == "ahash":
                         imagehash.average_hash(image)
                     elif algo == "phash":
-                        imagehash.phash(image)
+                        if hash_size is None:
+                            imagehash.phash(image)
+                        else:
+                            imagehash.phash(image, hash_size)
                     elif algo == "dhash":
                         imagehash.dhash(image)
                     elif algo == "whash":
@@ -94,7 +98,7 @@ def calc_diff(imgdd_result: dict, imagehash_result: dict):
 
 if __name__ == "__main__":
     IMAGE_DIR = "../../../imgs/test/"
-    ALGORITHMS = ["dHash", "aHash", "pHash", "wHash"] # mHash has no equivalent in imagehash
+    ALGORITHMS = ["dHash", "aHash", "pHash", "pHash256", "wHash"] # mHash has no equivalent in imagehash
     NUM_RUNS = 100
     WARM_UP = 5
 
@@ -106,12 +110,18 @@ if __name__ == "__main__":
 
     for algo in ALGORITHMS:
         print(f"Benchmarking {algo}...\n")
+        if algo == "pHash256":
+            coreAlgo = "pHash"
+            hash_size = 16
+        else:
+            coreAlgo = algo
+            hash_size = None
         
         # Benchmark imgdd
-        imgdd_result = imgdd_benchmark(IMAGE_DIR, algo, NUM_RUNS, num_images)
+        imgdd_result = imgdd_benchmark(IMAGE_DIR, coreAlgo, hash_size, NUM_RUNS, num_images)
 
         # Benchmark imagehash
-        imagehash_result = imagehash_benchmark(IMAGE_DIR, algo, NUM_RUNS, num_images)
+        imagehash_result = imagehash_benchmark(IMAGE_DIR, coreAlgo, hash_size, NUM_RUNS, num_images)
 
         # Compare results
         compare_benchmarks(imgdd_result, imagehash_result, algo)

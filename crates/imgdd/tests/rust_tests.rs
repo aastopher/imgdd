@@ -50,6 +50,7 @@ mod tests {
             temp_dir.path().to_path_buf(),
             Some("nearest"),
             Some("dhash"),
+            None,
             Some(false),
         );
         assert!(result.is_ok(), "Hash function failed: {:?}", result.err());
@@ -62,6 +63,7 @@ mod tests {
             invalid_path.clone(),
             Some("nearest"),
             Some("dhash"),
+            None,
             Some(false),
         );
         assert!(
@@ -74,7 +76,7 @@ mod tests {
     #[test]
     fn test_hash_with_sorting() {
         let img_dir = PathBuf::from("../../imgs/test/apple_pie");
-        let result = hash(img_dir, Some("nearest"), Some("dhash"), Some(true));
+        let result = hash(img_dir, Some("nearest"), Some("dhash"), None, Some(true));
 
         assert!(result.is_ok(), "Hash function failed: {:?}", result.err());
 
@@ -109,6 +111,7 @@ mod tests {
             temp_dir.path().to_path_buf(),
             Some("nearest"),
             Some("dhash"),
+            None,
             false,
         );
         assert!(result.is_ok(), "Dupes function failed: {:?}", result.err());
@@ -124,7 +127,13 @@ mod tests {
     #[test]
     fn test_dupes_with_invalid_path() {
         let invalid_path = PathBuf::from("/non/existent/path");
-        let result = dupes(invalid_path.clone(), Some("nearest"), Some("dhash"), false);
+        let result = dupes(
+            invalid_path.clone(),
+            Some("nearest"),
+            Some("dhash"),
+            None,
+            false,
+        );
         assert!(
             result.is_err(),
             "Expected error for invalid path: {:?}",

@@ -19,6 +19,7 @@ use walkdir::WalkDir;
 ///              Options: `Nearest`, `Triangle`, `CatmullRom`, `Gaussian`, `Lanczos3`.
 /// * `algo` - The hashing algorithm to use.
 ///              Options: `dhash`, `ahash`, `mhash`, `phash`, `whash`.
+/// * `hash_size` - The hash size for phash (ignored by other algorithms).
 ///
 /// # Returns
 ///
@@ -27,7 +28,8 @@ pub fn collect_hashes(
     path: &PathBuf,
     filter: FilterType,
     algo: &str,
-) -> Result<Vec<(u64, PathBuf)>, Error> {
+    hash_size: Option<usize>,
+) -> Result<Vec<(ImageHash, PathBuf)>, Error> {
     let files: Vec<PathBuf> = WalkDir::new(path)
         .into_iter()
         .filter_map(|entry| entry.ok())
@@ -35,30 +37,31 @@ pub fn collect_hashes(
         .map(|entry| entry.path().to_path_buf())
         .collect();
 
-    let hash_paths: Vec<(u64, PathBuf)> = files
+    let hash_paths: Vec<(ImageHash, PathBuf)> = files
         .par_iter()
         .filter_map(|file_path| match open_image(file_path) {
             Ok(image) => {
                 let hash = match algo {
                     "dhash" => {
                         let normalized = normalize::proc(&image, filter, 9, 8).ok()?;
-                        ImageHash::dhash(&normalized).ok()?.get_hash()
+                        ImageHash::dhash(&normalized).ok()?
                     }
                     "ahash" => {
                         let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
-                        ImageHash::ahash(&normalized).ok()?.get_hash()
+                        ImageHash::ahash(&normalized).ok()?
                     }
                     "mhash" => {
                         let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
-                        ImageHash::mhash(&normalized).ok()?.get_hash()
+                        ImageHash::mhash(&normalized).ok()?
                     }
                     "phash" => {
+                        let hash_size = hash_size.unwrap_or(8);
                         let normalized = normalize::proc(&image, filter, 32, 32).ok()?;
-                        ImageHash::phash(&normalized).ok()?.get_hash()
+                        ImageHash::phash(&normalized, hash_size).ok()?
                     }
                     "whash" => {
                         let normalized = normalize::proc(&image, filter, 8, 8).ok()?;
-                        ImageHash::whash(&normalized).ok()?.get_hash()
+                        ImageHash::whash(&normalized).ok()?
                     }
                     _ => panic!("Unsupported hashing algorithm: {}", algo),
                 };
@@ -80,8 +83,8 @@ pub fn collect_hashes(
 ///
 /// * `hash_paths` - A mutable reference to a vector of hash-path tuples.
 #[inline]
-pub fn sort_hashes(hash_paths: &mut Vec<(u64, PathBuf)>) {
-    hash_paths.sort_by_key(|(hash, _)| *hash);
+pub fn sort_hashes(hash_paths: &mut Vec<(ImageHash, PathBuf)>) {
+    hash_paths.sort_by_key(|(hash, _)| hash.clone());
 }
 
 /// Opens an image file and decodes it.
@@ -120,16 +123,16 @@ pub fn open_image(file_path: &PathBuf) -> Result<DynamicImage> {
 ///
 /// Returns an error if a file fails to be removed when `remove` is set to `true`.
 pub fn find_duplicates(
-    hash_paths: &[(u64, PathBuf)],
+    hash_paths: &[(ImageHash, PathBuf)],
     remove: bool,
-) -> Result<HashMap<u64, Vec<PathBuf>>, Error> {
-    let mut duplicates_map: HashMap<u64, Vec<PathBuf>> = HashMap::new();
+) -> Result<HashMap<ImageHash, Vec<PathBuf>>, Error> {
+    let mut duplicates_map: HashMap<ImageHash, Vec<PathBuf>> = HashMap::new();
 
     for window in hash_paths.windows(2) {
         if let [(hash1, path1), (hash2, path2)] = window {
             if hash1 == hash2 {
                 duplicates_map
-                    .entry(*hash1)
+                    .entry(hash1.clone())
                     .or_insert_with(Vec::new)
                     .extend(vec![path1.clone(), path2.clone()]);
             }

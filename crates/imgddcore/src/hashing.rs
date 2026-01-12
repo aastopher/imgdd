@@ -5,15 +5,29 @@ use dwt::wavelet::Haar;
 use dwt::{Operation, Transform};
 use rustdct::DctPlanner;
 
-/// A structure representing the hash of an image as u64.
+/// A structure representing the hash of an image.
 ///
 /// The `ImageHash` structure is used to store and compare the hash of an image for deduplication purposes.
-#[derive(Eq, PartialEq, Hash, Clone)]
+/// The hash is stored as a vector of bytes, allowing for variable-sized hashes.
+#[derive(Eq, PartialEq, Hash, Clone, Ord, PartialOrd, Debug)]
 pub struct ImageHash {
-    hash: u64,
+    hash: Vec<u8>,
 }
 
 impl ImageHash {
+    /// Creates a new ImageHash from a u64 value (for 64-bit hashes).
+    #[inline]
+    pub fn from_u64(hash: u64) -> Self {
+        let bytes = hash.to_be_bytes().to_vec();
+        Self { hash: bytes }
+    }
+
+    /// Returns the hash length in bytes.
+    #[inline]
+    pub fn num_bytes(&self) -> usize {
+        self.hash.len()
+    }
+
     /// Computes the average hash (aHash) of a given image.
     ///
     /// # Arguments
@@ -48,7 +62,7 @@ impl ImageHash {
             }
         }
 
-        Ok(Self { hash })
+        Ok(Self::from_u64(hash))
     }
 
     /// Computes the median hash (mHash) of a given image.
@@ -88,7 +102,7 @@ impl ImageHash {
             }
         }
 
-        Ok(Self { hash })
+        Ok(Self::from_u64(hash))
     }
 
     /// Computes the difference hash (dHash) of a given image.
@@ -116,13 +130,14 @@ impl ImageHash {
             }
         }
 
-        Ok(Self { hash })
+        Ok(Self::from_u64(hash))
     }
 
     /// Computes the perceptual hash (pHash) of a given image.
     ///
     /// # Arguments:
     /// * `image` - A reference to a `DynamicImage` for which the hash is to be calculated.
+    /// * `hash_size` - The size of the hash (e.g., 8 for 8x8, 16 for 16x16). Defaults to 8.
     ///
     /// # Returns:
     /// * An `ImageHash` instance containing the computed pHash value.
@@ -132,9 +147,8 @@ impl ImageHash {
     /// - Analyzes the frequency domain using Discrete Cosine Transform (DCT).
     /// - Focuses on low-frequency components, which are less affected by resizing or compression.
     #[inline]
-    pub fn phash(image: &DynamicImage) -> Result<Self> {
+    pub fn phash(image: &DynamicImage, hash_size: usize) -> Result<Self> {
         const IMG_SIZE: usize = 32;
-        const HASH_SIZE: usize = 8;
 
         // Collect pixel values from normalized 32x32 grayscale image
         let mut pixels: Vec<f32> = image.pixels().map(|p| p.2[0] as f32).collect();
@@ -163,11 +177,12 @@ impl ImageHash {
             }
         }
 
-        // Extract top-left 8x8 DCT coefficients (low frequencies)
-        let mut dct_lowfreq = [0f32; HASH_SIZE * HASH_SIZE];
-        for y in 0..HASH_SIZE {
-            for x in 0..HASH_SIZE {
-                dct_lowfreq[y * HASH_SIZE + x] = pixels[y * IMG_SIZE + x];
+        // Extract top-left hash_size x hash_size DCT coefficients (low frequencies)
+        let hash_size_sq = hash_size * hash_size;
+        let mut dct_lowfreq = vec![0f32; hash_size_sq];
+        for y in 0..hash_size {
+            for x in 0..hash_size {
+                dct_lowfreq[y * hash_size + x] = pixels[y * IMG_SIZE + x];
             }
         }
 
@@ -177,15 +192,21 @@ impl ImageHash {
         ac_coeffs.select_nth_unstable_by(mid, |a, b| a.partial_cmp(b).unwrap());
         let median = ac_coeffs[mid];
 
-        // Generate hash
-        let mut hash = 0u64;
+        // Generate hash as Vec<u8>
+        // Calculate number of bytes needed (hash_size * hash_size bits)
+        let num_bits = hash_size_sq;
+        let num_bytes = (num_bits + 7) / 8; // Round up to nearest byte
+        let mut hash_bytes = vec![0u8; num_bytes];
+
         for (i, &val) in dct_lowfreq.iter().enumerate() {
             if val > median {
-                hash |= 1 << (63 - i);
+                let byte_idx = i / 8;
+                let bit_idx = 7 - (i % 8); // MSB first (big-endian)
+                hash_bytes[byte_idx] |= 1 << bit_idx;
             }
         }
 
-        Ok(Self { hash })
+        Ok(Self { hash: hash_bytes })
     }
 
     /// Computes the wavelet hash (wHash) of a given image.
@@ -242,16 +263,16 @@ impl ImageHash {
             }
         }
 
-        Ok(Self { hash })
+        Ok(Self::from_u64(hash))
     }
 
     /// Retrieves the computed hash value.
     ///
     /// # Returns
     ///
-    /// * Hash value as a `u64`.
+    /// * A reference to the hash as a slice (`&[u8]`).
     #[inline]
-    pub fn get_hash(&self) -> u64 {
-        self.hash
+    pub fn get_hash(&self) -> &[u8] {
+        &self.hash
     }
 }

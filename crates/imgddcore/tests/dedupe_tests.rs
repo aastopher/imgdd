@@ -20,20 +20,30 @@ mod tests {
 
         let algorithms = ["dhash", "ahash", "mhash", "phash", "whash"];
         for algo in algorithms {
-            let hashes =
-                collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, algo).unwrap();
+            let hashes = collect_hashes(
+                &temp_dir.path().to_path_buf(),
+                FilterType::Nearest,
+                algo,
+                None,
+            )
+            .unwrap();
             assert_eq!(hashes.len(), 1, "Algorithm {} failed", algo);
         }
     }
 
     #[test]
     fn test_sort_hashes() {
-        let mut hashes = vec![(2, PathBuf::from("b")), (1, PathBuf::from("a"))];
+        use imgddcore::hashing::ImageHash;
+        let hash1 = ImageHash::from_u64(2);
+        let hash2 = ImageHash::from_u64(1);
+        let mut hashes = vec![
+            (hash1.clone(), PathBuf::from("b")),
+            (hash2.clone(), PathBuf::from("a")),
+        ];
         sort_hashes(&mut hashes);
-        assert_eq!(
-            hashes,
-            vec![(1, PathBuf::from("a")), (2, PathBuf::from("b"))]
-        );
+        // After sorting, hash with value 1 should come before hash with value 2
+        assert_eq!(hashes[0].0, hash2);
+        assert_eq!(hashes[1].0, hash1);
     }
 
     #[test]
@@ -47,6 +57,7 @@ mod tests {
                 &temp_dir.path().to_path_buf(),
                 FilterType::Nearest,
                 "unsupported_algo",
+                None,
             )
         });
 
@@ -62,7 +73,12 @@ mod tests {
         let mut file = File::create(&invalid_image_path).unwrap();
         file.write_all(b"not a valid image").unwrap();
 
-        let result = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, "dhash");
+        let result = collect_hashes(
+            &temp_dir.path().to_path_buf(),
+            FilterType::Nearest,
+            "dhash",
+            None,
+        );
         assert!(result.is_ok()); // Valid path, but should log errors for invalid image
     }
 
@@ -74,7 +90,12 @@ mod tests {
         // Create empty file that can't be decoded
         File::create(&invalid_image_path).unwrap();
 
-        let result = collect_hashes(&temp_dir.path().to_path_buf(), FilterType::Nearest, "dhash");
+        let result = collect_hashes(
+            &temp_dir.path().to_path_buf(),
+            FilterType::Nearest,
+            "dhash",
+            None,
+        );
         assert!(result.is_ok()); // Valid path, but decode errors should be logged
     }
 
@@ -107,7 +128,12 @@ mod tests {
         std::fs::write(&file_path_2, b"file 2 content").unwrap();
 
         // Mock duplicate hash paths
-        let hash_paths = vec![(1, file_path_1.clone()), (1, file_path_2.clone())];
+        use imgddcore::hashing::ImageHash;
+        let hash = ImageHash::from_u64(1);
+        let hash_paths = vec![
+            (hash.clone(), file_path_1.clone()),
+            (hash, file_path_2.clone()),
+        ];
 
         // Test with `remove = true` to trigger file deletion
         let result = find_duplicates(&hash_paths, true);
@@ -133,7 +159,12 @@ mod tests {
         assert!(file_path_1.exists());
 
         // Mock duplicate hash paths, including a non-existent file
-        let hash_paths = vec![(1, file_path_1.clone()), (1, file_path_2.clone())];
+        use imgddcore::hashing::ImageHash;
+        let hash = ImageHash::from_u64(1);
+        let hash_paths = vec![
+            (hash.clone(), file_path_1.clone()),
+            (hash, file_path_2.clone()),
+        ];
 
         // Test with `remove = true` to trigger file deletion
         let result = find_duplicates(&hash_paths, true);

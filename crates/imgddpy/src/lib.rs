@@ -30,7 +30,7 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 }
 
 /// ```python
-/// hash(path, filter="triangle", algo="dhash", sort=False)
+/// hash(path, filter="triangle", algo="dhash", hash_size=None, sort=False)
 /// ```
 ///
 /// Calculate the hash of images in a directory.
@@ -43,6 +43,10 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 /// - `algo (str)`: Hashing algorithm.
 ///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///     - **Default:** `dHash`
+/// - `hash_size (int)`: Hash size for pHash algorithm (e.g., 8, 16).
+///   The resulting hash will be hash_size^2 bits long. The value is ignored
+///   for all hash methods other than pHash.
+///     - **Default:** `8`
 /// - `sort (bool)`: Whether to sort the results by hash values.
 ///     - **Default:** `False`
 ///
@@ -61,11 +65,12 @@ fn select_algo(algo: Option<&str>) -> &'static str {
 /// )
 /// print(results)
 /// ```
-#[pyfunction(signature = (path, filter = None, algo = None, sort = false))]
+#[pyfunction(signature = (path, filter = None, algo = None, hash_size = None, sort = false))]
 pub fn hash(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
+    hash_size: Option<usize>,
     sort: Option<bool>,
 ) -> PyResult<HashMap<PathBuf, String>> {
     let validated_path = validate_path(&path)
@@ -73,7 +78,7 @@ pub fn hash(
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo, hash_size)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))?;
 
     // Optionally sort hashes
@@ -83,12 +88,19 @@ pub fn hash(
 
     Ok(hash_paths
         .into_iter()
-        .map(|(hash, path)| (path, format!("{:x}", hash)))
+        .map(|(hash, path)| {
+            let hash_hex = hash
+                .get_hash()
+                .iter()
+                .map(|b| format!("{:02x}", b))
+                .collect::<String>();
+            (path, hash_hex)
+        })
         .collect())
 }
 
 /// ```python
-/// dupes(path, filter="triangle", algo="dhash", remove=False)
+/// dupes(path, filter="triangle", algo="dhash", hash_size=None, remove=False)
 /// ```
 ///
 /// Find duplicate images in a directory.
@@ -101,6 +113,10 @@ pub fn hash(
 /// - `algo (str)`: Hashing algorithm.
 ///     - **Options:** [`aHash`, `mHash`, `dHash`, `pHash`, `wHash`]
 ///     - **Default:** `dHash`
+/// - `hash_size (int)`: Hash size for pHash algorithm (e.g., 8, 16).
+///   The resulting hash will be hash_size^2 bits long. The value is ignored
+///   for all hash methods other than pHash.
+///     - **Default:** `8`
 /// - `remove (bool)`: Whether to remove duplicate files
 ///     - **Default:** `False`
 ///
@@ -119,11 +135,12 @@ pub fn hash(
 /// )
 /// print(duplicates)
 /// ```
-#[pyfunction(signature = (path, filter = None, algo = None, remove = false))]
+#[pyfunction(signature = (path, filter = None, algo = None, hash_size = None, remove = false))]
 pub fn dupes(
     path: PathBuf,
     filter: Option<&str>,
     algo: Option<&str>,
+    hash_size: Option<usize>,
     remove: bool,
 ) -> PyResult<HashMap<String, Vec<PathBuf>>> {
     let validated_path = validate_path(&path)
@@ -131,7 +148,7 @@ pub fn dupes(
     let filter_type = select_filter_type(filter);
     let algo = select_algo(algo);
 
-    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo)
+    let mut hash_paths = collect_hashes(&validated_path, filter_type, &algo, hash_size)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))?;
     sort_hashes(&mut hash_paths);
 
@@ -140,7 +157,14 @@ pub fn dupes(
 
     Ok(duplicates
         .into_iter()
-        .map(|(hash, paths)| (format!("{:x}", hash), paths))
+        .map(|(hash, paths)| {
+            let hash_hex = hash
+                .get_hash()
+                .iter()
+                .map(|b| format!("{:02x}", b))
+                .collect::<String>();
+            (hash_hex, paths)
+        })
         .collect())
 }
 

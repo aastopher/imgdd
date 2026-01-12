@@ -40,6 +40,7 @@ let result = hash(
     PathBuf::from("path/to/images"),
     Some("Triangle"), // Optional: default = "Triangle"
     Some("dHash"),   // Optional: default = "dHash"
+    None,  // Optional: default = 8 (only used for pHash)
     Some(false),     // Optional: default = false
 );
 println!("{:#?}", result);
@@ -55,6 +56,7 @@ let result = dupes(
     PathBuf::from("path/to/images"),
     Some("Triangle"), // Optional: default = "Triangle"
     Some("dHash"),   // Optional: default = "dHash"
+    None,  // Optional: default = 8 (only used for pHash)
     false,
 );
 println!("{:#?}", result);
